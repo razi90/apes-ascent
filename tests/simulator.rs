@@ -6,7 +6,7 @@ fn test_instatiate_competition_and_register() {
     let mut ledger = LedgerSimulatorBuilder::new().build();
 
     // Create an account
-    let (public_key, _private_key, account) = ledger.new_allocated_account();
+    let (public_key, _private_key, _account) = ledger.new_allocated_account();
 
     // Publish package
     let package_address = ledger.compile_and_publish(this_package!());
