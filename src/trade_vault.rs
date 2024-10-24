@@ -4,7 +4,6 @@ use scrypto::prelude::*;
 #[blueprint]
 mod trade_vault {
     struct TradeVault {
-        fake_usd_vault: Vault,
         competition: Global<Competition>,
     }
 
@@ -13,34 +12,20 @@ mod trade_vault {
             let (address_reservation, component_address) =
                 Runtime::allocate_component_address(TradeVault::blueprint_id());
 
-            let my_bucket: Bucket = ResourceBuilder::new_fungible(OwnerRole::None)
-                .divisibility(DIVISIBILITY_MAXIMUM)
-                .metadata(metadata! {
-                    init {
-                        "name" => "Fake USD", locked;
-                        "symbol" => "FUSD", locked;
-                    }
-                })
-                .mint_initial_supply(10000)
-                .into();
-
             // let competition: Global<AnyComponent> = competition.into();
             let competition: Global<Competition> = competition.into();
 
             // competition.call::<(ComponentAddress,), ()>("register", &(component_address,));
             competition.register(component_address);
 
-            Self {
-                fake_usd_vault: Vault::with_bucket(my_bucket),
-                competition,
-            }
-            .instantiate()
-            .prepare_to_globalize(OwnerRole::None)
-            .with_address(address_reservation)
-            .globalize()
+            Self { competition }
+                .instantiate()
+                .prepare_to_globalize(OwnerRole::None)
+                .with_address(address_reservation)
+                .globalize()
         }
 
-        pub fn trade(&mut self) {
+        pub fn trade(&mut self, symbol: String, amount: Decimal) {
             assert!(
                 Clock::current_time_is_at_or_after(
                     self.competition.get_competition_start_time(),
