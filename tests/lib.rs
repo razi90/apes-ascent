@@ -88,16 +88,16 @@ fn test_instatiate_competition_and_register() {
 }
 
 #[test]
-fn test_hello_with_test_environment() -> Result<(), RuntimeError> {
+fn test_execute_trade() -> Result<(), RuntimeError> {
     // Arrange
     let mut env = TestEnvironment::new();
     let package_address =
         PackageFactory::compile_and_publish(this_package!(), &mut env, CompileProfile::Fast)?;
 
-    let mut hello = TradeVault::instantiate(package_address, &mut env)?;
+    let mut trade_vault = TradeVault::instantiate(package_address, &mut env)?;
 
     // Act
-    let result = hello.trade(&mut env);
+    let result = trade_vault.trade(&mut env);
 
     // Assert
     assert!(result.is_ok());
