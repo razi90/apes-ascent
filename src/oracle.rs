@@ -1,17 +1,5 @@
 use scrypto::prelude::*;
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, ScryptoSbor)]
-pub struct Pair {
-    pub base: ResourceAddress,
-    pub quote: ResourceAddress,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq, ScryptoSbor)]
-pub struct PairPriceEntry {
-    pub price: Decimal,
-    pub observed_by_component_at: Instant,
-}
-
 #[blueprint]
 mod simple_oracle {
     enable_method_auth! {
@@ -26,7 +14,7 @@ mod simple_oracle {
 
     pub struct SimpleOracle {
         /// Maps the (base, quote) to the (price, updated_at).
-        prices: KeyValueStore<Pair, PairPriceEntry>,
+        prices: KeyValueStore<ResourceAddress, Decimal>,
     }
 
     impl SimpleOracle {
@@ -60,29 +48,16 @@ mod simple_oracle {
             .globalize()
         }
 
-        pub fn set_price(&mut self, base: ResourceAddress, quote: ResourceAddress, price: Decimal) {
-            self.prices.insert(
-                Pair { base, quote },
-                PairPriceEntry {
-                    price,
-                    observed_by_component_at: Clock::current_time_rounded_to_minutes(),
-                },
-            )
+        pub fn set_price(&mut self, address: ResourceAddress, price: Decimal) {
+            self.prices.insert(address, price)
         }
 
-        pub fn get_price(
-            &self,
-            base: ResourceAddress,
-            quote: ResourceAddress,
-        ) -> (Decimal, Instant) {
-            let PairPriceEntry {
-                price,
-                observed_by_component_at,
-            } = *self
+        pub fn get_price(&self, address: ResourceAddress) -> Decimal {
+            let price = *self
                 .prices
-                .get(&Pair { base, quote })
+                .get(&address)
                 .expect("Price not found for this resource");
-            (price, observed_by_component_at)
+            price
         }
     }
 }

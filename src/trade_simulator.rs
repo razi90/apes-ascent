@@ -1,32 +1,21 @@
 use crate::oracle::simple_oracle::SimpleOracle;
 use scrypto::prelude::*;
 
+type LazySet<K> = KeyValueStore<K, ()>;
+
 #[blueprint]
 mod trade_simulator {
-
     struct TradeSimulator {
-        resource_managers: KeyValueStore<String, ResourceManager>,
-        fusd_resource_manager: ResourceManager,
+        allowed_resources: LazySet<ResourceAddress>,
         oracle: Global<SimpleOracle>,
     }
 
     impl TradeSimulator {
         pub fn instantiate(oracle_address: ComponentAddress) -> Global<TradeSimulator> {
-            let fusd_resource_manager = ResourceBuilder::new_fungible(OwnerRole::None)
-                .divisibility(DIVISIBILITY_MAXIMUM)
-                .metadata(metadata! {
-                    init {
-                        "name" => "Fake USD", locked;
-                        "symbol" => "FUSD", locked;
-                    }
-                })
-                .create_with_no_initial_supply();
-
             let oracle = oracle_address.into();
 
             Self {
-                resource_managers: KeyValueStore::new(),
-                fusd_resource_manager,
+                allowed_resources: KeyValueStore::new(),
                 oracle,
             }
             .instantiate()
@@ -34,29 +23,49 @@ mod trade_simulator {
             .globalize()
         }
 
-        pub fn mint_fusd(&mut self, amount: Decimal) -> Bucket {
-            self.fusd_resource_manager.mint(amount)
+        pub fn add_new_resource(&mut self, address: ResourceAddress) {
+            self.allowed_resources.insert(address, ());
         }
 
-        pub fn add_new_resource_manager(&mut self, name: String, symbol: String) {
-            let resource_manager = ResourceBuilder::new_fungible(OwnerRole::None)
-                .divisibility(DIVISIBILITY_MAXIMUM)
-                .metadata(metadata! {
-                    init {
-                        "name" => name, locked;
-                        "symbol" => symbol.clone(), locked;
-                    }
-                })
-                .create_with_no_initial_supply();
-            self.resource_managers.insert(symbol, resource_manager);
-        }
+        pub fn swap(&mut self, from_token: Bucket, to_token_address: ResourceAddress) -> Bucket {
+            // Assert that the asset to trade is whitelisted
 
-        pub fn swap(&mut self, from_token: Bucket, to_token_symbol: String) -> Bucket {
+            // calculate the amount that needs to be minted
+            let to_token_amount_to_mint = self.calculate_amount_to_mint(
+                &from_token.amount(),
+                &from_token.resource_address(),
+                &to_token_address,
+            );
+
+            // burn input tokens
             from_token.burn();
-            self.resource_managers
-                .get(&to_token_symbol)
+
+            // mint new tokens and send back
+            ResourceManager::from_address(to_token_address).mint(to_token_amount_to_mint)
+        }
+
+        fn calculate_amount_to_mint(
+            &self,
+            from_token_amount: &Decimal,
+            from_token_address: &ResourceAddress,
+            to_token_address: &ResourceAddress,
+        ) -> Decimal {
+            // get from token price
+            let from_token_price = self.oracle.get_price(*from_token_address);
+            // get to token price
+            let to_token_price = self.oracle.get_price(*to_token_address);
+
+            // calculate price ratio
+            let price_ratio = from_token_price.checked_div(to_token_price).unwrap();
+
+            // calculate the amount of tokens to mint
+            let to_token_amount = from_token_amount
+                .checked_mul(price_ratio)
                 .unwrap()
-                .mint(1)
+                .checked_round(DIVISIBILITY_MAXIMUM, RoundingMode::ToZero)
+                .unwrap();
+
+            to_token_amount
         }
     }
 }

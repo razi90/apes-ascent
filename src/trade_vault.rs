@@ -25,7 +25,12 @@ mod trade_vault {
                 .globalize()
         }
 
-        pub fn trade(&mut self, symbol: String, amount: Decimal) {
+        pub fn trade(
+            &mut self,
+            from_address: ResourceAddress,
+            to_address: ResourceAddress,
+            amount: Decimal,
+        ) {
             assert!(
                 Clock::current_time_is_at_or_after(
                     self.competition.get_competition_start_time(),
@@ -41,7 +46,10 @@ mod trade_vault {
                 ),
                 "Competition has already finished."
             );
-            info!("My balance is: {} Fake USD!", self.fake_usd_vault.amount());
+            info!(
+                "I want to trade {:?} of {:?} into {:?}",
+                amount, from_address, to_address
+            );
         }
     }
 }
