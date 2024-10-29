@@ -13,7 +13,6 @@ mod simple_oracle {
     }
 
     pub struct SimpleOracle {
-        /// Maps the (base, quote) to the (price, updated_at).
         prices: KeyValueStore<ResourceAddress, Decimal>,
     }
 

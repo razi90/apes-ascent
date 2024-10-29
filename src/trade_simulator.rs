@@ -5,13 +5,31 @@ type LazySet<K> = KeyValueStore<K, ()>;
 
 #[blueprint]
 mod trade_simulator {
+
+    enable_method_auth! {
+        roles {
+            simulator_manager => updatable_by: [simulator_manager, OWNER];
+        },
+        methods {
+            // Methods with public access
+            trade => PUBLIC;
+
+            // Methods with admin access
+            add_new_resource => restrict_to: [simulator_manager, OWNER];
+        }
+    }
+
     struct TradeSimulator {
         allowed_resources: LazySet<ResourceAddress>,
         oracle: Global<SimpleOracle>,
     }
 
     impl TradeSimulator {
-        pub fn instantiate(oracle_address: ComponentAddress) -> Global<TradeSimulator> {
+        pub fn instantiate(
+            simulator_manager: AccessRule,
+            owner_role: OwnerRole,
+            oracle_address: ComponentAddress,
+        ) -> Global<TradeSimulator> {
             let oracle = oracle_address.into();
 
             Self {
@@ -19,7 +37,10 @@ mod trade_simulator {
                 oracle,
             }
             .instantiate()
-            .prepare_to_globalize(OwnerRole::None)
+            .prepare_to_globalize(owner_role.clone())
+            .roles(roles! {
+                simulator_manager => simulator_manager;
+            })
             .globalize()
         }
 

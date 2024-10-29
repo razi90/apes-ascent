@@ -85,8 +85,13 @@ impl UnitTestEnvironment {
         }
 
         // Init the trade simulator
-        let mut trade_simulator =
-            TradeSimulator::instantiate(oracle.try_into().unwrap(), package_address, &mut env)?;
+        let mut trade_simulator = TradeSimulator::instantiate(
+            protocol_manager_rule.clone(),
+            OwnerRole::None,
+            oracle.try_into().unwrap(),
+            package_address,
+            &mut env,
+        )?;
 
         // Add resources to whitelist
         for &resource_address in resource_addresses.as_vec() {
