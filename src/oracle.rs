@@ -13,10 +13,18 @@ mod simple_oracle {
     }
 
     pub struct SimpleOracle {
-        prices: KeyValueStore<ResourceAddress, Decimal>,
+        prices: KeyValueStore<ResourceAddress, Decimal>, // Stores the price of each resource.
     }
 
     impl SimpleOracle {
+        /// Instantiates a new SimpleOracle component.
+        ///
+        /// # Arguments
+        ///
+        /// * `oracle_manager` - Access rule defining who can manage the oracle.
+        /// * `metadata_init` - Metadata for initializing the oracle component.
+        /// * `owner_role` - The owner role of the oracle.
+        /// * `address_reservation` - Optional reservation for a global address for the oracle.
         pub fn instantiate(
             oracle_manager: AccessRule,
             metadata_init: MetadataInit,
@@ -47,10 +55,25 @@ mod simple_oracle {
             .globalize()
         }
 
+        /// Sets the price for a given resource address.
+        ///
+        /// # Arguments
+        ///
+        /// * `address` - The resource address for which the price is to be set.
+        /// * `price` - The price of the resource.
         pub fn set_price(&mut self, address: ResourceAddress, price: Decimal) {
             self.prices.insert(address, price)
         }
 
+        /// Gets the price for a given resource address.
+        ///
+        /// # Arguments
+        ///
+        /// * `address` - The resource address for which the price is to be retrieved.
+        ///
+        /// # Returns
+        ///
+        /// The price of the resource.
         pub fn get_price(&self, address: ResourceAddress) -> Decimal {
             let price = *self
                 .prices
