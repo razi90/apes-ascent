@@ -67,8 +67,7 @@ mod competition {
             to_address: ResourceAddress,
             amount: Decimal,
         ) {
-            self.assert_competition_started();
-            self.assert_competition_not_ended();
+            self.assert_competition_running();
             info!(
                 "I want to trade {:?} of {:?} into {:?}",
                 amount, from_address, to_address
@@ -84,9 +83,7 @@ mod competition {
             let from_token_bucket = trading_vault.withdraw_asset(from_address, amount);
 
             // Swap asset
-            let to_token_bucket = self
-                .get_trade_simulator()
-                .trade(from_token_bucket, to_address);
+            let to_token_bucket = self.trade_simulator.trade(from_token_bucket, to_address);
 
             // Deposit new assets back to the user vault
             trading_vault.deposit_asset(to_token_bucket);
@@ -110,7 +107,7 @@ mod competition {
             );
         }
 
-        fn assert_competition_started(&self) {
+        fn assert_competition_running(&self) {
             assert!(
                 Clock::current_time_is_at_or_after(
                     self.get_competition_start_time(),
@@ -118,9 +115,6 @@ mod competition {
                 ),
                 "Competition has not started yet!"
             );
-        }
-
-        fn assert_competition_not_ended(&self) {
             assert!(
                 Clock::current_time_is_strictly_before(
                     self.get_competition_end_time(),
@@ -131,7 +125,7 @@ mod competition {
         }
 
         fn extract_user_id(&self, user_token_proof: Proof) -> String {
-            let checked_proof = user_token_proof.check(self.get_user_token_resource_address());
+            let checked_proof = user_token_proof.check(self.user_token_resource_address);
             checked_proof
                 .as_non_fungible()
                 .non_fungible_local_id()
@@ -149,12 +143,6 @@ mod competition {
         }
         pub fn get_competition_end_time(&self) -> Instant {
             self.competition_data.competition_end
-        }
-        pub fn get_trade_simulator(&self) -> Global<TradeSimulator> {
-            self.trade_simulator
-        }
-        pub fn get_user_token_resource_address(&self) -> ResourceAddress {
-            self.user_token_resource_address
         }
     }
 }
