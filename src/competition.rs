@@ -48,28 +48,8 @@ mod competition {
         }
 
         pub fn register(&mut self, user_token_proof: Proof) {
-            info!(
-                "Current time: {:?}",
-                Clock::current_time(TimePrecisionV2::Second)
-            );
-            info!(
-                "Current competition start: {:?}",
-                self.competition_data.competition_start
-            );
-            assert!(
-                Clock::current_time_is_strictly_before(
-                    self.competition_data.competition_start,
-                    TimePrecisionV2::Second,
-                ),
-                "Competition has already started. Registration is not possible anymore!"
-            );
-
-            // Get user ID
-            let checked_proof = user_token_proof.check(self.get_user_token_resource_address());
-            let user_id = checked_proof
-                .as_non_fungible()
-                .non_fungible_local_id()
-                .to_string();
+            self.assert_competition_not_started();
+            let user_id = self.extract_user_id(user_token_proof);
 
             // Mint FUSD
             let fusd_bucket = ResourceManager::from_address(self.fusd_resource_address)
@@ -87,32 +67,14 @@ mod competition {
             to_address: ResourceAddress,
             amount: Decimal,
         ) {
-            assert!(
-                Clock::current_time_is_at_or_after(
-                    self.get_competition_start_time(),
-                    TimePrecisionV2::Second
-                ),
-                "Competition has not started yet!"
-            );
-
-            assert!(
-                Clock::current_time_is_strictly_before(
-                    self.get_competition_end_time(),
-                    TimePrecisionV2::Second
-                ),
-                "Competition has already finished."
-            );
+            self.assert_competition_started();
+            self.assert_competition_not_ended();
             info!(
                 "I want to trade {:?} of {:?} into {:?}",
                 amount, from_address, to_address
             );
 
-            // Get user ID
-            let checked_proof = user_token_proof.check(self.get_user_token_resource_address());
-            let user_id = checked_proof
-                .as_non_fungible()
-                .non_fungible_local_id()
-                .to_string();
+            let user_id = self.extract_user_id(user_token_proof);
 
             // Withdraw asset from the user vault
             let trading_vault = self
@@ -128,6 +90,52 @@ mod competition {
 
             // Deposit new assets back to the user vault
             trading_vault.deposit_asset(to_token_bucket);
+        }
+
+        fn assert_competition_not_started(&self) {
+            info!(
+                "Current time: {:?}",
+                Clock::current_time(TimePrecisionV2::Second)
+            );
+            info!(
+                "Current competition start: {:?}",
+                self.competition_data.competition_start
+            );
+            assert!(
+                Clock::current_time_is_strictly_before(
+                    self.competition_data.competition_start,
+                    TimePrecisionV2::Second,
+                ),
+                "Competition has already started. Registration is not possible anymore!"
+            );
+        }
+
+        fn assert_competition_started(&self) {
+            assert!(
+                Clock::current_time_is_at_or_after(
+                    self.get_competition_start_time(),
+                    TimePrecisionV2::Second
+                ),
+                "Competition has not started yet!"
+            );
+        }
+
+        fn assert_competition_not_ended(&self) {
+            assert!(
+                Clock::current_time_is_strictly_before(
+                    self.get_competition_end_time(),
+                    TimePrecisionV2::Second
+                ),
+                "Competition has already finished."
+            );
+        }
+
+        fn extract_user_id(&self, user_token_proof: Proof) -> String {
+            let checked_proof = user_token_proof.check(self.get_user_token_resource_address());
+            checked_proof
+                .as_non_fungible()
+                .non_fungible_local_id()
+                .to_string()
         }
 
         pub fn set_competition_start_time(&mut self, time: Instant) {
