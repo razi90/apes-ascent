@@ -1,5 +1,5 @@
 use crate::trade_simulator::trade_simulator::TradeSimulator;
-use crate::trade_vault::trade_vault::TradeVault;
+use crate::user_asset_vault::user_asset_vault::UserAssetVault;
 
 use scrypto::prelude::*;
 
@@ -15,7 +15,7 @@ mod competition {
     struct Competition {
         competition_data: CompetitionData,
         trade_simulator: Global<TradeSimulator>,
-        trading_vaults: KeyValueStore<String, Owned<TradeVault>>,
+        trading_vaults: KeyValueStore<String, Owned<UserAssetVault>>,
         fusd_resource_address: ResourceAddress,
         user_token_resource_address: ResourceAddress,
     }
@@ -75,7 +75,7 @@ mod competition {
             let fusd_bucket = ResourceManager::from_address(self.fusd_resource_address)
                 .mint(Decimal::from(10000));
 
-            let trade_vault = TradeVault::instantiate(fusd_bucket);
+            let trade_vault = UserAssetVault::instantiate(fusd_bucket);
 
             self.trading_vaults.insert(user_id, trade_vault);
         }

@@ -1,13 +1,13 @@
 use scrypto::prelude::*;
 
 #[blueprint]
-mod trade_vault {
-    struct TradeVault {
+mod user_asset_vault {
+    struct UserAssetVault {
         assets: KeyValueStore<ResourceAddress, Vault>,
     }
 
-    impl TradeVault {
-        pub fn instantiate(fusd: Bucket) -> Owned<TradeVault> {
+    impl UserAssetVault {
+        pub fn instantiate(fusd: Bucket) -> Owned<UserAssetVault> {
             // Add FUSD to the assets
             let assets = KeyValueStore::new();
             assets.insert(fusd.resource_address(), Vault::with_bucket(fusd));
