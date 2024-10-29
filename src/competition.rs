@@ -12,6 +12,23 @@ struct CompetitionData {
 #[blueprint]
 mod competition {
 
+    enable_method_auth! {
+        roles {
+            admin => updatable_by: [admin, OWNER];
+        },
+        methods {
+            // Methods with public access
+            register => PUBLIC;
+            trade => PUBLIC;
+            get_competition_start_time => PUBLIC;
+            get_competition_end_time => PUBLIC;
+
+            // Methods with admin access
+            set_competition_start_time => restrict_to: [admin, OWNER];
+            set_competition_end_time => restrict_to: [admin, OWNER];
+        }
+    }
+
     struct Competition {
         competition_data: CompetitionData,
         trade_simulator: Global<TradeSimulator>,
@@ -25,26 +42,43 @@ mod competition {
         ///
         /// # Arguments
         ///
+        /// * `owner_role` - The owner of the competition.
         /// * `competition_start` - The start time of the competition.
         /// * `competition_end` - The end time of the competition.
         /// * `trade_simulator_address` - The address of the TradeSimulator component.
         /// * `fusd_resource_address` - The resource address of FUSD tokens.
         /// * `user_token_resource_address` - The resource address of user tokens.
         pub fn instantiate(
+            owner_role: OwnerRole,
             competition_start: Instant,
             competition_end: Instant,
             trade_simulator_address: ComponentAddress,
             fusd_resource_address: ResourceAddress,
             user_token_resource_address: ResourceAddress,
-        ) -> Global<Competition> {
+        ) -> (Global<Competition>, Bucket) {
             let competition_data = CompetitionData {
                 competition_start,
                 competition_end,
             };
 
+            let admin_badge: Bucket = ResourceBuilder::new_fungible(owner_role.clone())
+                .divisibility(DIVISIBILITY_NONE)
+                .metadata(metadata! {
+                    init {
+                        "name" => "Competition Manager", updatable;
+                        "symbol" => "CM", updatable;
+                        "description" => "A badge with the authority to manage the competition.", updatable;
+                        "tags" => ["badge"], updatable;
+                        "info_url" => Url::of("https://fidenaro.com"), updatable;
+                        "icon_url" => Url::of("https://fidenaro.com/images/LogoFidenaro.png"), updatable;
+                    }
+                })
+                .mint_initial_supply(1)
+                .into();
+
             let trade_simulator: Global<TradeSimulator> = trade_simulator_address.into();
 
-            Self {
+            let competition = Self {
                 competition_data,
                 trade_simulator,
                 user_asset_vaults: KeyValueStore::new(),
@@ -52,8 +86,17 @@ mod competition {
                 user_token_resource_address,
             }
             .instantiate()
-            .prepare_to_globalize(OwnerRole::None)
-            .globalize()
+            .prepare_to_globalize(owner_role.clone())
+            .roles(roles!(
+                admin => rule!(
+                    require(
+                        admin_badge.resource_address()
+                    )
+                );
+            ))
+            .globalize();
+
+            (competition, admin_badge)
         }
 
         /// Registers a user for the competition by minting initial FUSD and creating a user asset vault.

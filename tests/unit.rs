@@ -97,7 +97,8 @@ impl UnitTestEnvironment {
         let competition_start = env.get_current_time().add_days(1).unwrap();
         let competition_end = competition_start.add_days(7).unwrap();
 
-        let competition = Competition::instantiate(
+        let (competition, _) = Competition::instantiate(
+            OwnerRole::None,
             competition_start,
             competition_end,
             trade_simulator.try_into().unwrap(),
