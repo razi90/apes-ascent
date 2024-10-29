@@ -3,7 +3,11 @@ use scrypto_test::prelude::*;
 use the_trenches::competition::competition_test::*;
 use the_trenches::oracle::simple_oracle_test::*;
 use the_trenches::trade_simulator::trade_simulator_test::*;
-use the_trenches::trade_vault::trade_vault_test::*;
+
+#[derive(ScryptoSbor, scrypto::NonFungibleData)]
+struct User {
+    name: String,
+}
 
 struct ResourceAddresses {
     bitcoin: ResourceAddress,
@@ -20,11 +24,9 @@ impl ResourceAddresses {
 
 struct UnitTestEnvironment {
     env: TestEnvironment<InMemorySubstateDatabase>,
-    package_address: PackageAddress,
     competition: Competition,
-    competition_address: ComponentAddress,
-    trade_vault: TradeVault,
     resource_addresses: ResourceAddresses,
+    user_token_proof: Proof,
 }
 
 impl UnitTestEnvironment {
@@ -47,6 +49,18 @@ impl UnitTestEnvironment {
             .resource_address(&mut env)
             .map(|address| rule!(require(address)))?;
 
+        // Create a user token and proof
+        let user_token = ResourceBuilder::new_ruid_non_fungible(OwnerRole::None)
+            .mint_initial_supply(
+                [(User {
+                    name: "Trader".into(),
+                })],
+                &mut env,
+            )
+            .unwrap();
+
+        let user_token_proof = user_token.create_proof_of_all(&mut env).unwrap();
+
         // Create resources
         let resource_addresses = ResourceAddresses {
             bitcoin: Self::create_resource(&mut env),
@@ -67,7 +81,7 @@ impl UnitTestEnvironment {
 
         // Submitting some dummy prices to the oracle
         for &resource_address in resource_addresses.as_vec() {
-            oracle.set_price(resource_address, dec!(1), &mut env);
+            oracle.set_price(resource_address, dec!(1), &mut env)?;
         }
 
         // Init the trade simulator
@@ -76,7 +90,7 @@ impl UnitTestEnvironment {
 
         // Add resources to whitelist
         for &resource_address in resource_addresses.as_vec() {
-            trade_simulator.add_new_resource(resource_address, &mut env);
+            trade_simulator.add_new_resource(resource_address, &mut env)?;
         }
 
         // Init a competition
@@ -86,20 +100,18 @@ impl UnitTestEnvironment {
         let competition = Competition::instantiate(
             competition_start,
             competition_end,
+            trade_simulator.try_into().unwrap(),
+            resource_addresses.fusd,
+            user_token.resource_address(&mut env).unwrap(),
             package_address,
             &mut env,
         )?;
 
-        let trade_vault =
-            TradeVault::instantiate(competition.try_into().unwrap(), package_address, &mut env)?;
-
         Ok(Self {
             env,
-            package_address,
             competition,
-            competition_address: competition.try_into().unwrap(),
-            trade_vault,
             resource_addresses,
+            user_token_proof,
         })
     }
 
@@ -121,19 +133,37 @@ impl UnitTestEnvironment {
 }
 
 #[test]
+fn test_vault_can_register() -> Result<(), RuntimeError> {
+    // Arrange
+    let UnitTestEnvironment {
+        ref mut env,
+        mut competition,
+        user_token_proof,
+        ..
+    } = UnitTestEnvironment::new()?;
+
+    // Act
+    let result = competition.register(user_token_proof, env);
+
+    // Assert
+    assert!(result.is_ok());
+    Ok(())
+}
+
+#[test]
 fn test_vault_cannot_register_after_competition_started() -> Result<(), RuntimeError> {
     // Arrange
     let UnitTestEnvironment {
         ref mut env,
-        package_address,
-        competition_address,
+        mut competition,
+        user_token_proof,
         ..
     } = UnitTestEnvironment::new()?;
 
     env.set_current_time(Instant::new(0).add_days(2).unwrap());
 
     // Act
-    let result = TradeVault::instantiate(competition_address, package_address, env);
+    let result = competition.register(user_token_proof, env);
 
     // Assert
     assert!(result.is_err());
@@ -145,17 +175,20 @@ fn test_vault_can_trade_in_running_competition() -> Result<(), RuntimeError> {
     // Arrange
     let UnitTestEnvironment {
         ref mut env,
-        mut trade_vault,
-        competition,
+        mut competition,
         resource_addresses,
+        user_token_proof,
         ..
     } = UnitTestEnvironment::new()?;
+
+    competition.register(user_token_proof.clone(env).unwrap(), env)?;
 
     let competition_start_time = competition.get_competition_start_time(env).unwrap();
     env.set_current_time(competition_start_time.add_days(2).unwrap());
 
     // Act
-    let result = trade_vault.trade(
+    let result = competition.trade(
+        user_token_proof,
         resource_addresses.fusd,
         resource_addresses.bitcoin,
         Decimal::one(),
@@ -173,13 +206,17 @@ fn test_vault_cannot_trade_before_competition_starts() -> Result<(), RuntimeErro
     // Arrange
     let UnitTestEnvironment {
         ref mut env,
-        mut trade_vault,
+        mut competition,
+        user_token_proof,
         resource_addresses,
         ..
     } = UnitTestEnvironment::new()?;
 
+    competition.register(user_token_proof.clone(env).unwrap(), env)?;
+
     // Act
-    let result = trade_vault.trade(
+    let result = competition.trade(
+        user_token_proof,
         resource_addresses.fusd,
         resource_addresses.bitcoin,
         Decimal::one(),
@@ -197,18 +234,21 @@ fn test_vault_cannot_trade_after_competition_ends() -> Result<(), RuntimeError> 
     // Arrange
     let UnitTestEnvironment {
         ref mut env,
-        mut trade_vault,
-        competition,
+        mut competition,
+        user_token_proof,
         resource_addresses,
         ..
     } = UnitTestEnvironment::new()?;
+
+    competition.register(user_token_proof.clone(env).unwrap(), env)?;
 
     let competition_end_time = competition.get_competition_end_time(env).unwrap();
 
     env.set_current_time(competition_end_time.add_days(10).unwrap());
 
     // Act
-    let result = trade_vault.trade(
+    let result = competition.trade(
+        user_token_proof,
         resource_addresses.fusd,
         resource_addresses.bitcoin,
         Decimal::one(),

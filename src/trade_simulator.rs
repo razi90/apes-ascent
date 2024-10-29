@@ -27,7 +27,7 @@ mod trade_simulator {
             self.allowed_resources.insert(address, ());
         }
 
-        pub fn swap(&mut self, from_token: Bucket, to_token_address: ResourceAddress) -> Bucket {
+        pub fn trade(&mut self, from_token: Bucket, to_token_address: ResourceAddress) -> Bucket {
             // Assert that the asset to trade is whitelisted
 
             // calculate the amount that needs to be minted

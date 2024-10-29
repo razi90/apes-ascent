@@ -1,55 +1,43 @@
-use crate::competition::competition::Competition;
 use scrypto::prelude::*;
 
 #[blueprint]
 mod trade_vault {
     struct TradeVault {
-        competition: Global<Competition>,
+        assets: KeyValueStore<ResourceAddress, Vault>,
     }
 
     impl TradeVault {
-        pub fn instantiate(competition: ComponentAddress) -> Global<TradeVault> {
-            let (address_reservation, component_address) =
-                Runtime::allocate_component_address(TradeVault::blueprint_id());
+        pub fn instantiate(fusd: Bucket) -> Owned<TradeVault> {
+            // Add FUSD to the assets
+            let assets = KeyValueStore::new();
+            assets.insert(fusd.resource_address(), Vault::with_bucket(fusd));
 
-            // let competition: Global<AnyComponent> = competition.into();
-            let competition: Global<Competition> = competition.into();
-
-            // competition.call::<(ComponentAddress,), ()>("register", &(component_address,));
-            competition.register(component_address);
-
-            Self { competition }
-                .instantiate()
-                .prepare_to_globalize(OwnerRole::None)
-                .with_address(address_reservation)
-                .globalize()
+            Self { assets }.instantiate()
         }
 
-        pub fn trade(
+        pub fn withdraw_asset(
             &mut self,
-            from_address: ResourceAddress,
-            to_address: ResourceAddress,
+            resource_address: ResourceAddress,
             amount: Decimal,
-        ) {
-            assert!(
-                Clock::current_time_is_at_or_after(
-                    self.competition.get_competition_start_time(),
-                    TimePrecisionV2::Second
-                ),
-                "Competition has not started, yet!"
-            );
+        ) -> Bucket {
+            let mut vault = self.assets.get_mut(&resource_address).unwrap();
+            vault.take(amount)
+        }
 
-            assert!(
-                Clock::current_time_is_strictly_before(
-                    self.competition.get_competition_end_time(),
-                    TimePrecisionV2::Second
-                ),
-                "Competition has already finished."
-            );
-            info!(
-                "I want to trade {:?} of {:?} into {:?}",
-                amount, from_address, to_address
-            );
+        pub fn deposit_asset(&mut self, asset: Bucket) {
+            let entry = self.assets.get_mut(&asset.resource_address());
+            if let Some(mut vault) = entry {
+                info!(
+                    "Add asset to existing vault for {:?}",
+                    asset.resource_address()
+                );
+                vault.put(asset)
+            } else {
+                info!("Create new asset vault for {:?}", asset.resource_address());
+                drop(entry);
+                self.assets
+                    .insert(asset.resource_address(), Vault::with_bucket(asset));
+            }
         }
     }
 }
