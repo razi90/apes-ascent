@@ -15,7 +15,7 @@ mod competition {
     struct Competition {
         competition_data: CompetitionData,
         trade_simulator: Global<TradeSimulator>,
-        trading_vaults: KeyValueStore<String, Owned<UserAssetVault>>,
+        user_asset_vaults: KeyValueStore<String, Owned<UserAssetVault>>,
         fusd_resource_address: ResourceAddress,
         user_token_resource_address: ResourceAddress,
     }
@@ -47,7 +47,7 @@ mod competition {
             Self {
                 competition_data,
                 trade_simulator,
-                trading_vaults: KeyValueStore::new(),
+                user_asset_vaults: KeyValueStore::new(),
                 fusd_resource_address,
                 user_token_resource_address,
             }
@@ -56,7 +56,7 @@ mod competition {
             .globalize()
         }
 
-        /// Registers a user for the competition by minting initial FUSD and creating a trading vault.
+        /// Registers a user for the competition by minting initial FUSD and creating a user asset vault.
         ///
         /// # Arguments
         ///
@@ -69,9 +69,9 @@ mod competition {
             let fusd_bucket = ResourceManager::from_address(self.fusd_resource_address)
                 .mint(Decimal::from(10000));
 
-            let trade_vault = UserAssetVault::instantiate(fusd_bucket);
+            let user_asset_vault = UserAssetVault::instantiate(fusd_bucket);
 
-            self.trading_vaults.insert(user_id, trade_vault);
+            self.user_asset_vaults.insert(user_id, user_asset_vault);
         }
 
         /// Allows a user to trade assets during the competition.
@@ -98,17 +98,17 @@ mod competition {
             let user_id = self.extract_user_id(user_token_proof);
 
             // Withdraw asset from the user vault
-            let trading_vault = self
-                .trading_vaults
+            let user_asset_vault = self
+                .user_asset_vaults
                 .get(&user_id)
                 .expect("User vault not found");
-            let from_token_bucket = trading_vault.withdraw_asset(from_address, amount);
+            let from_token_bucket = user_asset_vault.withdraw_asset(from_address, amount);
 
             // Swap asset
             let to_token_bucket = self.trade_simulator.trade(from_token_bucket, to_address);
 
             // Deposit new assets back to the user vault
-            trading_vault.deposit_asset(to_token_bucket);
+            user_asset_vault.deposit_asset(to_token_bucket);
         }
 
         /// Asserts that the competition has not started yet.
