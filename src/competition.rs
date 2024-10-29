@@ -21,6 +21,15 @@ mod competition {
     }
 
     impl Competition {
+        /// Instantiates a new Competition component.
+        ///
+        /// # Arguments
+        ///
+        /// * `competition_start` - The start time of the competition.
+        /// * `competition_end` - The end time of the competition.
+        /// * `trade_simulator_address` - The address of the TradeSimulator component.
+        /// * `fusd_resource_address` - The resource address of FUSD tokens.
+        /// * `user_token_resource_address` - The resource address of user tokens.
         pub fn instantiate(
             competition_start: Instant,
             competition_end: Instant,
@@ -47,6 +56,11 @@ mod competition {
             .globalize()
         }
 
+        /// Registers a user for the competition by minting initial FUSD and creating a trading vault.
+        ///
+        /// # Arguments
+        ///
+        /// * `user_token_proof` - A proof of the user's token to verify identity.
         pub fn register(&mut self, user_token_proof: Proof) {
             self.assert_competition_not_started();
             let user_id = self.extract_user_id(user_token_proof);
@@ -60,6 +74,14 @@ mod competition {
             self.trading_vaults.insert(user_id, trade_vault);
         }
 
+        /// Allows a user to trade assets during the competition.
+        ///
+        /// # Arguments
+        ///
+        /// * `user_token_proof` - A proof of the user's token to verify identity.
+        /// * `from_address` - The resource address of the asset to be traded from.
+        /// * `to_address` - The resource address of the asset to be traded to.
+        /// * `amount` - The amount of the asset to be traded.
         pub fn trade(
             &mut self,
             user_token_proof: Proof,
@@ -89,6 +111,7 @@ mod competition {
             trading_vault.deposit_asset(to_token_bucket);
         }
 
+        /// Asserts that the competition has not started yet.
         fn assert_competition_not_started(&self) {
             info!(
                 "Current time: {:?}",
@@ -107,6 +130,7 @@ mod competition {
             );
         }
 
+        /// Asserts that the competition is currently running.
         fn assert_competition_running(&self) {
             assert!(
                 Clock::current_time_is_at_or_after(
@@ -124,6 +148,15 @@ mod competition {
             );
         }
 
+        /// Extracts the user ID from the provided proof.
+        ///
+        /// # Arguments
+        ///
+        /// * `user_token_proof` - A proof of the user's token to verify identity.
+        ///
+        /// # Returns
+        ///
+        /// A string representing the user ID.
         fn extract_user_id(&self, user_token_proof: Proof) -> String {
             let checked_proof = user_token_proof.check(self.user_token_resource_address);
             checked_proof
@@ -132,15 +165,38 @@ mod competition {
                 .to_string()
         }
 
+        /// Sets the competition start time.
+        ///
+        /// # Arguments
+        ///
+        /// * `time` - The new start time of the competition.
         pub fn set_competition_start_time(&mut self, time: Instant) {
             self.competition_data.competition_start = time;
         }
+
+        /// Sets the competition end time.
+        ///
+        /// # Arguments
+        ///
+        /// * `time` - The new end time of the competition.
         pub fn set_competition_end_time(&mut self, time: Instant) {
             self.competition_data.competition_end = time;
         }
+
+        /// Gets the competition start time.
+        ///
+        /// # Returns
+        ///
+        /// The start time of the competition.
         pub fn get_competition_start_time(&self) -> Instant {
             self.competition_data.competition_start
         }
+
+        /// Gets the competition end time.
+        ///
+        /// # Returns
+        ///
+        /// The end time of the competition.
         pub fn get_competition_end_time(&self) -> Instant {
             self.competition_data.competition_end
         }
