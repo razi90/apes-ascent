@@ -61,7 +61,7 @@ mod competition {
                     self.competition_data.competition_start,
                     TimePrecisionV2::Second,
                 ),
-                "Competition has already started. Registration in not possible anymore!"
+                "Competition has already started. Registration is not possible anymore!"
             );
 
             // Get user ID
@@ -92,7 +92,7 @@ mod competition {
                     self.get_competition_start_time(),
                     TimePrecisionV2::Second
                 ),
-                "Competition has not started, yet!"
+                "Competition has not started yet!"
             );
 
             assert!(
@@ -115,12 +115,15 @@ mod competition {
                 .to_string();
 
             // Withdraw asset from the user vault
-            let trading_vault = self.trading_vaults.get(&user_id).unwrap();
+            let trading_vault = self
+                .trading_vaults
+                .get(&user_id)
+                .expect("User vault not found");
             let from_token_bucket = trading_vault.withdraw_asset(from_address, amount);
 
             // Swap asset
             let to_token_bucket = self
-                .get_trade_sumulator()
+                .get_trade_simulator()
                 .trade(from_token_bucket, to_address);
 
             // Deposit new assets back to the user vault
@@ -139,7 +142,7 @@ mod competition {
         pub fn get_competition_end_time(&self) -> Instant {
             self.competition_data.competition_end
         }
-        pub fn get_trade_sumulator(&self) -> Global<TradeSimulator> {
+        pub fn get_trade_simulator(&self) -> Global<TradeSimulator> {
             self.trade_simulator
         }
         pub fn get_user_token_resource_address(&self) -> ResourceAddress {
