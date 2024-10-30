@@ -1,0 +1,16 @@
+CALL_FUNCTION
+    Address("package_tdx_2_1p5ycqjsz7ttxujnes03wd9n9835sawvw7mkeg39r06drgedh0m028k")
+    "TradeSimulator"
+    "instantiate"
+    Enum<2u8>(
+        Enum<0u8>(
+            Enum<0u8>(
+                Enum<1u8>(
+                    Address("resource_tdx_2_1tkevdjhgnueddndm45mxfqaldfs7k8uwecxq2cx0k5tw2jf7nmly0q")
+                )
+            )
+        )
+    )
+    Enum<0u8>()
+    Address("component_tdx_2_1crd832t0s8zru3r5sff8lpe00qwxt95uumr25pvg22gwt2a2x9387w")
+;
