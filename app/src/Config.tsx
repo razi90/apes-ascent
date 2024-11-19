@@ -1,0 +1,3 @@
+export const USER_NFT_RESOURCE_ADDRESS = "resource_tdx_2_1ngtlf76m2zyjqegwgscpn7skkzfxe7pu66hnne4lmur7fd7xlvn0ty"
+export const USER_FACTORY_COMPONENT_ADDRESS = "component_tdx_2_1cqwugs2zf5lgjt5n6y85u2menzucrpsq78tpxy7ahdundre52ntll9"
+export const PRICE_STORE = "internal_keyvaluestore_tdx_2_1kz8e9pw83zlpzut3mtr5k6qpmuf3u4ksjunhu9z007vesvfsytarjy";

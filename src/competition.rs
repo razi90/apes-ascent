@@ -69,8 +69,8 @@ mod competition {
                         "symbol" => "CM", updatable;
                         "description" => "A badge with the authority to manage the competition.", updatable;
                         "tags" => ["badge"], updatable;
-                        "info_url" => Url::of("https://fidenaro.com"), updatable;
-                        "icon_url" => Url::of("https://fidenaro.com/images/LogoFidenaro.png"), updatable;
+                        "info_url" => Url::of("https://colosseum.com"), updatable;
+                        "icon_url" => Url::of("https://colosseum.com/images/LogoColosseum.png"), updatable;
                     }
                 })
                 .mint_initial_supply(1)
