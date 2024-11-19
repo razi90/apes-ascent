@@ -13,9 +13,15 @@ CALL_FUNCTION
             )
         )
     )
-    I64(0)
-    I64(1)
+    0i64
+    1i64
     Address("component_tdx_2_1cqt79hjmhu5c95847te6ut93cw7t5nfy2yw090g6kzar7v45y45g92")
     Address("resource_tdx_2_1tkr36auhr7jpn07yvktk3u6s5stcm9vrdgf0xhdym9gv096v4q7thf")
     Address("resource_tdx_2_1ngtlf76m2zyjqegwgscpn7skkzfxe7pu66hnne4lmur7fd7xlvn0ty")
+;
+CALL_METHOD
+    Address("account_tdx_2_12ygy30qjq3w3gsrmwvm7y4e9y46kn9vyphyd54rd9ljqe63v9k05qe")
+    "try_deposit_batch_or_abort"
+    Expression("ENTIRE_WORKTOP")
+    Enum<0u8>()
 ;

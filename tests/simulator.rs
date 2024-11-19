@@ -1,5 +1,13 @@
 use scrypto_test::prelude::*;
 
+use crate::simulator_test_environment::SimulatorTestEnvironment;
+
+#[test]
+fn test_env_setup() {
+    let mut env = SimulatorTestEnvironment::new();
+    env.ledger_simulator;
+}
+
 #[test]
 fn test_instatiate_competition_and_register() {
     // Setup the environment
