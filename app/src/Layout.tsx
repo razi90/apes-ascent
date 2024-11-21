@@ -9,6 +9,7 @@ import { useBreakpointValue } from '@chakra-ui/react';
 import UnknownPage from './containers/UnknownPage/UnknownPage';
 import Profile from './containers/Profile/Profile';
 import { fetchLeftNavigationStatus } from './libs/navigation/LeftNavigationBarDataService';
+import Competition from './containers/Competition/Competition';
 
 export enum LayoutMode {
     Mobile,
@@ -30,7 +31,7 @@ const Layout: React.FC = () => {
     }, [queryClient]);
 
     const routes = [
-        { path: "/", element: <UnknownPage layoutMode={layoutMode} /> },
+        { path: "/", element: <Competition layoutMode={layoutMode} /> },
         { path: "/profile/:id", element: <Profile layoutMode={layoutMode} /> },
         { path: "*", element: <UnknownPage layoutMode={layoutMode} /> },
     ];

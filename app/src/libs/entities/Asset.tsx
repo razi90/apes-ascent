@@ -34,10 +34,10 @@ export const Ethereum: Asset = {
 };
 
 export const USDollar: Asset = {
-    name: "xUSDC",
-    ticker: "xUSDC",
+    name: "FakeUSD",
+    ticker: "FUSD",
     symbol: <ColosseumImageIcon imageSrc="/images/LogoXUSDC.png" altText="xUSDC Logo" />,
-    address: "resource_tdx_2_1tkr36auhr7jpn07yvktk3u6s5stcm9vrdgf0xhdym9gv096v4q7thf",
+    address: "internal_vault_tdx_2_1tqp8t4nytv7yww75wu9nq0vastxmt02fn9kcqvrg7np5rh8m7etft6",
     price_key: "5c2102805d871d77971fa419bfc4659768f350a4178d95836a12f35da4d950c7974c805da66318c6318c61f5a61b4c6318c6318cf794aa8d295f14e6318c6318c6",
 };
 
