@@ -8,6 +8,7 @@ import {
     VStack,
     HStack,
     Image,
+    Divider,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../Layout';
@@ -156,6 +157,17 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, rank }) =>
                     <Text fontSize="sm" color="gray.500">
                         Total Assets: {totalAssets}
                     </Text>
+
+
+                    <Divider my={4} />
+
+                    <Text fontWeight="bold">Assets:</Text>
+                    {Array.from(vault.assets.entries()).map(([asset, amount]) => (
+                        <HStack key={asset} justifyContent="space-between" w="100%">
+                            <Text>{asset}</Text>
+                            <Text>{amount}</Text>
+                        </HStack>
+                    ))}
                 </VStack>
             </HStack>
         </Box>
