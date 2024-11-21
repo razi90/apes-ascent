@@ -15,6 +15,9 @@ CREATE_PROOF_FROM_AUTH_ZONE_OF_NON_FUNGIBLES
 ;
 CALL_METHOD
     Address("component_tdx_2_1cp7c5ak5t7p0snzuyl33sxt72dzhd3wq37m4989vj8w9h2rt8ync8a")
-    "register"
+    "trade"
     Proof("proof1")
+    Address("resource_tdx_2_1tk4slpjr8dndf9kfnz0zq8vxwtzs80tuzp6xwc33vmajac4a99378w")
+    Address("resource_tdx_2_1t503ekk0j6eywphmuav869gr6ah6dac4jl9qv5hqk3732gupdvp3u3")
+    Decimal("100")
 ;

@@ -1,4 +1,4 @@
-import { fetchMockUserAssetVaults } from './VaultDataService';
+import { fetchMockUserAssetVaults, fetchUserAssetVaults } from './VaultDataService';
 import { UserAssetVault } from '../entities/UserAssetVault';
 import { Competition } from '../entities/Competition';
 import { gatewayApi } from '../radix-dapp-toolkit/rdt';
@@ -35,7 +35,7 @@ export const fetchCompetitionData = async (): Promise<Competition> => {
     }
 
     // Fetch user asset vaults
-    const userVaults: UserAssetVault[] = await fetchMockUserAssetVaults();
+    const userVaults: UserAssetVault[] = await fetchUserAssetVaults();
 
     // Create and return the Competition object
     return {

@@ -21,7 +21,7 @@ export const Bitcoin: Asset = {
     name: "Radix Wrapped Bitcoin",
     ticker: "xwBTC",
     symbol: <ColosseumIcon icon={FaBitcoin} color="orange.400" />,
-    address: "resource_tdx_2_1t4vmx0vezqqrcqhzlt0sxcphw63n73fsxve3nvrn8y5c5dyxk3fxuf",
+    address: "resource_tdx_2_1t503ekk0j6eywphmuav869gr6ah6dac4jl9qv5hqk3732gupdvp3u3",
     price_key: "5c2102805d59b33d9910003c02e2fadf03603776a33f4530333319b07339298a3486805da66318c6318c61f5a61b4c6318c6318cf794aa8d295f14e6318c6318c6",
 };
 
@@ -37,7 +37,7 @@ export const USDollar: Asset = {
     name: "FakeUSD",
     ticker: "FUSD",
     symbol: <ColosseumImageIcon imageSrc="/images/LogoXUSDC.png" altText="xUSDC Logo" />,
-    address: "internal_vault_tdx_2_1tqp8t4nytv7yww75wu9nq0vastxmt02fn9kcqvrg7np5rh8m7etft6",
+    address: "resource_tdx_2_1tk4slpjr8dndf9kfnz0zq8vxwtzs80tuzp6xwc33vmajac4a99378w",
     price_key: "5c2102805d871d77971fa419bfc4659768f350a4178d95836a12f35da4d950c7974c805da66318c6318c61f5a61b4c6318c6318cf794aa8d295f14e6318c6318c6",
 };
 
