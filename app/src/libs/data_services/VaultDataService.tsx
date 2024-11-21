@@ -7,33 +7,33 @@ import { UserAssetVault } from "../entities/UserAssetVault";
 import { USER_ASSET_VAULT_STORE } from "../../Config";
 import { gatewayApi } from "../radix-dapp-toolkit/rdt";
 
-// export const fetchUserAssetVaults = async (): Promise<UserAssetVault[]> => {
-//     try {
-//         // Fetch the keys for the user asset vault store
-//         const keysResponse = await fetchKeys(USER_ASSET_VAULT_STORE);
-
-//         // Prepare the data request using the fetched keys
-//         const stateKeyValueStoreDataRequest = prepareDataRequest(
-//             USER_ASSET_VAULT_STORE,
-//             keysResponse
-//         );
-
-//         // Fetch user asset vault data from the ledger
-//         const userAssetVaultLedgerData = await fetchLedgerData(stateKeyValueStoreDataRequest);
-
-//         // Process each ledger entry into a UserAssetVault object
-//         const userAssetVaults = await processLedgerEntries(userAssetVaultLedgerData.entries);
-
-//         console.log(userAssetVaults);
-
-//         return userAssetVaults;
-//     } catch (error) {
-//         console.error("Error fetching user asset vaults:", error);
-//         throw error;
-//     }
-// };
-
 export const fetchUserAssetVaults = async (): Promise<UserAssetVault[]> => {
+    try {
+        // Fetch the keys for the user asset vault store
+        const keysResponse = await fetchKeys(USER_ASSET_VAULT_STORE);
+
+        // Prepare the data request using the fetched keys
+        const stateKeyValueStoreDataRequest = prepareDataRequest(
+            USER_ASSET_VAULT_STORE,
+            keysResponse
+        );
+
+        // Fetch user asset vault data from the ledger
+        const userAssetVaultLedgerData = await fetchLedgerData(stateKeyValueStoreDataRequest);
+
+        // Process each ledger entry into a UserAssetVault object
+        const userAssetVaults = await processLedgerEntries(userAssetVaultLedgerData.entries);
+
+        console.log(userAssetVaults);
+
+        return userAssetVaults;
+    } catch (error) {
+        console.error("Error fetching user asset vaults:", error);
+        throw error;
+    }
+};
+
+export const fetchMockUserAssetVaults = async (): Promise<UserAssetVault[]> => {
     // Mock a single vault
     const mockVault: UserAssetVault = {
         userId: "#0#",

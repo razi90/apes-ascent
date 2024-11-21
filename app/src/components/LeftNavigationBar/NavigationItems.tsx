@@ -1,6 +1,8 @@
 import React from 'react';
-import { VStack, Box, Text, Button, Icon, Image } from '@chakra-ui/react';
-import { FaMedal, FaBookOpen, FaChartPie, FaChartBar, FaUserCircle, FaTwitter, FaTelegram } from "react-icons/fa";
+import { VStack, Box, Button, Icon } from '@chakra-ui/react';
+import { FaMedal, FaUserCircle, FaFistRaised } from "react-icons/fa";
+import { GiMonkey, GiBorderedShield } from "react-icons/gi";
+
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
 
 import {
@@ -60,16 +62,16 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = 
 
                 <Box sx={leftNavigationDividerBoxStyle(isMinimized)} />
 
-                <LeftNavigationButton link="/" title="Explore" icon={FaChartBar} navIsMinimized={isMinimized} />
-                <LeftNavigationButton link="/portfolio" title="Portfolio" icon={FaChartPie} navIsMinimized={isMinimized} />
-                <LeftNavigationButton link="/walloffame" title="Wall of Fame" icon={FaMedal} navIsMinimized={isMinimized} />
+                <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={isMinimized} />
+                <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={isMinimized} />
+                <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={isMinimized} />
 
-                <Box sx={leftNavigationDividerBoxStyle(isMinimized)} />
-                <LeftNavigationButton link="https://docs.colosseum.com/" title="Documentation" icon={FaBookOpen} navIsMinimized={isMinimized} isExternal={true} />
-                <LeftNavigationButton link="https://x.com/colosseum/" title="X / Twitter" icon={FaTwitter} navIsMinimized={isMinimized} isExternal={true} />
-                <LeftNavigationButton link="https://t.me/Colosseum" title="Telegram" icon={FaTelegram} navIsMinimized={isMinimized} isExternal={true} />
+                {/* <Box sx={leftNavigationDividerBoxStyle(isMinimized)} /> */}
+                {/* <LeftNavigationButton link="https://docs.colosseum.com/" title="Documentation" icon={FaBookOpen} navIsMinimized={isMinimized} isExternal={true} /> */}
+                {/* <LeftNavigationButton link="https://x.com/colosseum/" title="X / Twitter" icon={FaTwitter} navIsMinimized={isMinimized} isExternal={true} /> */}
+                {/* <LeftNavigationButton link="https://t.me/Colosseum" title="Telegram" icon={FaTelegram} navIsMinimized={isMinimized} isExternal={true} /> */}
 
-                {!isMinimized && (
+                {/* {!isMinimized && (
                     <Box>
                         <Box sx={leftNavigationDividerBoxStyle(isMinimized)} />
                         <Box padding="4" textAlign="center" display="flex" justifyContent="center" >
@@ -80,7 +82,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = 
                             />
                         </Box>
                     </Box>
-                )}
+                )} */}
 
                 {toggleMinimize && (
                     <Box>

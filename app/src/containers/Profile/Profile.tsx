@@ -95,12 +95,6 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
                                         </Box>
                                     </Flex>
                                 </PrimerCard>
-                                <PrimerCard cardTitle="Stats" cardWidth="50%" cardHeight="auto" isLoading={isLoading}>
-                                    <Box p="4">
-                                        <VStack mt={8}>
-                                        </VStack>
-                                    </Box>
-                                </PrimerCard>
                             </Flex>
                         ) : (
                             <VStack spacing={4} p={4}>
@@ -113,12 +107,6 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
                                             </Flex>
                                         )}
                                     </VStack>
-                                </PrimerCard>
-                                <PrimerCard cardTitle="Stats" cardWidth="100%" cardHeight="auto" isLoading={isLoading}>
-                                    <Box p="4">
-                                        <VStack>
-                                        </VStack>
-                                    </Box>
                                 </PrimerCard>
                             </VStack>
                         )}

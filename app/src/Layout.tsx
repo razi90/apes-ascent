@@ -10,6 +10,7 @@ import UnknownPage from './containers/UnknownPage/UnknownPage';
 import Profile from './containers/Profile/Profile';
 import { fetchLeftNavigationStatus } from './libs/navigation/LeftNavigationBarDataService';
 import Competition from './containers/Competition/Competition';
+import FrontPage from './containers/FrontPage/FrontPage';
 
 export enum LayoutMode {
     Mobile,
@@ -31,7 +32,8 @@ const Layout: React.FC = () => {
     }, [queryClient]);
 
     const routes = [
-        { path: "/", element: <Competition layoutMode={layoutMode} /> },
+        { path: "/", element: <FrontPage layoutMode={layoutMode} /> },
+        { path: "/free_for_all", element: <Competition layoutMode={layoutMode} /> },
         { path: "/profile/:id", element: <Profile layoutMode={layoutMode} /> },
         { path: "*", element: <UnknownPage layoutMode={layoutMode} /> },
     ];
