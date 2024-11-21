@@ -7,30 +7,52 @@ import { UserAssetVault } from "../entities/UserAssetVault";
 import { USER_ASSET_VAULT_STORE } from "../../Config";
 import { gatewayApi } from "../radix-dapp-toolkit/rdt";
 
+// export const fetchUserAssetVaults = async (): Promise<UserAssetVault[]> => {
+//     try {
+//         // Fetch the keys for the user asset vault store
+//         const keysResponse = await fetchKeys(USER_ASSET_VAULT_STORE);
+
+//         // Prepare the data request using the fetched keys
+//         const stateKeyValueStoreDataRequest = prepareDataRequest(
+//             USER_ASSET_VAULT_STORE,
+//             keysResponse
+//         );
+
+//         // Fetch user asset vault data from the ledger
+//         const userAssetVaultLedgerData = await fetchLedgerData(stateKeyValueStoreDataRequest);
+
+//         // Process each ledger entry into a UserAssetVault object
+//         const userAssetVaults = await processLedgerEntries(userAssetVaultLedgerData.entries);
+
+//         console.log(userAssetVaults);
+
+//         return userAssetVaults;
+//     } catch (error) {
+//         console.error("Error fetching user asset vaults:", error);
+//         throw error;
+//     }
+// };
+
 export const fetchUserAssetVaults = async (): Promise<UserAssetVault[]> => {
-    try {
-        // Fetch the keys for the user asset vault store
-        const keysResponse = await fetchKeys(USER_ASSET_VAULT_STORE);
+    // Mock a single vault
+    const mockVault: UserAssetVault = {
+        userId: "#0#",
+        assets: new Map<string, number>([
+            ["resource_address_1", 100],
+            ["resource_address_2", 50],
+        ]),
+    };
 
-        // Prepare the data request using the fetched keys
-        const stateKeyValueStoreDataRequest = prepareDataRequest(
-            USER_ASSET_VAULT_STORE,
-            keysResponse
-        );
+    // Create 10 vaults by modifying the mockVault
+    const vaults: UserAssetVault[] = Array.from({ length: 10 }, (_, index) => ({
+        userId: `#${index}#`,
+        assets: new Map<string, number>([
+            [`resource_address_1`, 100 + index * 10],
+            [`resource_address_2`, 50 + index * 5],
+        ]),
+    }));
 
-        // Fetch user asset vault data from the ledger
-        const userAssetVaultLedgerData = await fetchLedgerData(stateKeyValueStoreDataRequest);
-
-        // Process each ledger entry into a UserAssetVault object
-        const userAssetVaults = await processLedgerEntries(userAssetVaultLedgerData.entries);
-
-        console.log(userAssetVaults);
-
-        return userAssetVaults;
-    } catch (error) {
-        console.error("Error fetching user asset vaults:", error);
-        throw error;
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(vaults), 1000)); // Simulate async fetch
 };
 
 const fetchKeys = async (storeAddress: string) => {
