@@ -1,0 +1,20 @@
+CALL_METHOD
+    Address("account_tdx_2_129zwtmntp6fcluyphfvhm8r4dm580c5tfrpqvneh4yc8xzlth4n7dc")
+    "create_proof_of_non_fungibles"
+    Address("resource_tdx_2_1ngtlf76m2zyjqegwgscpn7skkzfxe7pu66hnne4lmur7fd7xlvn0ty")
+    Array<NonFungibleLocalId>(
+        NonFungibleLocalId("#0#")
+    )
+;
+CREATE_PROOF_FROM_AUTH_ZONE_OF_NON_FUNGIBLES
+    Address("resource_tdx_2_1ngtlf76m2zyjqegwgscpn7skkzfxe7pu66hnne4lmur7fd7xlvn0ty")
+    Array<NonFungibleLocalId>(
+        NonFungibleLocalId("#0#")
+    )
+    Proof("proof1")
+;
+CALL_METHOD
+    Address("component_tdx_2_1crmdlaxmqt9uvezdp3k7eqp57ax2qghj5mxw5gulgz23d99zzguzhp")
+    "register"
+    Proof("proof1")
+;
