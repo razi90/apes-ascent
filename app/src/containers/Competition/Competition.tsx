@@ -7,7 +7,6 @@ import {
     Spinner,
     VStack,
     HStack,
-    Divider,
     Image,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
@@ -16,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUserInfoById } from '../../libs/data_services/UserDataService';
 import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 import { User } from '../../libs/entities/User';
-import { fetchMockCompetitionData } from '../../libs/data_services/CompetitionDataService';
+import { fetchCompetitionData } from '../../libs/data_services/CompetitionDataService';
 import { Competition as CompetitionEntity } from '../../libs/entities/Competition';
 
 
@@ -28,7 +27,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     // Fetch competition data
     const { data: competitionData, isLoading, isError } = useQuery<CompetitionEntity>({
         queryKey: ['competition_data'],
-        queryFn: fetchMockCompetitionData,
+        queryFn: fetchCompetitionData,
     });
 
     if (isLoading) {
@@ -88,10 +87,10 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                             Competition Dates:
                         </Text>
                         <Text fontSize="md" color="gray.500">
-                            {`Start: ${new Date(competitionData.start_date).toLocaleDateString()}`}
+                            {`Start: ${competitionData.start_date}`}
                         </Text>
                         <Text fontSize="md" color="gray.500">
-                            {`End: ${new Date(competitionData.end_date).toLocaleDateString()}`}
+                            {`End: ${competitionData.end_date}`}
                         </Text>
                     </Box>
 
@@ -159,18 +158,6 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, rank }) =>
                     </Text>
                 </VStack>
             </HStack>
-
-            <Divider my={4} />
-
-            <VStack align="start" spacing={2}>
-                <Text fontWeight="bold">Assets:</Text>
-                {Array.from(vault.assets.entries()).map(([asset, amount]) => (
-                    <HStack key={asset} justifyContent="space-between" w="100%">
-                        <Text>{asset}</Text>
-                        <Text>{amount}</Text>
-                    </HStack>
-                ))}
-            </VStack>
         </Box>
     );
 };
