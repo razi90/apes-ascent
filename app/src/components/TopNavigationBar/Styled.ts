@@ -5,7 +5,7 @@ export const topNavigationBoxStyle = (bgColor: string, boxShadow: string) => ({
     position: "fixed",
     zIndex: "10",
     w: "100%",
-    px: "4",
+    px: "2",
     boxShadow: boxShadow,
 });
 

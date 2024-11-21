@@ -8,7 +8,7 @@ export const rdt = RadixDappToolkit({
     dAppDefinitionAddress:
         'account_tdx_2_12ygy30qjq3w3gsrmwvm7y4e9y46kn9vyphyd54rd9ljqe63v9k05qe',
     networkId: RadixNetwork.Stokenet,
-    applicationName: 'Colosseum',
+    applicationName: "Ape's Ascent",
     applicationVersion: '0.1.0',
 });
 

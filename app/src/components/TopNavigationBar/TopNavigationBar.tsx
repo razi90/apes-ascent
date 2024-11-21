@@ -25,7 +25,6 @@ import {
     topNavigationMainFlexStyle,
     topNavigationLogoStyle,
 } from "./Styled";
-import FeedbackButton from "../Button/FeedbackButton/FeedbackButton";
 
 import { useState, useEffect } from 'react';
 import Joyride, { Step } from 'react-joyride';
@@ -81,23 +80,30 @@ export default function TopNavigationBar() {
                                 mr={2}
                             />
                         )}
-                        <Link href={"/"}>
-                            <Image
-                                align={"center"}
-                                sx={topNavigationLogoStyle}
-                                src="/images/LogoColosseum.png"
-                                alt="Colosseum Logo"
-                            />
-                        </Link>
-                        {!isMobile && <Text fontSize='2xl'>Colosseum</Text>}
+                        <Flex alignItems="center" gap={6}>
+                            <Link href={"/"}>
+                                <Image
+                                    align={"center"}
+                                    sx={topNavigationLogoStyle}
+                                    src="/images/logo3.webp"
+                                    alt="Colosseum Logo"
+                                />
+                            </Link>
+                            {!isMobile && (
+                                <Text fontSize="2xl" fontWeight="bold">
+                                    Ape's Ascent
+                                </Text>
+                            )}
+                        </Flex>
+
                         <Spacer />
 
-                        {!isMobile && <FeedbackButton />}
                         <ColorModeToggle />
                         <WalletButton />
                     </Flex>
                 </Center>
             </Box>
+
             <Box sx={topNavigationHiddenBoxStyle} />
 
             <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
