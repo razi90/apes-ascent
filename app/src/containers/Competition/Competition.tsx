@@ -9,6 +9,7 @@ import {
     HStack,
     Image,
     Divider,
+    Spacer,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../Layout';
@@ -18,6 +19,8 @@ import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 import { User } from '../../libs/entities/User';
 import { fetchCompetitionData } from '../../libs/data_services/CompetitionDataService';
 import { Competition as CompetitionEntity } from '../../libs/entities/Competition';
+import { fetchPriceListMap } from '../../libs/data_services/PriceDataService';
+import { assetMap } from '../../libs/entities/Asset';
 
 
 interface CompetitionProps {
@@ -31,20 +34,26 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
         queryFn: fetchCompetitionData,
     });
 
-    if (isLoading) {
+    // Fetch price list
+    const { data: priceList, isLoading: priceLoading, isError: priceError } = useQuery<Record<string, number>>({
+        queryKey: ['price_list'],
+        queryFn: fetchPriceListMap,
+    });
+
+    if (isLoading || priceLoading) {
         return (
             <Center>
                 <Spinner size="xl" />
-                <Text ml={4} fontSize="xl">Loading competition data...</Text>
+                <Text ml={4} fontSize="xl">Loading competition or price data...</Text>
             </Center>
         );
     }
 
-    if (isError) {
+    if (isError || priceError || !priceList) {
         return (
             <Center>
                 <Text fontSize="2xl" color="red.500">
-                    Failed to load competition data. Please try again later.
+                    Failed to load competition or price data. Please try again later.
                 </Text>
             </Center>
         );
@@ -60,10 +69,18 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
         );
     }
 
-    // Calculate rankings based on total asset amounts
+    // Calculate rankings based on total asset values
     const rankedVaults = [...competitionData.user_vault].sort((a, b) => {
-        const totalA = Array.from(a.assets.values()).reduce((sum, amount) => sum + amount, 0);
-        const totalB = Array.from(b.assets.values()).reduce((sum, amount) => sum + amount, 0);
+        const totalA = Array.from(a.assets.entries()).reduce((sum, [assetAddress, amount]) => {
+            const price = priceList[assetAddress] || 0;
+            return sum + amount * price;
+        }, 0);
+
+        const totalB = Array.from(b.assets.entries()).reduce((sum, [assetAddress, amount]) => {
+            const price = priceList[assetAddress] || 0;
+            return sum + amount * price;
+        }, 0);
+
         return totalB - totalA; // Sort in descending order
     });
 
@@ -96,7 +113,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     </Box>
 
                     {rankedVaults.map((vault, index) => (
-                        <VaultWithUserInfo key={vault.userId} vault={vault} rank={index + 1} />
+                        <VaultWithUserInfo key={vault.userId} vault={vault} rank={index + 1} priceList={priceList} />
                     ))}
                 </VStack>
             </Flex>
@@ -108,68 +125,123 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
 interface VaultWithUserInfoProps {
     vault: UserAssetVault;
     rank: number;
+    priceList: Record<string, number>;
 }
 
-const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, rank }) => {
+const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, rank, priceList }) => {
     // Fetch user info for the given userId
     const { data: user, isLoading, isError } = useQuery<User>({
         queryKey: ['user_info', vault.userId],
         queryFn: () => fetchUserInfoById(vault.userId),
     });
 
-    // Calculate the total assets for the user
-    const totalAssets = Array.from(vault.assets.values()).reduce((sum, amount) => sum + amount, 0);
+    // Calculate the total asset value
+    const totalAssetValue = Array.from(vault.assets.entries()).reduce((sum, [assetAddress, amount]) => {
+        const price = priceList[assetAddress] || 0;
+        return sum + amount * price;
+    }, 0);
 
     return (
         <Box
-            p={4}
+            p={6}
             border="1px solid"
             borderColor="gray.200"
-            borderRadius="md"
-            boxShadow="sm"
-            _hover={{ boxShadow: "md", bg: "gray.50" }}
+            borderRadius="lg"
+            boxShadow="md"
+            _hover={{ boxShadow: "lg", bg: "gray.50" }}
         >
-            <HStack spacing={4} alignItems="center" mb={4}>
-                {/* Rank */}
-                <Text fontSize="xl" fontWeight="bold" color="teal.500">
-                    #{rank}
-                </Text>
-
-                {/* User Avatar */}
+            {/* Header Section */}
+            <Flex alignItems="center" direction="column" mb={6}>
+                {/* Profile Picture */}
                 {isLoading ? (
-                    <Spinner size="sm" />
+                    <Spinner size="lg" />
                 ) : isError ? (
                     <Text fontSize="sm" color="red.500">
                         Failed to load user info
                     </Text>
                 ) : (
                     <Image
-                        boxSize="50px"
+                        boxSize="80px"
                         borderRadius="full"
                         src={user?.avatar || "/images/ape-logo.webp"}
                         alt={`${user?.name}'s Avatar`}
+                        mb={2}
                     />
                 )}
 
-                {/* User Info */}
-                <VStack align="start" spacing={1}>
-                    <Text fontWeight="bold">{user?.name || 'Unknown User'}</Text>
-                    <Text fontSize="sm" color="gray.500">
-                        Total Assets: {totalAssets}
+                {/* User Name */}
+                <Text fontWeight="bold" fontSize="lg">
+                    {user?.name || 'Unknown User'}
+                </Text>
+            </Flex>
+
+            <Divider my={4} />
+
+            {/* Main Content */}
+            <Flex direction={{ base: "column", md: "row" }} justifyContent="space-between" gap={4}>
+                {/* Total Asset Value */}
+                <Box
+                    flex="1"
+                    p={4}
+                    borderRadius="md"
+                    bg="gray.100"
+                    textAlign="center"
+                    boxShadow="sm"
+                >
+                    <Text fontSize="md" fontWeight="bold" mb={2}>
+                        Total Asset Value
                     </Text>
+                    <Text
+                        fontSize="xl"
+                        fontWeight="bold"
+                        color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
+                    >
+                        ${totalAssetValue.toFixed(2)}
+                    </Text>
+                    <Text
+                        fontSize="sm"
+                        fontWeight="bold"
+                        color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
+                    >
+                        Difference: ${Math.abs(totalAssetValue - 10000).toFixed(2)} (
+                        {((Math.abs(totalAssetValue - 10000) / 10000) * 100).toFixed(2)}%)
+                    </Text>
+                </Box>
 
+                {/* Assets List */}
+                <Box flex="2">
+                    <Text fontWeight="bold" fontSize="lg" mb={4}>
+                        Assets
+                    </Text>
+                    {Array.from(vault.assets.entries()).map(([asset, amount]) => {
+                        const price = priceList[asset] || 0; // Get the price for the asset or default to 0
+                        const totalValue = amount * price; // Calculate the total value of the asset
+                        const assetInfo = assetMap[asset]; // Get the asset information from the asset map
 
-                    <Divider my={4} />
+                        return (
+                            <Flex
+                                key={asset}
+                                justifyContent="space-between"
+                                alignItems="center"
+                                py={2}
+                                borderBottom="1px solid"
+                                borderColor="gray.200"
+                            >
+                                {/* Asset Icon and Name */}
+                                <HStack>
+                                    {assetInfo?.symbol || <Text>Unknown</Text>}
+                                    <Text ml={2} fontWeight="bold">{assetInfo?.name || 'Unknown Asset'}</Text>
+                                </HStack>
 
-                    <Text fontWeight="bold">Assets:</Text>
-                    {Array.from(vault.assets.entries()).map(([asset, amount]) => (
-                        <HStack key={asset} justifyContent="space-between" w="100%">
-                            <Text>{asset}</Text>
-                            <Text>{amount}</Text>
-                        </HStack>
-                    ))}
-                </VStack>
-            </HStack>
+                                {/* Total Value */}
+                                <Text fontWeight="bold" textAlign="right" w="120px">
+                                    ${totalValue.toFixed(2) || 'N/A'}
+                                </Text>
+                            </Flex>
+                        );
+                    })}
+                </Box>
+            </Flex>
         </Box>
     );
 };
