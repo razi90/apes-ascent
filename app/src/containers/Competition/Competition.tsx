@@ -230,7 +230,7 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, rank, pric
                                 {/* Asset Icon and Name */}
                                 <HStack>
                                     {assetInfo?.symbol || <Text>Unknown</Text>}
-                                    <Text ml={2} fontWeight="bold">{assetInfo?.name || 'Unknown Asset'}</Text>
+                                    <Text ml={2} fontWeight="bold">{assetInfo?.ticker || 'Unknown Asset'}</Text>
                                 </HStack>
 
                                 {/* Total Value */}
