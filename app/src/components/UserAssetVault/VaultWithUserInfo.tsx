@@ -4,6 +4,7 @@ import { assetMap } from "../../libs/entities/Asset";
 import { User } from "../../libs/entities/User";
 import { UserAssetVault } from "../../libs/entities/UserAssetVault";
 import { useQuery } from "@tanstack/react-query";
+import { TradeButton } from "../Button/TradeButton/TradeButton";
 
 interface VaultWithUserInfoProps {
     vault: UserAssetVault;
@@ -82,6 +83,7 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                         {((Math.abs(totalAssetValue - 10000) / 10000) * 100).toFixed(2)}%)
                     </Text>
                 </Box>
+                <TradeButton vault={vault} isConnected={false}></TradeButton>
             </Flex>
         </Box>
     );
