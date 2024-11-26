@@ -26,13 +26,13 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { ManifestBuilder, address, decimal, RadixEngineToolkit, NetworkId } from "@radixdlt/radix-engine-toolkit";
+import { ManifestBuilder, address, decimal, RadixEngineToolkit, NetworkId, array, ValueKind, nonFungibleLocalId, proof } from "@radixdlt/radix-engine-toolkit";
 import { UserAssetVault } from "../../../../libs/entities/UserAssetVault";
 import { addressToAsset, Asset, Bitcoin, FakeDollar } from "../../../../libs/entities/Asset";
 import { fetchPriceListMap } from "../../../../libs/data_services/PriceDataService";
 import { fetchUserInfo } from "../../../../libs/data_services/UserDataService";
 import { User } from "../../../../libs/entities/User";
-import { USER_NFT_RESOURCE_ADDRESS } from "../../../../Config";
+import { COMPETITION_ADDRESS, USER_NFT_RESOURCE_ADDRESS } from "../../../../Config";
 import { rdt } from "../../../../libs/radix-dapp-toolkit/rdt";
 import { TruncatedNumberValue } from "../../../Text/TruncatedValue";
 import CancelButton from "../CancelButton.tsx/CancelButton";
@@ -215,32 +215,32 @@ const TradeDialog: React.FC<TradeDialogProps> = ({ isOpen, setIsOpen, vault, onC
             return;
         }
 
-        // TODO: Change to swap
-
         // Build manifest to open a position
         let transactionManifest = new ManifestBuilder()
             .callMethod(
                 user?.account!,
-                "create_proof_of_amount",
+                "create_proof_of_non_fungibles",
                 [
                     address(
                         USER_NFT_RESOURCE_ADDRESS
                     ),
-                    decimal(1),
+                    array(ValueKind.NonFungibleLocalId, nonFungibleLocalId(user?.id!)),
                 ]
             )
-            .callMethod(
-                vault?.userId!,
-                "open_position",
-                [
-                    address(
-                        fromToken.address
-                    ),
-                    address(
-                        toToken.address
-                    ),
-                    decimal(amount),
-                ]
+            .createProofFromAuthZoneOfNonFungibles(
+                USER_NFT_RESOURCE_ADDRESS,
+                [user?.id!],
+                (builder, proofId) => builder.callMethod(
+                    COMPETITION_ADDRESS,
+                    "trade",
+                    [
+                        proof(proofId),
+                        address(fromToken.address),
+                        address(toToken.address),
+                        decimal(amount)
+                    ]
+
+                )
             )
             .build();
 
