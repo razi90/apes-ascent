@@ -1,4 +1,12 @@
-import { Box, Flex, Spinner, Divider, HStack, Image, Text } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    Spinner,
+    Image,
+    Text,
+    VStack,
+    Divider,
+} from "@chakra-ui/react";
 import { fetchUserInfoById } from "../../libs/data_services/UserDataService";
 import { assetMap } from "../../libs/entities/Asset";
 import { User } from "../../libs/entities/User";
@@ -27,15 +35,22 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
     return (
         <Box
             p={6}
-            border="1px solid"
-            borderColor="gray.200"
+            bg="transparent" // No background color
             borderRadius="lg"
-            boxShadow="md"
-            _hover={{ boxShadow: "lg", bg: "gray.50" }}
+            border="1px solid" // Ensure a visible border is applied
+            borderColor="back.500" // Default border color set to gray
+            boxShadow="none" // No shadow by default
+            _hover={{
+                boxShadow: "shadow.primary.500", // Add shadow on hover
+                borderColor: "primary.300", // Change border color to green on hover
+            }}
+            color="font.300"
         >
-            <Flex direction="row" alignItems="center" justifyContent="space-between" gap={4}>
+
+
+            <Flex direction="row" alignItems="center" justifyContent="space-between" gap={6}>
                 {/* User Data Section */}
-                <Flex direction="column" alignItems="center" justifyContent="center" flex="1">
+                <VStack align="center" flex="1" spacing={3}>
                     {isLoading ? (
                         <Spinner size="lg" />
                     ) : isError ? (
@@ -49,41 +64,43 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                                 borderRadius="full"
                                 src={user?.avatar || "/images/ape-logo.webp"}
                                 alt={`${user?.name}'s Avatar`}
-                                mb={2}
                             />
-                            <Text fontWeight="bold" fontSize="lg">
+                            <Text fontWeight="bold" fontSize="lg" color="font.900">
                                 {user?.name || 'Unknown User'}
                             </Text>
                         </>
                     )}
-                </Flex>
+                </VStack>
 
-                {/* TVL and PnL Section */}
+                {/* TVL and PNL Section */}
                 <Box
                     flex="1"
                     p={4}
                     borderRadius="md"
-                    bg="gray.100"
                     textAlign="center"
                     boxShadow="sm"
+                    border="1px solid" // Ensure a visible border is applied
+                    borderColor="back.500"
                 >
                     <Text
-                        fontSize="xl"
+                        fontSize="lg"
                         fontWeight="bold"
-                        color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
+                        color={totalAssetValue > 10000 ? 'primary.300' : 'red.500'}
                     >
                         TVL: ${totalAssetValue.toFixed(2)}
                     </Text>
                     <Text
-                        fontSize="xl"
+                        fontSize="lg"
                         fontWeight="bold"
-                        color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
+                        color={totalAssetValue > 10000 ? 'primary.300' : 'red.500'}
                     >
                         PNL: ${Math.abs(totalAssetValue - 10000).toFixed(2)} (
                         {((Math.abs(totalAssetValue - 10000) / 10000) * 100).toFixed(2)}%)
                     </Text>
                 </Box>
-                <TradeButton vault={vault} isConnected={false}></TradeButton>
+
+                {/* Trade Button */}
+                <TradeButton vault={vault} isConnected={false} />
             </Flex>
         </Box>
     );

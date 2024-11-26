@@ -5,7 +5,7 @@ export const leftNavigationToggleButtonStyle = (isMinimized: any) => ({
     position: "absolute",
     bottom: "20",
 
-    color: "backTransparent.900",
+    color: "primary.300",
     size: "md",
     borderRadius: "sm",
     bg: "pElementTransparent.895",

@@ -90,7 +90,7 @@ export default function TopNavigationBar() {
                                 />
                             </Link>
                             {!isMobile && (
-                                <Text fontSize="2xl" fontWeight="bold">
+                                <Text fontSize="2xl" fontWeight="bold" color={"primary.300"}>
                                     Ape's Ascent
                                 </Text>
                             )}
@@ -98,7 +98,6 @@ export default function TopNavigationBar() {
 
                         <Spacer />
 
-                        <ColorModeToggle />
                         <WalletButton />
                     </Flex>
                 </Center>

@@ -22,10 +22,10 @@ export const LeftNavigationButtonIcon = ({ icon }: FeatureProps) => {
             >
                 {
                     (typeof icon !== 'string') ? (
-                        <Icon as={icon} color={"pElement.200"} w={{ base: 6, sm: 6 }} h={{ base: 6, sm: 6 }} />
+                        <Icon as={icon} color={"primary.300"} w={{ base: 6, sm: 6 }} h={{ base: 6, sm: 6 }} />
 
                     ) : (
-                        <Image src={icon.toString()} color={"pElement.200"} borderRadius="50%" />
+                        <Image src={icon.toString()} color={"primary.300"} borderRadius="50%" />
                     )
                 }
 
