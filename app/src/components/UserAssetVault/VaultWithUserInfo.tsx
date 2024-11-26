@@ -62,6 +62,8 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                             <Image
                                 boxSize="80px"
                                 borderRadius="full"
+                                border="2px solid"
+                                borderColor="primary.300"
                                 src={user?.avatar || "/images/ape-logo.webp"}
                                 alt={`${user?.name}'s Avatar`}
                             />
