@@ -1,99 +1,41 @@
-import { StateKeyValueStoreDataRequest, StateKeyValueStoreDataRequestKeyItem } from "@radixdlt/babylon-gateway-api-sdk";
-import { Bitcoin, Ethereum, USDollar, Hug, Radix, Asset } from "../entities/Asset";
-import { PRICE_STORE } from "../../Config";
-import { gatewayApi } from "../radix-dapp-toolkit/rdt";
+import { assetMap } from "../entities/Asset";
 
-export interface PriceData {
-    priceInXRD: number;
-    priceInUSD: number;
-}
+import axios from "axios";
 
-export const fetchPriceList = async (): Promise<Map<string, PriceData>> => {
+
+export const fetchPriceListMap = async (): Promise<Record<string, number>> => {
+    const priceListMap: Record<string, number> = {};
+
     try {
-        const tokens = [Ethereum, Bitcoin, Hug, USDollar, Radix];
-        const priceMap = await fetchPricesFromKeyValueStore(tokens);
+        // Iterate over all assets in the map
+        for (const [address, asset] of Object.entries(assetMap)) {
+            // Skip assets without valid tickers
+            if (!asset.ticker) continue;
 
-        return priceMap;
+            if (asset.ticker === "FUSD") {
+                priceListMap[asset.address] = 1;
+                continue;
+            }
+
+            // Construct the trading pair
+            const symbol = `${asset.ticker}USDT`;
+
+            // Binance API endpoint for the latest price of a symbol
+            const url = 'https://api.binance.com/api/v3/ticker/price';
+
+            // Fetch the price for the current asset
+            const response = await axios.get(url, { params: { symbol } });
+
+            // Extract the price and add it to the price list map
+            const price = response.data.price;
+            priceListMap[address] = parseFloat(price);
+        }
+
+        console.log('Price List Map:', priceListMap);
     } catch (error) {
-        console.log("Error fetching price data.");
-        throw error;
+        console.error('Error fetching price list map:', error);
     }
-}
 
-async function fetchPricesFromKeyValueStore(tokens: Asset[]): Promise<Map<string, PriceData>> {
-    let priceMap = new Map<string, PriceData>();
+    return priceListMap;
+};
 
-    // Map tokens to an array of StateKeyValueStoreDataRequestKeyItem objects
-    const keys = tokens.map(token => ({
-        key_hex: token.price_key
-    }));
-
-    // Define the StateKeyValueStoreDataRequest object
-    const stateKeyValueStoreDataRequest: StateKeyValueStoreDataRequest = {
-        key_value_store_address: PRICE_STORE,
-        keys: keys
-    };
-
-    // Now make the API call with the constructed request object
-    let oracleLedgerData = await gatewayApi.state.innerClient.keyValueStoreData({
-        stateKeyValueStoreDataRequest: stateKeyValueStoreDataRequest
-    });
-
-    // Handle XRD price
-    let priceData: PriceData = {
-        priceInXRD: 1,
-        priceInUSD: 0
-    }
-    priceMap.set(Radix.address, priceData);
-
-    // Iterate over the entries array
-    oracleLedgerData.entries.forEach((entry: any) => {
-        // Extract the base ResourceAddress and price from the entry
-        const baseResourceAddress = entry.key.programmatic_json.fields.find(
-            (field: any) => field.field_name === "base"
-        )?.value;
-
-        const price = entry.value.programmatic_json.fields.find(
-            (field: any) => field.field_name === "price"
-        )?.value;
-
-        if (baseResourceAddress && price) {
-            let priceData: PriceData = {
-                priceInXRD: 0,
-                priceInUSD: 0
-            }
-            if (baseResourceAddress === USDollar.address) {
-                priceData.priceInXRD = parseFloat(price);
-                priceData.priceInUSD = 1
-            } else {
-                priceData.priceInXRD = parseFloat(price)
-            }
-
-            priceMap.set(baseResourceAddress, priceData);
-        }
-
-
-    });
-
-    priceMap = calculatePricesInUSD(priceMap);
-
-    return priceMap
-
-}
-
-function calculatePricesInUSD(priceMap: Map<string, PriceData>): Map<string, PriceData> {
-    // get xUSDC price in XRD
-    const xUSDCPriceInXRD = priceMap.get(USDollar.address)?.priceInXRD;
-    const XRDPriceinUSD = 1 / xUSDCPriceInXRD!;
-    priceMap.forEach((price, resourceAddress) => {
-        if (resourceAddress == Radix.address) {
-            price.priceInUSD = XRDPriceinUSD
-        } else {
-            if (resourceAddress !== USDollar.address) {
-                price.priceInUSD = price.priceInXRD * XRDPriceinUSD;
-            }
-        }
-    });
-
-    return priceMap;
-}

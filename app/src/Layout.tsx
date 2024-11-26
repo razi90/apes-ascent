@@ -11,6 +11,7 @@ import Profile from './containers/Profile/Profile';
 import { fetchLeftNavigationStatus } from './libs/navigation/LeftNavigationBarDataService';
 import Competition from './containers/Competition/Competition';
 import FrontPage from './containers/FrontPage/FrontPage';
+import Duels from './containers/Duels/Duels';
 
 export enum LayoutMode {
     Mobile,
@@ -34,6 +35,7 @@ const Layout: React.FC = () => {
     const routes = [
         { path: "/", element: <FrontPage layoutMode={layoutMode} /> },
         { path: "/free_for_all", element: <Competition layoutMode={layoutMode} /> },
+        { path: "/duels", element: <Duels /> },
         { path: "/profile/:id", element: <Profile layoutMode={layoutMode} /> },
         { path: "*", element: <UnknownPage layoutMode={layoutMode} /> },
     ];
