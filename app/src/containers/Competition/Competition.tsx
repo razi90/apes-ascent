@@ -6,6 +6,7 @@ import {
     Text,
     Spinner,
     VStack,
+    Spacer,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../Layout';
@@ -14,6 +15,7 @@ import { fetchCompetitionData } from '../../libs/data_services/CompetitionDataSe
 import { Competition as CompetitionEntity } from '../../libs/entities/Competition';
 import { fetchPriceListMap } from '../../libs/data_services/PriceDataService';
 import VaultWithUserInfo from '../../components/UserAssetVault/VaultWithUserInfo';
+import { JoinButton } from '../../components/Button/JoinButton/JoinButton';
 
 interface CompetitionProps {
     layoutMode: LayoutMode;
@@ -102,6 +104,9 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                         <Text fontSize="md" color="gray.500">
                             {`End: ${competitionData.end_date}`}
                         </Text>
+                    </Box>
+                    <Box textAlign="center" mb={8}>
+                        <JoinButton isConnected={false}></JoinButton>
                     </Box>
 
                     {rankedVaults.map((vault) => (
