@@ -72,14 +72,14 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                         fontWeight="bold"
                         color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
                     >
-                        TvL: ${totalAssetValue.toFixed(2)}
+                        TVL: ${totalAssetValue.toFixed(2)}
                     </Text>
                     <Text
                         fontSize="xl"
                         fontWeight="bold"
                         color={totalAssetValue > 10000 ? 'green.500' : 'red.500'}
                     >
-                        PnL: ${Math.abs(totalAssetValue - 10000).toFixed(2)} (
+                        PNL: ${Math.abs(totalAssetValue - 10000).toFixed(2)} (
                         {((Math.abs(totalAssetValue - 10000) / 10000) * 100).toFixed(2)}%)
                     </Text>
                 </Box>
