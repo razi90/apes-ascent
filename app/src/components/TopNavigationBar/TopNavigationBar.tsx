@@ -17,6 +17,7 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { WalletButton } from '../Button/WalletButton/WalletButton';
 import { useColorModeValue } from "@chakra-ui/react";
+import { BsTwitterX } from "react-icons/bs"
 
 
 import {
@@ -31,6 +32,8 @@ import Joyride, { Step } from 'react-joyride';
 
 import { NavigationItems } from "../LeftNavigationBar/NavigationItems";
 import { ColorModeToggle } from "../Button/ColorModeButton/ColorModeButton";
+import { SocialButton } from "../Button/SocialButton/SocialButton";
+import { FaTelegram, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
 export default function TopNavigationBar() {
     const bgColor = useColorModeValue("white", "#161616");
@@ -97,6 +100,18 @@ export default function TopNavigationBar() {
                         </Flex>
 
                         <Spacer />
+
+                        <Box mx={2}>
+                            <SocialButton label={'Twitter'} href={`https://www.twitter.com/apes_ascent`}>
+                                <BsTwitterX />
+                            </SocialButton>
+                        </Box>
+
+                        <Box mx={2}>
+                            <SocialButton label={'Telegram'} href={`https://t.me/apes_ascent`}>
+                                <FaTelegramPlane />
+                            </SocialButton>
+                        </Box>
 
                         <WalletButton />
                     </Flex>

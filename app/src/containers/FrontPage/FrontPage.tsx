@@ -68,7 +68,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                     <GameModeCard
                         title="Free For All"
                         description="No limit competitions."
-                        borderColor="gray.500"
+                        borderColor="back.500"
                         hoverColor="primary.300"
                     />
 
@@ -76,7 +76,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                     <GameModeCard
                         title="Duels"
                         description="Create duels and challenge other apes."
-                        borderColor="gray.500"
+                        borderColor="back.500"
                         hoverColor="primary.300"
                     />
 
@@ -84,7 +84,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                     <GameModeCard
                         title="Clan Wars"
                         description="Create a clan and challenge another clan to a trade war."
-                        borderColor="gray.500"
+                        borderColor="back.500"
                         hoverColor="primary.300"
                     />
                 </SimpleGrid>
@@ -107,7 +107,7 @@ const GameModeCard: React.FC<GameModeCardProps> = ({ title, description, borderC
             borderColor={borderColor}
             borderRadius="md"
             boxShadow="sm"
-            bg="back.700"
+            bg="back.500"
             p={6}
             _hover={{
                 transform: "scale(1.05)",

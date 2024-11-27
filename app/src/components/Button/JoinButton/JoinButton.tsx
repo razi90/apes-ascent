@@ -4,7 +4,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
-import { joinButtonStyle } from './Styled';
+import { commonButtonStyle } from '../Styled';
 import { address, array, ManifestBuilder, NetworkId, nonFungibleLocalId, proof, RadixEngineToolkit, ValueKind } from '@radixdlt/radix-engine-toolkit';
 import { COMPETITION_ADDRESS, USER_NFT_RESOURCE_ADDRESS } from '../../../Config';
 import { useQuery } from '@tanstack/react-query';
@@ -83,7 +83,7 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={handleClick} // Use the click handler here
-                        sx={joinButtonStyle}
+                        sx={commonButtonStyle}
                         title="Trade on this Vault"
                         size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
                     >
@@ -94,7 +94,7 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={handleClick} // Use the click handler here
-                        sx={joinButtonStyle}
+                        sx={commonButtonStyle}
                         size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
                         title="Trade on this Vault"
                     >
