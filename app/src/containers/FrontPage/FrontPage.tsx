@@ -30,8 +30,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                 boxShadow="md"
             >
                 <Text fontSize="lg" fontWeight="bold">
-                    This application is running on the testnet and is currently under development.
-                    Features may not work as expected.
+                    This application is currently under development and nothing really works.
                 </Text>
             </Box>
 
