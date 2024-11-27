@@ -1,6 +1,6 @@
-# The Trenches
+# Ape's Ascent
 
-The Trenches is a project which implements a blueprint to run trading competitions in a simulated environment. It is built with the language Scrypto, which runs on the Radix DLT. The competition allows users to register, receive initial tokens, and trade assets using a simulation during the competition period.
+Ape's Ascent is a project which implements a blueprint to run trading competitions in a simulated environment. It is built with the language Scrypto, which runs on the Radix DLT. The competition allows users to register, receive initial tokens, and trade assets using a simulation during the competition period.
 
 ## License
 

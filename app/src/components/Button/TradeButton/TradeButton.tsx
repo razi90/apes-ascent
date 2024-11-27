@@ -5,7 +5,7 @@ import {
 import React from 'react';
 import { useState } from 'react';
 
-import { tradeButtonStyle } from './Styled';
+import { commonButtonStyle } from '../Styled';
 import TradeDialog from '../Dialog/TradeDialog/TradeDialog';
 import { UserAssetVault } from '../../../libs/entities/UserAssetVault';
 
@@ -33,7 +33,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, on
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={() => setIsOpen(true)}
-                        sx={tradeButtonStyle}
+                        sx={commonButtonStyle}
                         title="Trade on this Vault"
                         size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
                     >
@@ -44,7 +44,7 @@ export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, on
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={() => setIsOpen(true)}
-                        sx={tradeButtonStyle}
+                        sx={commonButtonStyle}
                         size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
                         title="Trade on this Vault"
                     // isDisabled={true}

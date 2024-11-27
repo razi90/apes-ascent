@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@chakra-ui/react';
-import { profileButtonStyle } from './Styled';
+import { commonButtonStyle } from '../Styled';
 import { useState } from 'react';
 import ProfileEditDialog from '../../Dialog/ProfileEditDialog/ProfileEditDialog';
 import { User } from '../../../libs/entities/User';
@@ -20,7 +20,7 @@ const ProfileEditButton: React.FC<(ProfileEditButtonProps)> = ({ user, isLoading
                 <Tooltip label='Edit your Profile'>
                     <Button
                         onClick={() => setIsOpen(true)}
-                        sx={profileButtonStyle}
+                        sx={commonButtonStyle}
                         size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
                         title="Edit your Profile"
                     >

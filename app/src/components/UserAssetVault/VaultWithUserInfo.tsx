@@ -33,12 +33,14 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
     return (
         <Box
             p={6}
-            bg="transparent" // No background color
+            bg="back.600"
             borderRadius="lg"
             border="1px solid" // Ensure a visible border is applied
             borderColor="back.500" // Default border color set to gray
             boxShadow="none" // No shadow by default
             _hover={{
+                transform: "scale(1.05)",
+                transition: "all 0.3s",
                 boxShadow: "shadow.primary.500", // Add shadow on hover
                 borderColor: "primary.300", // Change border color to green on hover
             }}
@@ -79,8 +81,8 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                     borderRadius="md"
                     textAlign="center"
                     boxShadow="sm"
-                    border="1px solid" // Ensure a visible border is applied
                     borderColor="back.500"
+                    bg="transparent"
                 >
                     <Text
                         fontSize="lg"
