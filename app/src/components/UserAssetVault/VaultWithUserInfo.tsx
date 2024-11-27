@@ -5,10 +5,8 @@ import {
     Image,
     Text,
     VStack,
-    Divider,
 } from "@chakra-ui/react";
 import { fetchUserInfoById } from "../../libs/data_services/UserDataService";
-import { assetMap } from "../../libs/entities/Asset";
 import { User } from "../../libs/entities/User";
 import { UserAssetVault } from "../../libs/entities/UserAssetVault";
 import { useQuery } from "@tanstack/react-query";

@@ -85,8 +85,8 @@ export default function TopNavigationBar() {
                                 <Image
                                     align={"center"}
                                     sx={topNavigationLogoStyle}
-                                    src="/images/logo3.webp"
-                                    alt="Colosseum Logo"
+                                    src="/images/Logo.webp"
+                                    alt="Logo"
                                 />
                             </Link>
                             {!isMobile && (
