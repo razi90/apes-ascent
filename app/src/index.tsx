@@ -24,12 +24,6 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// Extend theme to include configurations for dark mode
-const config = {
-  initialColorMode: 'light',
-  useSystemColorMode: false, // Whether to use the user's system color mode
-};
-
 root.render(
   <ChakraProvider theme={theme}>
     <QueryClientProvider client={queryClient}>

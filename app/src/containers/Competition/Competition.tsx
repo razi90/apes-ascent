@@ -38,7 +38,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
         return (
             <Center>
                 <Spinner size="xl" />
-                <Text ml={4} fontSize="xl">Loading competition or price data...</Text>
+                <Text ml={4} fontSize="xl" color="font.300">Loading competition or price data...</Text>
             </Center>
         );
     }
@@ -46,7 +46,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     if (isError || priceError || !priceList) {
         return (
             <Center>
-                <Text fontSize="2xl" color="red.500">
+                <Text fontSize="2xl" color="primary.300">
                     Failed to load competition or price data. Please try again later.
                 </Text>
             </Center>
@@ -56,7 +56,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     if (!competitionData || competitionData.user_vault.length === 0) {
         return (
             <Center>
-                <Text fontSize="2xl" color="gray.500">
+                <Text fontSize="2xl" color="font.700">
                     No user vaults found in the competition.
                 </Text>
             </Center>
@@ -79,7 +79,11 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     });
 
     return (
-        <Box sx={routePageBoxStyle(layoutMode)}>
+        <Box
+            sx={routePageBoxStyle(layoutMode)}
+            p={4}
+            borderRadius="lg"
+        >
             <Flex
                 w="100%"
                 h="80vh"
@@ -94,23 +98,31 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     alignItems="stretch"
                     mt={8}
                 >
-                    <Box textAlign="center" mb={8}>
-                        <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                    {/* Competition Dates */}
+                    <Box textAlign="center" mb={8} bg="transperent" p={4} borderRadius="md" >
+                        <Text fontSize="lg" fontWeight="bold" color="font.900">
                             Competition Dates:
                         </Text>
-                        <Text fontSize="md" color="gray.500">
+                        <Text fontSize="md" color="font.600">
                             {`Start: ${competitionData.start_date}`}
                         </Text>
-                        <Text fontSize="md" color="gray.500">
+                        <Text fontSize="md" color="font.600">
                             {`End: ${competitionData.end_date}`}
                         </Text>
                     </Box>
+
+                    {/* Join Button */}
                     <Box textAlign="center" mb={8}>
                         <JoinButton isConnected={false}></JoinButton>
                     </Box>
 
+                    {/* Ranked Vaults */}
                     {rankedVaults.map((vault) => (
-                        <VaultWithUserInfo key={vault.userId} vault={vault} priceList={priceList} />
+                        <VaultWithUserInfo
+                            key={vault.userId}
+                            vault={vault}
+                            priceList={priceList}
+                        />
                     ))}
                 </VStack>
             </Flex>
