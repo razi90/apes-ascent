@@ -2,10 +2,10 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUserAssetVaults } from '../libs/data_services/VaultDataService';
-import Trading from '../containers/Trading/Trading';
 import { LayoutMode } from '../types/layout';
 import { Center, Spinner, Text, VStack, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import VaultDetail from '../containers/VaultDetail/VaultDetail';
 
 const TradingPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -77,7 +77,7 @@ const TradingPage: React.FC = () => {
         );
     }
 
-    return <Trading layoutMode={LayoutMode.DesktopExpanded} vault={selectedVault} />;
+    return <VaultDetail layoutMode={LayoutMode.DesktopExpanded} vault={selectedVault} />;
 };
 
 export default TradingPage;
