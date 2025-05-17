@@ -117,15 +117,24 @@ export default function TopNavigationBar() {
                                 />
                             </Link>
                             {!isMobile && (
-                                <Text
-                                    fontSize="2xl"
-                                    fontWeight="bold"
-                                    color={textColor}
-                                    letterSpacing="tight"
-                                    textShadow={neonGlow}
+                                <Link
+                                    href="/"
+                                    _hover={{
+                                        textDecoration: "none",
+                                        transform: "scale(1.05)",
+                                        transition: "all 0.2s ease-in-out",
+                                    }}
                                 >
-                                    Ape's Ascent
-                                </Text>
+                                    <Text
+                                        fontSize="2xl"
+                                        fontWeight="bold"
+                                        color={textColor}
+                                        letterSpacing="tight"
+                                        textShadow={neonGlow}
+                                    >
+                                        Ape's Ascent
+                                    </Text>
+                                </Link>
                             )}
                         </Flex>
 
