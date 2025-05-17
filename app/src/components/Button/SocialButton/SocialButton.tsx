@@ -1,6 +1,7 @@
 import {
     chakra,
     VisuallyHidden,
+    SystemStyleObject,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { styleSocialButton } from './Styled';
@@ -11,12 +12,14 @@ export const SocialButton = ({
     href,
     target,
     rel,
+    _hover,
 }: {
     children: ReactNode;
     label: string;
     href: string;
     target?: string;
     rel?: string;
+    _hover?: SystemStyleObject;
 }) => {
     return (
         <chakra.button
@@ -24,10 +27,16 @@ export const SocialButton = ({
             href={href}
             target={target}
             rel={rel}
-            sx={styleSocialButton}
+            sx={{
+                ...styleSocialButton,
+                _hover: {
+                    ...styleSocialButton._hover,
+                    ..._hover,
+                },
+            }}
         >
             <VisuallyHidden>{label}</VisuallyHidden>
             {children}
-        </chakra.button >
+        </chakra.button>
     );
 };

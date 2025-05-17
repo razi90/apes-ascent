@@ -11,6 +11,7 @@ import {
     Container,
     VStack,
     useColorModeValue,
+    Icon,
 } from "@chakra-ui/react";
 import { WalletButton } from '../Button/WalletButton/WalletButton';
 import { BsTwitterX } from "react-icons/bs"
@@ -24,6 +25,7 @@ import { LeftNavigationButton } from '../LeftNavigationBar/LeftNavigationButton'
 import { GiMonkey, GiBorderedShield } from "react-icons/gi";
 import { FaFistRaised, FaUserCircle } from "react-icons/fa";
 import CreateUserButton from '../Button/CreateUser/CreateUserButton';
+import { SocialButton } from "../Button/SocialButton/SocialButton";
 
 import {
     topNavigationBoxStyle,
@@ -34,13 +36,14 @@ import {
 
 import { useState, useEffect } from 'react';
 import Joyride, { Step } from 'react-joyride';
-import { ColorModeToggle } from "../Button/ColorModeButton/ColorModeButton";
-import { SocialButton } from "../Button/SocialButton/SocialButton";
 
 export default function TopNavigationBar() {
-    const bgColor = useColorModeValue("white", "#161616");
-    const boxShadow = useColorModeValue("0 0 20px rgba(0, 0, 0, 0.05)", "0 0 20px rgba(0, 0, 0, 0.2)");
-    const borderColor = useColorModeValue("gray.100", "gray.700");
+    const bgColor = "rgba(22, 22, 22, 0.95)";
+    const boxShadow = "0 0 20px rgba(0, 0, 0, 0.2)";
+    const borderColor = "gray.700";
+    const textColor = "white";
+    const accentColor = "green.400";
+    const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
@@ -86,27 +89,40 @@ export default function TopNavigationBar() {
                 width="100%"
                 zIndex="1000"
                 backdropFilter="blur(10px)"
-                bg={useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(22, 22, 22, 0.9)")}
             >
                 <Container maxW="container.xl" px={4}>
                     <Flex height="80px" align="center" justify="space-between">
                         <Flex align="center" gap={6}>
-                            <Link href={"/"} _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}>
+                            <Link
+                                href={"/"}
+                                _hover={{
+                                    transform: "scale(1.05)",
+                                    transition: "all 0.2s ease-in-out",
+                                    filter: "drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))"
+                                }}
+                            >
                                 <Image
                                     height="50px"
-                                    width="auto"
+                                    width="50px"
                                     src="/images/Logo.webp"
                                     alt="Logo"
-                                    transition="all 0.2s"
+                                    borderRadius="full"
+                                    objectFit="cover"
+                                    transition="all 0.2s ease-in-out"
+                                    border="2px solid"
+                                    borderColor="gray.700"
+                                    _hover={{
+                                        borderColor: "green.400",
+                                    }}
                                 />
                             </Link>
                             {!isMobile && (
                                 <Text
                                     fontSize="2xl"
                                     fontWeight="bold"
-                                    bgGradient="linear(to-r, primary.300, primary.500)"
-                                    bgClip="text"
+                                    color={textColor}
                                     letterSpacing="tight"
+                                    textShadow={neonGlow}
                                 >
                                     Ape's Ascent
                                 </Text>
@@ -182,11 +198,11 @@ export default function TopNavigationBar() {
                 callback={handleJoyrideCallback}
                 styles={{
                     options: {
-                        arrowColor: "#6B5EFF",
-                        backgroundColor: "white",
-                        primaryColor: "#6B5EFF",
-                        textColor: '#000',
-                        overlayColor: "rgba(0, 0, 0, 0.5)",
+                        arrowColor: accentColor,
+                        backgroundColor: bgColor,
+                        primaryColor: accentColor,
+                        textColor: textColor,
+                        overlayColor: "rgba(0, 0, 0, 0.7)",
                     },
                 }}
             />
