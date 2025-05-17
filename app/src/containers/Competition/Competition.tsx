@@ -111,10 +111,14 @@ interface CompetitionProps {
 }
 
 const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
-    const bgColor = useColorModeValue("white", "gray.800");
-    const borderColor = useColorModeValue("gray.200", "gray.700");
-    const textColor = useColorModeValue("gray.800", "white");
-    const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
+    // Updated color scheme
+    const bgColor = useColorModeValue("gray.900", "gray.900");
+    const cardBgColor = useColorModeValue("gray.800", "gray.800");
+    const borderColor = useColorModeValue("gray.700", "gray.700");
+    const textColor = useColorModeValue("white", "white");
+    const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
+    const accentColor = "green.400";
+    const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
 
     // Fetch competition data
     const { data: competitionData, isLoading, isError } = useQuery<CompetitionEntity>({
@@ -191,20 +195,36 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                 overflow="hidden"
             >
                 {/* Competition Header */}
-                <Box p={8} bg="primary.500" color="white">
-                    <Heading size="xl" mb={2}>Free For All Competition</Heading>
-                    <Text fontSize="lg" opacity={0.9}>
+                <Box
+                    p={8}
+                    bg="gray.800"
+                    borderBottom="1px solid"
+                    borderColor={borderColor}
+                    position="relative"
+                    _after={{
+                        content: '""',
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "1px",
+                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                        opacity: 0.5,
+                    }}
+                >
+                    <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
+                    <Text fontSize="lg" color={secondaryTextColor}>
                         Trade your way to the top of the leaderboard!
                     </Text>
                 </Box>
 
                 {/* Competition Stats */}
-                <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6} p={8}>
+                <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6} p={8} bg={cardBgColor}>
                     <GridItem>
                         <Stat>
                             <StatLabel color={secondaryTextColor}>Total Value</StatLabel>
-                            <StatNumber color={textColor}>${totalValue.toLocaleString()}</StatNumber>
-                            <StatHelpText>
+                            <StatNumber color={accentColor} textShadow={neonGlow}>${totalValue.toLocaleString()}</StatNumber>
+                            <StatHelpText color={accentColor}>
                                 <StatArrow type="increase" />
                                 {dailyChange}%
                             </StatHelpText>
@@ -213,8 +233,8 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     <GridItem>
                         <Stat>
                             <StatLabel color={secondaryTextColor}>Participants</StatLabel>
-                            <StatNumber color={textColor}>{totalParticipants}</StatNumber>
-                            <StatHelpText>
+                            <StatNumber color={accentColor} textShadow={neonGlow}>{totalParticipants}</StatNumber>
+                            <StatHelpText color={accentColor}>
                                 <StatArrow type="increase" />
                                 {newParticipants} new today
                             </StatHelpText>
@@ -223,23 +243,23 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     <GridItem>
                         <Stat>
                             <StatLabel color={secondaryTextColor}>Time Remaining</StatLabel>
-                            <StatNumber color={textColor}>7d 12h</StatNumber>
-                            <StatHelpText>
+                            <StatNumber color={accentColor} textShadow={neonGlow}>7d 12h</StatNumber>
+                            <StatHelpText color={secondaryTextColor}>
                                 Ends {competitionData?.end_date || "2024-04-30"}
                             </StatHelpText>
                         </Stat>
                     </GridItem>
                 </Grid>
 
-                <Divider />
+                <Divider borderColor={borderColor} />
 
                 {/* Join Button */}
-                <Box p={8} textAlign="center">
+                <Box p={8} textAlign="center" bg={cardBgColor}>
                     <JoinButton isConnected={false} />
                 </Box>
 
                 {/* Leaderboard */}
-                <Box p={8}>
+                <Box p={8} bg={cardBgColor}>
                     <Heading size="lg" mb={6} color={textColor}>Leaderboard</Heading>
                     <VStack spacing={4} align="stretch">
                         {rankedVaults.map((vault, index) => (
@@ -247,9 +267,14 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                                 key={vault.userId}
                                 position="relative"
                                 transition="all 0.2s"
+                                bg="gray.800"
+                                borderRadius="lg"
+                                border="1px solid"
+                                borderColor={borderColor}
                                 _hover={{
                                     transform: "translateY(-2px)",
-                                    boxShadow: "md",
+                                    boxShadow: neonGlow,
+                                    borderColor: accentColor,
                                 }}
                             >
                                 {index < 3 && (
@@ -262,6 +287,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                                         px={3}
                                         py={1}
                                         borderRadius="full"
+                                        boxShadow={neonGlow}
                                     >
                                         {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
                                     </Badge>
