@@ -79,11 +79,11 @@ export default function TopNavigationBar() {
         <>
             <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
                 <Container maxW="container.xl" px={4}>
-                    <Flex height="120px" align="center" justify="space-between">
+                    <Flex height="80px" align="center" justify="space-between">
                         <Flex align="center" gap={6}>
                             <Link href={"/"}>
                                 <Image
-                                    height="40px"
+                                    height="50px"
                                     width="auto"
                                     src="/images/Logo.webp"
                                     alt="Logo"
@@ -97,8 +97,8 @@ export default function TopNavigationBar() {
                         </Flex>
 
                         {!isMobile && (
-                            <VStack spacing={3} flex="1" align="center">
-                                <HStack spacing={4} justify="center">
+                            <VStack spacing={2} flex="1" align="center">
+                                <HStack spacing={6} justify="center">
                                     {wallet?.persona === undefined ? (
                                         <CreateUserButton />
                                     ) : (
@@ -121,14 +121,14 @@ export default function TopNavigationBar() {
                             </VStack>
                         )}
 
-                        <HStack spacing={2}>
+                        <HStack spacing={4}>
                             <SocialButton
                                 label={'Twitter'}
                                 href={`https://www.twitter.com/apes_ascent`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <BsTwitterX />
+                                <BsTwitterX size={20} />
                             </SocialButton>
                             <SocialButton
                                 label={'Telegram'}
@@ -136,7 +136,7 @@ export default function TopNavigationBar() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <FaTelegramPlane />
+                                <FaTelegramPlane size={20} />
                             </SocialButton>
                             <WalletButton />
                         </HStack>
@@ -144,7 +144,7 @@ export default function TopNavigationBar() {
                 </Container>
             </Box>
 
-            <Box height="120px" />
+            <Box height="80px" />
 
             <Joyride
                 steps={steps}

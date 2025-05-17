@@ -19,16 +19,17 @@ export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon
                     sx={leftNavigationButtonStyle}
                     width="100%"
                     justifyContent="center"
-                    p={2}
+                    p={3}
+                    height="50px"
                 >
                     {typeof icon === 'string' ? (
-                        <Image src={icon} boxSize={5} borderRadius="full" />
+                        <Image src={icon} boxSize={7} borderRadius="full" />
                     ) : (
-                        <Icon as={icon} boxSize={5} />
+                        <Icon as={icon} boxSize={7} />
                     )}
                 </Button>
             </Link>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="md" color="gray.500">
                 {title}
             </Text>
         </VStack>

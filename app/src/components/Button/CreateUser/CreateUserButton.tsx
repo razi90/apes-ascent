@@ -15,9 +15,10 @@ const CreateUserButton: React.FC = () => {
                 sx={leftNavigationButtonStyle}
                 width="100%"
                 justifyContent="center"
-                p={2}
+                p={3}
+                height="50px"
             >
-                <Icon as={FaUserPlus} boxSize={5} />
+                <Icon as={FaUserPlus} boxSize={7} />
             </Button>
             <CreateUserDialog isOpen={isOpen} setIsOpen={setIsOpen} />
         </>
