@@ -9,7 +9,7 @@ import {
     Spacer,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCompetitionData } from '../../libs/data_services/CompetitionDataService';
 import { Competition as CompetitionEntity } from '../../libs/entities/Competition';

@@ -17,7 +17,7 @@ import { PrimerCard } from '../../components/Card/PrimerCard';
 import { DescriptionCard } from '../../components/Card/DescriptionCard';
 import { SocialButton } from '../../components/Button/SocialButton/SocialButton';
 import { useParams } from 'react-router-dom';
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
 
 interface ProfileProps {
     layoutMode: LayoutMode;

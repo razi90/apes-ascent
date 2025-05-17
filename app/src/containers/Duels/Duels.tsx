@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Duel as DuelEntity } from '../../libs/entities/Duel';
 import { fetchUserInfoById } from '../../libs/data_services/UserDataService';
 import { fetchDuelsData } from '../../libs/data_services/DuelDataService';
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
 import { User } from '../../libs/entities/User';
 
 interface DuelsPageProps {

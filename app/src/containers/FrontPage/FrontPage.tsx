@@ -8,7 +8,7 @@ import {
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 
 interface FrontPageProps {

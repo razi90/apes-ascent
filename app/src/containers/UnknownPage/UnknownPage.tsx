@@ -6,7 +6,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
 
 interface UnknownPageProps {
     layoutMode: LayoutMode;

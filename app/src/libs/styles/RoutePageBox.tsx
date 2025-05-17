@@ -1,4 +1,4 @@
-import { LayoutMode } from "../../Layout";
+import { LayoutMode } from "../../types/layout";
 import { SystemStyleObject } from "@chakra-ui/react";
 
 export const routePageBoxStyle = (layoutMode: LayoutMode): SystemStyleObject => {
