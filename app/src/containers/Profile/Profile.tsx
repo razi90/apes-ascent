@@ -21,6 +21,7 @@ import {
     StatNumber,
     StatHelpText,
     StatArrow,
+    Container,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { useQuery } from '@tanstack/react-query';
@@ -66,7 +67,7 @@ const ProfileHeader: React.FC<{ profile: User | undefined; isOwnProfile: boolean
                 opacity: 0.5,
             }}
         >
-            <Flex align="center" justify="space-between" mb={6}>
+            <Flex align="center" justify="space-between">
                 <Flex align="center" gap={6}>
                     <WrapItem>
                         <Avatar
@@ -123,10 +124,10 @@ const ProfileStats: React.FC = () => {
     const accentColor = "green.400";
 
     return (
-        <Grid templateColumns="repeat(4, 1fr)" gap={6} p={8}>
+        <Grid templateColumns="repeat(4, 1fr)" gap={6} p={6}>
             <GridItem>
                 <Box
-                    p={6}
+                    p={4}
                     bg={cardBgColor}
                     borderRadius="xl"
                     border="1px solid"
@@ -144,7 +145,7 @@ const ProfileStats: React.FC = () => {
             </GridItem>
             <GridItem>
                 <Box
-                    p={6}
+                    p={4}
                     bg={cardBgColor}
                     borderRadius="xl"
                     border="1px solid"
@@ -162,7 +163,7 @@ const ProfileStats: React.FC = () => {
             </GridItem>
             <GridItem>
                 <Box
-                    p={6}
+                    p={4}
                     bg={cardBgColor}
                     borderRadius="xl"
                     border="1px solid"
@@ -180,7 +181,7 @@ const ProfileStats: React.FC = () => {
             </GridItem>
             <GridItem>
                 <Box
-                    p={6}
+                    p={4}
                     bg={cardBgColor}
                     borderRadius="xl"
                     border="1px solid"
@@ -216,13 +217,13 @@ const Achievements: React.FC = () => {
     ];
 
     return (
-        <Box p={8}>
+        <Box p={6}>
             <Heading size="md" mb={6} color={textColor}>Achievements</Heading>
             <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                 {achievements.map((achievement, index) => (
                     <GridItem key={index}>
                         <Box
-                            p={6}
+                            p={4}
                             bg={cardBgColor}
                             borderRadius="xl"
                             border="1px solid"
@@ -265,7 +266,7 @@ const RecentActivity: React.FC = () => {
     ];
 
     return (
-        <Box p={8}>
+        <Box p={6}>
             <Heading size="md" mb={6} color={textColor}>Recent Activity</Heading>
             <VStack spacing={4} align="stretch">
                 {activities.map((activity, index) => (
@@ -310,6 +311,9 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
     });
 
     const isOwnProfile = user?.id === profile?.id;
+    const bgColor = useColorModeValue("gray.900", "gray.900");
+    const cardBgColor = useColorModeValue("gray.800", "gray.800");
+    const borderColor = useColorModeValue("gray.700", "gray.700");
 
     if (isProfileLoading) {
         return (
@@ -322,16 +326,26 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
     }
 
     return (
-        <Box sx={routePageBoxStyle(layoutMode)}>
-            <Box maxW="container.xl" mx="auto">
+        <Container maxW="container.lg" py={8}>
+            <Box
+                sx={routePageBoxStyle(layoutMode)}
+                bg={bgColor}
+                borderRadius="2xl"
+                boxShadow="lg"
+                border="1px solid"
+                borderColor={borderColor}
+                overflow="hidden"
+            >
                 <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
-                <ProfileStats />
-                <Divider borderColor="gray.700" />
-                <Achievements />
-                <Divider borderColor="gray.700" />
-                <RecentActivity />
+                <Box bg={cardBgColor}>
+                    <ProfileStats />
+                    <Divider borderColor={borderColor} />
+                    <Achievements />
+                    <Divider borderColor={borderColor} />
+                    <RecentActivity />
+                </Box>
             </Box>
-        </Box>
+        </Container>
     );
 };
 
