@@ -5,17 +5,16 @@ import {
     Flex,
     Text,
 } from "@chakra-ui/react";
-import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
-import { LayoutMode } from '../../Layout';
+import { LayoutMode } from '../../types/layout';
+import PageContainer from '../../components/Container/PageContainer/PageContainer';
 
 interface UnknownPageProps {
     layoutMode: LayoutMode;
 }
 
 const UnknownPage: React.FC<UnknownPageProps> = ({ layoutMode }) => {
-
     return (
-        <Box sx={routePageBoxStyle(layoutMode)}>
+        <PageContainer layoutMode={layoutMode} maxW="container.xl">
             <Flex
                 w="100%"
                 h="80vh"
@@ -29,8 +28,8 @@ const UnknownPage: React.FC<UnknownPageProps> = ({ layoutMode }) => {
                     </Text>
                 </Center>
             </Flex>
-        </Box>
+        </PageContainer>
     );
-}
+};
 
 export default UnknownPage;

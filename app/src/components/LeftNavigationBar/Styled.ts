@@ -27,31 +27,17 @@ export const leftNavigationToggleIconStyle = {
 
 export const leftNavigationButtonStyle = {
     size: "md",
-    borderRadius: "sm",
-    bg: "pElementTransparent.895",
+    borderRadius: "full",
+    bg: "transparent",
     py: "6",
-
-    position: "relative",
-    overflow: "hidden",
-    ":after": {
-        content: '""',
-        position: "absolute",
-        //top: 0,
-        right: "-100%",
-        bottom: "-100%",
-        width: "100%",
-        height: "100%",
-        //transform: "rotate(60deg)",
-        backgroundColor: "pElementTransparent.890",
-        transition: "all 0.3s ease-out",
-    },
-    ":hover::after": {
-        right: 0,
-        bottom: 0,
-    },
-    ":hover": {
+    color: "white",
+    transition: "all 0.2s ease-in-out",
+    _hover: {
         textDecoration: "none",
-        bg: "pElementTransparent.895",
+        bg: "transparent",
+        color: "green.400",
+        transform: "translateY(-2px)",
+        filter: "drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))",
     },
 };
 
@@ -64,13 +50,14 @@ export const leftNavigationMainBoxStyle = (bgColor: string, boxShadow: string) =
 });
 
 export const leftNavigationMainVStackStyle = {
-    spacing: "1",
+    spacing: "4",
     pt: "4",
 };
 
 export const leftNavigationDividerBoxStyle = (isMinimized: any) => ({
     px: "4",
     align: "center",
-    w: "100%", borderColor: 'gray.200',
-    borderBottom: "1px solid #ddd",
+    w: "100%",
+    borderColor: 'gray.700',
+    borderBottom: "1px solid",
 });

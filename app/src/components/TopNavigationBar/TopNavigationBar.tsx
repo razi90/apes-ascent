@@ -7,18 +7,25 @@ import {
     Center,
     Spacer,
     useBreakpointValue,
-    IconButton,
-    Drawer,
-    DrawerBody,
-    DrawerOverlay,
-    DrawerContent,
-    useDisclosure,
+    HStack,
+    Container,
+    VStack,
+    useColorModeValue,
+    Icon,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { WalletButton } from '../Button/WalletButton/WalletButton';
-import { useColorModeValue } from "@chakra-ui/react";
 import { BsTwitterX } from "react-icons/bs"
-
+import { FaTelegramPlane } from "react-icons/fa";
+import { useQuery } from '@tanstack/react-query';
+import { User } from '../../libs/entities/User';
+import { fetchUserInfo } from '../../libs/data_services/UserDataService';
+import { WalletDataState } from '@radixdlt/radix-dapp-toolkit';
+import { fetchConnectedWallet } from '../../libs/data_services/WalletDataService';
+import { LeftNavigationButton } from '../LeftNavigationBar/LeftNavigationButton';
+import { GiMonkey, GiBorderedShield, GiSwordman } from "react-icons/gi";
+import { FaUserCircle } from "react-icons/fa";
+import CreateUserButton from '../Button/CreateUser/CreateUserButton';
+import { SocialButton } from "../Button/SocialButton/SocialButton";
 
 import {
     topNavigationBoxStyle,
@@ -30,16 +37,19 @@ import {
 import { useState, useEffect } from 'react';
 import Joyride, { Step } from 'react-joyride';
 
-import { NavigationItems } from "../LeftNavigationBar/NavigationItems";
-import { ColorModeToggle } from "../Button/ColorModeButton/ColorModeButton";
-import { SocialButton } from "../Button/SocialButton/SocialButton";
-import { FaTelegram, FaTelegramPlane, FaTwitter } from "react-icons/fa";
-
 export default function TopNavigationBar() {
-    const bgColor = useColorModeValue("white", "#161616");
-    const boxShadow = useColorModeValue("0 0 10px 0px #ccc", "0 0 10px 0px #211F34");
+    const bgColor = "rgba(22, 22, 22, 0.95)";
+    const boxShadow = "0 0 20px rgba(0, 0, 0, 0.2)";
+    const borderColor = "gray.700";
+    const textColor = "white";
+    const accentColor = "green.400";
+    const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
     const isMobile = useBreakpointValue({ base: true, md: false });
-    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
+    const { data: wallet } = useQuery<WalletDataState>({ queryKey: ['wallet_data'], queryFn: fetchConnectedWallet });
+
+    const filteredUserId = user?.id.replace(/#/g, "");
 
     const [steps, setSteps] = useState<Step[]>([
         {
@@ -71,63 +81,124 @@ export default function TopNavigationBar() {
 
     return (
         <>
-            <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
-                <Center>
-                    <Flex sx={topNavigationMainFlexStyle} alignItems="center">
-                        {isMobile && (
-                            <IconButton
-                                aria-label="Toggle Menu"
-                                icon={<HamburgerIcon />}
-                                onClick={onOpen}
-                                variant="outline"
-                                mr={2}
-                            />
-                        )}
-                        <Flex alignItems="center" gap={6}>
-                            <Link href={"/"}>
+            <Box
+                sx={topNavigationBoxStyle(bgColor, boxShadow)}
+                borderBottom="1px solid"
+                borderColor={borderColor}
+                position="fixed"
+                width="100%"
+                zIndex="1000"
+                backdropFilter="blur(10px)"
+            >
+                <Container maxW="container.xl" px={4}>
+                    <Flex height="80px" align="center" justify="space-between">
+                        <Flex align="center" gap={6}>
+                            <Link
+                                href={"/"}
+                                _hover={{
+                                    transform: "scale(1.05)",
+                                    transition: "all 0.2s ease-in-out",
+                                    filter: "drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))"
+                                }}
+                            >
                                 <Image
-                                    align={"center"}
-                                    sx={topNavigationLogoStyle}
+                                    height="50px"
+                                    width="50px"
                                     src="/images/Logo.webp"
                                     alt="Logo"
+                                    borderRadius="full"
+                                    objectFit="cover"
+                                    transition="all 0.2s ease-in-out"
+                                    border="2px solid"
+                                    borderColor="gray.700"
+                                    _hover={{
+                                        borderColor: "green.400",
+                                    }}
                                 />
                             </Link>
                             {!isMobile && (
-                                <Text fontSize="2xl" fontWeight="bold" color={"primary.300"}>
-                                    Ape's Ascent
-                                </Text>
+                                <Link
+                                    href="/"
+                                    _hover={{
+                                        textDecoration: "none",
+                                        transform: "scale(1.05)",
+                                        transition: "all 0.2s ease-in-out",
+                                    }}
+                                >
+                                    <Text
+                                        fontSize="2xl"
+                                        fontWeight="bold"
+                                        color={textColor}
+                                        letterSpacing="tight"
+                                        textShadow={neonGlow}
+                                    >
+                                        Ape's Ascent
+                                    </Text>
+                                </Link>
                             )}
                         </Flex>
 
-                        <Spacer />
+                        {!isMobile && (
+                            <VStack spacing={2} flex="1" align="center">
+                                <HStack spacing={8} justify="center">
+                                    {wallet?.persona === undefined ? (
+                                        <CreateUserButton />
+                                    ) : (
+                                        <>
+                                            {user?.id === '' ? (
+                                                <CreateUserButton />
+                                            ) : (
+                                                <LeftNavigationButton
+                                                    link={`/profile/${filteredUserId}`}
+                                                    title={user ? user.name : 'Profile'}
+                                                    icon={user && user.avatar ? user.avatar : FaUserCircle}
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                    <LeftNavigationButton
+                                        link="/free_for_all"
+                                        title="Free For All"
+                                        icon={GiMonkey}
+                                    />
+                                    <LeftNavigationButton
+                                        link="/duels"
+                                        title="Duels"
+                                        icon={GiSwordman}
+                                    />
+                                    {/* <LeftNavigationButton
+                                        link="/clan_wars"
+                                        title="Clan Wars"
+                                        icon={GiBorderedShield}
+                                    /> */}
+                                </HStack>
+                            </VStack>
+                        )}
 
-                        <Box mx={2}>
-                            <SocialButton label={'Twitter'} href={`https://www.twitter.com/apes_ascent`}>
-                                <BsTwitterX />
+                        <HStack spacing={6}>
+                            <SocialButton
+                                label={'Twitter'}
+                                href={`https://www.twitter.com/apes_ascent`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <BsTwitterX size={20} />
                             </SocialButton>
-                        </Box>
-
-                        <Box mx={2}>
-                            <SocialButton label={'Telegram'} href={`https://t.me/apes_ascent`}>
-                                <FaTelegramPlane />
+                            <SocialButton
+                                label={'Telegram'}
+                                href={`https://t.me/apes_ascent`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <FaTelegramPlane size={20} />
                             </SocialButton>
-                        </Box>
-
-                        <WalletButton />
+                            <WalletButton />
+                        </HStack>
                     </Flex>
-                </Center>
+                </Container>
             </Box>
 
-            <Box sx={topNavigationHiddenBoxStyle} />
-
-            <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
-                <DrawerOverlay />
-                <DrawerContent>
-                    <DrawerBody bg={bgColor}>
-                        <NavigationItems />
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
+            <Box height="80px" />
 
             <Joyride
                 steps={steps}
@@ -136,10 +207,11 @@ export default function TopNavigationBar() {
                 callback={handleJoyrideCallback}
                 styles={{
                     options: {
-                        arrowColor: "#6B5EFF",
-                        backgroundColor: "white",
-                        primaryColor: "#6B5EFF",
-                        textColor: '#000',
+                        arrowColor: accentColor,
+                        backgroundColor: bgColor,
+                        primaryColor: accentColor,
+                        textColor: textColor,
+                        overlayColor: "rgba(0, 0, 0, 0.7)",
                     },
                 }}
             />

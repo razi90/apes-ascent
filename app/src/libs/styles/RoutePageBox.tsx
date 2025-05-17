@@ -1,25 +1,34 @@
-import { LayoutMode } from "../../Layout";
+import { LayoutMode } from "../../types/layout";
+import { SystemStyleObject } from "@chakra-ui/react";
 
-export const routePageBoxStyle = (layoutMode: LayoutMode) => {
-    let marginLeft;
+export const routePageBoxStyle = (layoutMode: LayoutMode): SystemStyleObject => {
+    const baseStyles = {
+        color: "#000",
+        width: "100%",
+        margin: "0 auto",
+        padding: "20px",
+        transition: "all 0.3s ease",
+    };
 
     switch (layoutMode) {
         case LayoutMode.Mobile:
-            marginLeft = "0px";
-            break;
+            return {
+                ...baseStyles,
+                maxWidth: "100%",
+                padding: "12px",
+            };
         case LayoutMode.DesktopMinimized:
-            marginLeft = "60px";
-            break;
+            return {
+                ...baseStyles,
+                maxWidth: "calc(100% - 60px)",
+                marginLeft: "60px",
+            };
         case LayoutMode.DesktopExpanded:
-            marginLeft = "200px";
-            break;
+            return {
+                ...baseStyles,
+                maxWidth: "container.xl",
+            };
+        default:
+            return baseStyles;
     }
-
-    return {
-        color: "#000",
-        w: "100vw",
-        p: "20px",
-        ml: marginLeft,
-        transition: "margin-left 0.5s",
-    };
 };

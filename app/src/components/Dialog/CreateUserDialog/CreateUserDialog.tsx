@@ -278,7 +278,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({
 
             if (result.isOk()) {
                 enqueueSnackbar(`Created user successfully.`, { variant: "success" });
-                queryClient.invalidateQueries(["user_info"]);
+                queryClient.invalidateQueries({ queryKey: ["user_info"] });
             } else {
                 throw new Error(result.error.message);
             }

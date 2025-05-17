@@ -1,7 +1,7 @@
 import React from 'react';
 import { VStack, Box, Button, Icon } from '@chakra-ui/react';
-import { FaMedal, FaUserCircle, FaFistRaised } from "react-icons/fa";
-import { GiMonkey, GiBorderedShield } from "react-icons/gi";
+import { FaMedal, FaUserCircle } from "react-icons/fa";
+import { GiMonkey, GiBorderedShield, GiSwordman } from "react-icons/gi";
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
 
@@ -25,8 +25,8 @@ interface NavigationItemsProps {
 }
 
 export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = false, toggleMinimize }) => {
-    const { data: user, isLoading: isUserFetchLoading, isError: isUserFetchError } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
-    const { data: wallet, isLoading: isWalletFetchLoading, isError: isWalletFetchError } = useQuery<WalletDataState>({ queryKey: ['wallet_data'], queryFn: fetchConnectedWallet });
+    const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
+    const { data: wallet } = useQuery<WalletDataState>({ queryKey: ['wallet_data'], queryFn: fetchConnectedWallet });
 
     const filteredUserId = user?.id.replace(/#/g, "");
 
@@ -40,21 +40,16 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = 
             {/* Navigation Items */}
             <VStack align="stretch" spacing={4}>
                 {wallet?.persona === undefined ? (
-                    <CreateUserButton
-                        navIsMinimized={isMinimized}
-                    />
+                    <CreateUserButton />
                 ) : (
                     <>
                         {user?.id === '' ? (
-                            <CreateUserButton
-                                navIsMinimized={isMinimized}
-                            />
+                            <CreateUserButton />
                         ) : (
                             <LeftNavigationButton
                                 link={`/profile/${filteredUserId}`}
                                 title={user ? user.name : 'Profile'}
                                 icon={user && user.avatar ? user.avatar : FaUserCircle}
-                                navIsMinimized={isMinimized}
                             />
                         )}
                     </>
@@ -62,14 +57,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = 
 
                 <Box sx={leftNavigationDividerBoxStyle(isMinimized)} />
 
-                <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={isMinimized} />
-                <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={isMinimized} />
-                <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={isMinimized} />
+                <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} />
+                <LeftNavigationButton link="/duels" title="Duels" icon={GiSwordman} />
+                <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} />
 
                 {/* <Box sx={leftNavigationDividerBoxStyle(isMinimized)} /> */}
-                {/* <LeftNavigationButton link="https://docs.colosseum.com/" title="Documentation" icon={FaBookOpen} navIsMinimized={isMinimized} isExternal={true} /> */}
-                {/* <LeftNavigationButton link="https://x.com/colosseum/" title="X / Twitter" icon={FaTwitter} navIsMinimized={isMinimized} isExternal={true} /> */}
-                {/* <LeftNavigationButton link="https://t.me/Colosseum" title="Telegram" icon={FaTelegram} navIsMinimized={isMinimized} isExternal={true} /> */}
+                {/* <LeftNavigationButton link="https://docs.colosseum.com/" title="Documentation" icon={FaBookOpen} isExternal={true} /> */}
+                {/* <LeftNavigationButton link="https://x.com/colosseum/" title="X / Twitter" icon={FaTwitter} isExternal={true} /> */}
+                {/* <LeftNavigationButton link="https://t.me/Colosseum" title="Telegram" icon={FaTelegram} isExternal={true} /> */}
 
                 {/* {!isMinimized && (
                     <Box>

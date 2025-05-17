@@ -24,7 +24,7 @@ export const Ethereum: Asset = {
 
 export const FakeDollar: Asset = {
     name: "USD",
-    ticker: "FUSD",
+    ticker: "USD",
     symbol: <ColosseumImageIcon imageSrc="/images/LogoXUSDC.png" altText="xUSDC Logo" />,
     address: "resource_tdx_2_1tk4slpjr8dndf9kfnz0zq8vxwtzs80tuzp6xwc33vmajac4a99378w",
 };

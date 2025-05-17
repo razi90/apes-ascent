@@ -3,12 +3,8 @@ import {
     Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
-import { useState } from 'react';
-
-import { commonButtonStyle } from '../Styled';
-import TradeDialog from '../Dialog/TradeDialog/TradeDialog';
+import { useNavigate } from 'react-router-dom';
 import { UserAssetVault } from '../../../libs/entities/UserAssetVault';
-
 
 interface TradeButtonProps {
     vault: UserAssetVault | undefined;
@@ -16,45 +12,26 @@ interface TradeButtonProps {
     onComplete?: () => void;
 }
 
-export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, onComplete }) => {
+const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, onComplete }) => {
+    const navigate = useNavigate();
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    const handleComplete = () => {
-        setIsOpen(false);
-        if (onComplete) {
-            onComplete();
-        }
+    const handleTrade = () => {
+        navigate('/trading');
     };
 
     return (
-        <>
-            {isConnected ? (
-                <Tooltip label='Trade on this Vault'>
-                    <Button
-                        onClick={() => setIsOpen(true)}
-                        sx={commonButtonStyle}
-                        title="Trade on this Vault"
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                    >
-                        Trade
-                    </Button>
-                </Tooltip>
-            ) : (
-                <Tooltip label='Trade on this Vault'>
-                    <Button
-                        onClick={() => setIsOpen(true)}
-                        sx={commonButtonStyle}
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                        title="Trade on this Vault"
-                    // isDisabled={true}
-                    >
-                        Trade
-                    </Button>
-                </Tooltip>
-            )}
-            <TradeDialog isOpen={isOpen} setIsOpen={setIsOpen} vault={vault} onComplete={handleComplete} />
-        </>
+        <Tooltip label="Trade" placement="top">
+            <Button
+                colorScheme="green"
+                size="sm"
+                onClick={handleTrade}
+                isDisabled={!isConnected}
+            >
+                Trade
+            </Button>
+        </Tooltip>
     );
 };
+
+export default TradeButton;
 

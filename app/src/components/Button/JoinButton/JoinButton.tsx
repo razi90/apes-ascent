@@ -1,17 +1,12 @@
-import {
-    Button,
-    Tooltip,
-} from '@chakra-ui/react';
 import React, { useState } from 'react';
-
-import { commonButtonStyle } from '../Styled';
+import { useQuery } from '@tanstack/react-query';
 import { address, array, ManifestBuilder, NetworkId, nonFungibleLocalId, proof, RadixEngineToolkit, ValueKind } from '@radixdlt/radix-engine-toolkit';
 import { COMPETITION_ADDRESS, USER_NFT_RESOURCE_ADDRESS } from '../../../Config';
-import { useQuery } from '@tanstack/react-query';
 import { User } from '../../../libs/entities/User';
 import { fetchUserInfo } from '../../../libs/data_services/UserDataService';
 import { rdt } from '../../../libs/radix-dapp-toolkit/rdt';
 import { enqueueSnackbar } from 'notistack';
+import { OutlineButton } from '../OutlineButton/OutlineButton';
 
 interface JoinButtonProps {
     isConnected: boolean;
@@ -21,7 +16,6 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const { data: user, isError: isUserFetchError } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
-
 
     // Function to handle button clicks
     const handleClick = async () => {
@@ -78,30 +72,11 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
     };
 
     return (
-        <>
-            {isConnected ? (
-                <Tooltip label='Trade on this Vault'>
-                    <Button
-                        onClick={handleClick} // Use the click handler here
-                        sx={commonButtonStyle}
-                        title="Trade on this Vault"
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                    >
-                        Join now!
-                    </Button>
-                </Tooltip>
-            ) : (
-                <Tooltip label='Trade on this Vault'>
-                    <Button
-                        onClick={handleClick} // Use the click handler here
-                        sx={commonButtonStyle}
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                        title="Trade on this Vault"
-                    >
-                        Join now!
-                    </Button>
-                </Tooltip>
-            )}
-        </>
+        <OutlineButton
+            onClick={handleClick}
+            tooltipLabel={isConnected ? 'Join the competition' : 'Connect your wallet to join'}
+        >
+            Join Now
+        </OutlineButton>
     );
 };

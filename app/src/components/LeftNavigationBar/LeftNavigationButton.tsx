@@ -1,45 +1,38 @@
-import {
-    Link,
-    Button,
-    Box,
-    Text,
-} from "@chakra-ui/react";
-import { LeftNavigationButtonIcon } from "./LeftNavigationButtonIcon";
-import {
-    leftNavigationButtonStyle,
-} from "./Styled";
+import React from 'react';
+import { Button, Icon, Text, Image, VStack } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
+import { Link } from 'react-router-dom';
+import { leftNavigationButtonStyle } from './Styled';
 
 interface FeatureProps {
     link: string;
     title: string;
-    icon: any;
-    navIsMinimized: boolean;
-    isExternal?: boolean; // Optional prop to indicate external link
+    icon: IconType | string;
+    isExternal?: boolean;
 }
 
-export const LeftNavigationButton: React.FC<FeatureProps> = ({
-    link,
-    title,
-    icon,
-    navIsMinimized,
-    isExternal = false,
-}) => {
+export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon, isExternal = false }) => {
     return (
-        <Button
-            as={Link}
-            href={link}
-            target={isExternal ? "_blank" : undefined} // Opens in new tab if isExternal is true
-            rel={isExternal ? "noopener noreferrer" : undefined} // Enhances security
-            sx={leftNavigationButtonStyle}
-            title={title}
-            _hover={{ textDecoration: "none" }}
-        >
-            <LeftNavigationButtonIcon icon={icon} />
-
-            <Box w="100%">
-                {!navIsMinimized && <Text pl={3}>{title}</Text>}
-            </Box>
-        </Button>
+        <VStack spacing={1}>
+            <Link to={link} target={isExternal ? "_blank" : undefined}>
+                <Button
+                    sx={leftNavigationButtonStyle}
+                    width="100%"
+                    justifyContent="center"
+                    p={3}
+                    height="50px"
+                >
+                    {typeof icon === 'string' ? (
+                        <Image src={icon} boxSize={7} borderRadius="full" />
+                    ) : (
+                        <Icon as={icon} boxSize={7} />
+                    )}
+                </Button>
+            </Link>
+            <Text fontSize="md" color="gray.500">
+                {title}
+            </Text>
+        </VStack>
     );
 };
 

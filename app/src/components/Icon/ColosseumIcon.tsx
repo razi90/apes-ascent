@@ -11,7 +11,7 @@ interface ColosseumIconProps {
 }
 
 interface ColosseumImageIconProps {
-    imageSrc: any;
+    imageSrc: string;
     altText: string;
 }
 
