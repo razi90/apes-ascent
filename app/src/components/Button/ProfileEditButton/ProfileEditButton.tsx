@@ -1,36 +1,29 @@
-import { Button, Tooltip } from '@chakra-ui/react';
-import { commonButtonStyle } from '../Styled';
 import { useState } from 'react';
 import ProfileEditDialog from '../../Dialog/ProfileEditDialog/ProfileEditDialog';
 import { User } from '../../../libs/entities/User';
-
+import { OutlineButton } from '../OutlineButton/OutlineButton';
 
 interface ProfileEditButtonProps {
     user: User | undefined;
     isLoading: boolean;
 }
 
-const ProfileEditButton: React.FC<(ProfileEditButtonProps)> = ({ user, isLoading }) => {
-
+const ProfileEditButton: React.FC<ProfileEditButtonProps> = ({ user, isLoading }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    return (
-        isLoading ? null : (
-            <>
-                <Tooltip label='Edit your Profile'>
-                    <Button
-                        onClick={() => setIsOpen(true)}
-                        sx={commonButtonStyle}
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                        title="Edit your Profile"
-                    >
-                        Edit
-                    </Button>
-                </Tooltip>
+    if (isLoading) return null;
 
-                <ProfileEditDialog isOpen={isOpen} setIsOpen={setIsOpen} user={user} />
-            </>
-        )
+    return (
+        <>
+            <OutlineButton
+                onClick={() => setIsOpen(true)}
+                tooltipLabel="Edit your Profile"
+            >
+                Edit
+            </OutlineButton>
+
+            <ProfileEditDialog isOpen={isOpen} setIsOpen={setIsOpen} user={user} />
+        </>
     );
 };
 

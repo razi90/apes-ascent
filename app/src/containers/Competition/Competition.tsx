@@ -34,6 +34,7 @@ import VaultWithUserInfo from '../../components/UserAssetVault/VaultWithUserInfo
 import { JoinButton } from '../../components/Button/JoinButton/JoinButton';
 import { FaTrophy, FaUsers, FaClock, FaChartLine, FaMedal } from 'react-icons/fa';
 import { UserAssetVault } from '../../libs/entities/UserAssetVault';
+import PageContainer from '../../components/Container/PageContainer/PageContainer';
 
 // Dummy data for demonstration
 const dummyVaults: UserAssetVault[] = [
@@ -138,20 +139,24 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
 
     if (isLoading || priceLoading) {
         return (
-            <Center h="100vh">
-                <Spinner size="xl" color="primary.500" />
-                <Text ml={4} fontSize="xl" color={textColor}>Loading competition data...</Text>
-            </Center>
+            <PageContainer layoutMode={layoutMode}>
+                <Center h="100vh">
+                    <Spinner size="xl" color={accentColor} />
+                    <Text ml={4} fontSize="xl" color={textColor}>Loading competition data...</Text>
+                </Center>
+            </PageContainer>
         );
     }
 
     if (isError || priceError || !priceList) {
         return (
-            <Center h="100vh">
-                <Text fontSize="2xl" color="red.500">
-                    Failed to load competition data. Please try again later.
-                </Text>
-            </Center>
+            <PageContainer layoutMode={layoutMode}>
+                <Center h="100vh">
+                    <Text fontSize="2xl" color="red.500">
+                        Failed to load competition data. Please try again later.
+                    </Text>
+                </Center>
+            </PageContainer>
         );
     }
 
@@ -196,172 +201,162 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     const progressPercentage = ((30 - daysRemaining) / 30) * 100;
 
     return (
-        <Container maxW="container.xl" py={8}>
+        <PageContainer layoutMode={layoutMode}>
+            {/* Competition Header */}
             <Box
-                sx={routePageBoxStyle(layoutMode)}
-                bg={bgColor}
-                borderRadius="xl"
-                boxShadow="lg"
-                border="1px solid"
+                p={8}
+                bg="gray.800"
+                borderBottom="1px solid"
                 borderColor={borderColor}
-                overflow="hidden"
+                position="relative"
+                _after={{
+                    content: '""',
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                    opacity: 0.5,
+                }}
             >
-                {/* Competition Header */}
-                <Box
-                    p={8}
-                    bg="gray.800"
-                    borderBottom="1px solid"
-                    borderColor={borderColor}
-                    position="relative"
-                    _after={{
-                        content: '""',
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: "1px",
-                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
-                        opacity: 0.5,
-                    }}
-                >
-                    <Flex align="center" justify="space-between" mb={4}>
-                        <Flex align="center">
-                            <Icon as={FaTrophy} w={8} h={8} color={accentColor} mr={4} />
-                            <Box>
-                                <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
-                                <Text fontSize="lg" color={secondaryTextColor}>
-                                    Trade your way to the top of the leaderboard!
-                                </Text>
-                            </Box>
-                        </Flex>
-                        <JoinButton isConnected={false} />
+                <Flex align="center" justify="space-between" mb={4}>
+                    <Flex align="center">
+                        <Icon as={FaTrophy} w={8} h={8} color={accentColor} mr={4} />
+                        <Box>
+                            <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
+                            <Text fontSize="lg" color={secondaryTextColor}>
+                                Trade your way to the top of the leaderboard!
+                            </Text>
+                        </Box>
                     </Flex>
+                    <JoinButton isConnected={false} />
+                </Flex>
 
-                    {/* Stats Section */}
-                    <Grid templateColumns="repeat(4, 1fr)" gap={6} mt={8}>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Participants</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">{totalParticipants}</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaUsers} color="green.400" />
-                                <Text color="green.400" fontSize="sm">+{newParticipants} new today</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Value</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">${totalValue.toLocaleString()}</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaChartLine} color="green.400" />
-                                <Text color="green.400" fontSize="sm">+{dailyChange}% today</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Time Remaining</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">{daysRemaining}d</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaClock} color={secondaryTextColor} />
-                                <Text color={secondaryTextColor} fontSize="sm">{hoursRemaining}h remaining</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Top Prize</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">$10,000</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaMedal} color="yellow.400" />
-                                <Text color="yellow.400" fontSize="sm">1st Place Reward</Text>
-                            </HStack>
-                        </Box>
-                    </Grid>
-
-                    <Box mt={4}>
-                        <Text color={secondaryTextColor} mb={2}>Competition Progress</Text>
-                        <Tooltip label={`${daysRemaining}d ${hoursRemaining}h remaining`}>
-                            <Progress
-                                value={progressPercentage}
-                                size="sm"
-                                colorScheme="green"
-                                bg="gray.700"
-                                borderRadius="full"
-                                hasStripe
-                                isAnimated
-                            />
-                        </Tooltip>
+                {/* Stats Section */}
+                <Grid templateColumns="repeat(4, 1fr)" gap={6} mt={8}>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Participants</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">{totalParticipants}</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaUsers} color="green.400" />
+                            <Text color="green.400" fontSize="sm">+{newParticipants} new today</Text>
+                        </HStack>
                     </Box>
-                </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Value</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">${totalValue.toLocaleString()}</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaChartLine} color="green.400" />
+                            <Text color="green.400" fontSize="sm">+{dailyChange}% today</Text>
+                        </HStack>
+                    </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Time Remaining</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">{daysRemaining}d</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaClock} color={secondaryTextColor} />
+                            <Text color={secondaryTextColor} fontSize="sm">{hoursRemaining}h remaining</Text>
+                        </HStack>
+                    </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Top Prize</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">$10,000</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaMedal} color="yellow.400" />
+                            <Text color="yellow.400" fontSize="sm">1st Place Reward</Text>
+                        </HStack>
+                    </Box>
+                </Grid>
 
-                <Divider borderColor={borderColor} />
-
-                {/* Leaderboard */}
-                <Box p={8} bg={cardBgColor}>
-                    <Flex align="center" mb={6}>
-                        <Icon as={FaMedal} w={6} h={6} color={accentColor} mr={3} />
-                        <Heading size="lg" color={textColor}>Leaderboard</Heading>
-                    </Flex>
-                    <VStack spacing={4} align="stretch">
-                        {rankedVaults.map((vault, index) => (
-                            <Box
-                                key={vault.userId}
-                                position="relative"
-                                transition="all 0.2s"
-                                bg="gray.800"
-                                borderRadius="lg"
-                                border="1px solid"
-                                borderColor={borderColor}
-                                _hover={{
-                                    transform: "translateY(-2px)",
-                                    boxShadow: neonGlow,
-                                    borderColor: accentColor,
-                                }}
-                            >
-                                {index < 3 && (
-                                    <Badge
-                                        position="absolute"
-                                        top={-2}
-                                        right={-2}
-                                        colorScheme={index === 0 ? "yellow" : index === 1 ? "gray" : "orange"}
-                                        fontSize="md"
-                                        px={3}
-                                        py={1}
-                                        borderRadius="full"
-                                        boxShadow={neonGlow}
-                                    >
-                                        {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
-                                    </Badge>
-                                )}
-                                <VaultWithUserInfo
-                                    vault={vault}
-                                    priceList={displayPriceList}
-                                />
-                            </Box>
-                        ))}
-                    </VStack>
+                <Box mt={4}>
+                    <Text color={secondaryTextColor} mb={2}>Competition Progress</Text>
+                    <Tooltip label={`${daysRemaining}d ${hoursRemaining}h remaining`}>
+                        <Progress
+                            value={progressPercentage}
+                            size="sm"
+                            colorScheme="green"
+                            bg="gray.700"
+                            borderRadius="full"
+                            hasStripe
+                            isAnimated
+                        />
+                    </Tooltip>
                 </Box>
             </Box>
-        </Container>
+
+            <Divider borderColor={borderColor} />
+
+            {/* Leaderboard */}
+            <Box p={8} bg={cardBgColor}>
+                <Flex align="center" mb={6}>
+                    <Icon as={FaMedal} w={6} h={6} color={accentColor} mr={3} />
+                    <Heading size="lg" color={textColor}>Leaderboard</Heading>
+                </Flex>
+                <VStack spacing={4} align="stretch">
+                    {rankedVaults.map((vault, index) => (
+                        <Box
+                            key={vault.userId}
+                            position="relative"
+                            transition="all 0.2s"
+                            bg="gray.800"
+                            borderRadius="lg"
+                            border="1px solid"
+                            borderColor={borderColor}
+                            _hover={{
+                                transform: "translateY(-2px)",
+                                boxShadow: neonGlow,
+                                borderColor: accentColor,
+                            }}
+                        >
+                            {index < 3 && (
+                                <Badge
+                                    position="absolute"
+                                    top={-2}
+                                    right={-2}
+                                    colorScheme={index === 0 ? "yellow" : index === 1 ? "gray" : "orange"}
+                                    fontSize="md"
+                                    px={3}
+                                    py={1}
+                                    borderRadius="full"
+                                    boxShadow={neonGlow}
+                                >
+                                    {index === 0 ? "��" : index === 1 ? "🥈" : "🥉"}
+                                </Badge>
+                            )}
+                            <VaultWithUserInfo
+                                vault={vault}
+                                priceList={displayPriceList}
+                            />
+                        </Box>
+                    ))}
+                </VStack>
+            </Box>
+        </PageContainer>
     );
 };
 

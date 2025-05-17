@@ -35,6 +35,7 @@ import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
 import { FaClock, FaTrophy, FaCoins, FaChartLine, FaSearch, FaFilter, FaEye, FaSort } from 'react-icons/fa';
 import { OutlineButton } from '../../components/Button/OutlineButton/OutlineButton';
+import PageContainer from '../../components/Container/PageContainer/PageContainer';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
@@ -83,150 +84,140 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
 
     if (isLoading) {
         return (
-            <Flex justify="center" align="center" h="100vh">
-                <Spinner size="xl" color={accentColor} />
-                <Text ml={4} fontSize="xl" color={textColor}>Loading active duels...</Text>
-            </Flex>
+            <PageContainer layoutMode={layoutMode}>
+                <Flex justify="center" align="center" h="100vh">
+                    <Spinner size="xl" color={accentColor} />
+                    <Text ml={4} fontSize="xl" color={textColor}>Loading active duels...</Text>
+                </Flex>
+            </PageContainer>
         );
     }
 
     if (isError || !duels || duels.length === 0) {
         return (
-            <Flex justify="center" align="center" h="100vh">
-                <Text fontSize="2xl" color="red.500">
-                    No active duels found. Please check back later.
-                </Text>
-            </Flex>
+            <PageContainer layoutMode={layoutMode}>
+                <Flex justify="center" align="center" h="100vh">
+                    <Text fontSize="2xl" color="red.500">
+                        No active duels found. Please check back later.
+                    </Text>
+                </Flex>
+            </PageContainer>
         );
     }
 
     return (
-        <Container maxW="container.lg" py={8}>
+        <PageContainer layoutMode={layoutMode}>
+            {/* Header Section */}
             <Box
-                sx={routePageBoxStyle(layoutMode)}
-                bg={bgColor}
-                borderRadius="2xl"
-                boxShadow="lg"
-                border="1px solid"
+                p={8}
+                bg="gray.800"
+                borderBottom="1px solid"
                 borderColor={borderColor}
-                overflow="hidden"
+                position="relative"
+                _after={{
+                    content: '""',
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                    opacity: 0.5,
+                }}
             >
-                {/* Header Section */}
-                <Box
-                    p={8}
-                    bg="gray.800"
-                    borderBottom="1px solid"
-                    borderColor={borderColor}
-                    position="relative"
-                    _after={{
-                        content: '""',
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: "1px",
-                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
-                        opacity: 0.5,
-                    }}
-                >
-                    <Flex align="center" justify="space-between" mb={6}>
-                        <Flex align="center">
-                            <Icon
-                                as={GiSwordman}
-                                w={10}
-                                h={10}
-                                color={accentColor}
-                                mr={4}
-                            />
-                            <Box>
-                                <Heading size="xl" mb={2} color={textColor}>Duels</Heading>
-                                <Text fontSize="lg" color={secondaryTextColor}>
-                                    Challenge other traders in head-to-head competitions!
-                                </Text>
-                            </Box>
-                        </Flex>
-                        <OutlineButton tooltipLabel="Create a new duel">
-                            Create Duel
-                        </OutlineButton>
+                <Flex align="center" justify="space-between" mb={6}>
+                    <Flex align="center">
+                        <Icon
+                            as={GiSwordman}
+                            w={10}
+                            h={10}
+                            color={accentColor}
+                            mr={4}
+                        />
+                        <Box>
+                            <Heading size="xl" mb={2} color={textColor}>Duels</Heading>
+                            <Text fontSize="lg" color={secondaryTextColor}>
+                                Challenge other traders in head-to-head competitions!
+                            </Text>
+                        </Box>
                     </Flex>
+                    <OutlineButton tooltipLabel="Create a new duel">
+                        Create Duel
+                    </OutlineButton>
+                </Flex>
 
-                    {/* Stats Section */}
-                    <Grid templateColumns="repeat(4, 1fr)" gap={6} mt={8}>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Duels</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">24</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaChartLine} color="green.400" />
-                                <Text color="green.400" fontSize="sm">+12% this week</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Active Duels</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">8</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaChartLine} color="green.400" />
-                                <Text color="green.400" fontSize="sm">+3 new today</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Prize Pool</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">12,500 XRD</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaChartLine} color="green.400" />
-                                <Text color="green.400" fontSize="sm">+2,500 XRD today</Text>
-                            </HStack>
-                        </Box>
-                        <Box
-                            p={4}
-                            bg={cardBgColor}
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor={borderColor}
-                        >
-                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Average Duration</Text>
-                            <Text color={textColor} fontSize="2xl" fontWeight="bold">7 days</Text>
-                            <HStack mt={2}>
-                                <Icon as={FaClock} color={secondaryTextColor} />
-                                <Text color={secondaryTextColor} fontSize="sm">Most popular</Text>
-                            </HStack>
-                        </Box>
-                    </Grid>
-                </Box>
-
-
-
-                <Divider borderColor={borderColor} />
-
-
-                {/* Duels List */}
-                <Box p={8} bg={cardBgColor}>
-
-                    <VStack spacing={6} p={6} align="stretch">
-                        {filteredDuels?.map((duel) => (
-                            <DuelOverview key={duel.id} duel={duel} />
-                        ))}
-                    </VStack>
-                </Box>
+                {/* Stats Section */}
+                <Grid templateColumns="repeat(4, 1fr)" gap={6} mt={8}>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Duels</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">24</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaChartLine} color="green.400" />
+                            <Text color="green.400" fontSize="sm">+12% this week</Text>
+                        </HStack>
+                    </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Active Duels</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">8</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaChartLine} color="green.400" />
+                            <Text color="green.400" fontSize="sm">+3 new today</Text>
+                        </HStack>
+                    </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Prize Pool</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">12,500 XRD</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaChartLine} color="green.400" />
+                            <Text color="green.400" fontSize="sm">+2,500 XRD today</Text>
+                        </HStack>
+                    </Box>
+                    <Box
+                        p={4}
+                        bg={cardBgColor}
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm" mb={1}>Average Duration</Text>
+                        <Text color={textColor} fontSize="2xl" fontWeight="bold">7 days</Text>
+                        <HStack mt={2}>
+                            <Icon as={FaClock} color={secondaryTextColor} />
+                            <Text color={secondaryTextColor} fontSize="sm">Most popular</Text>
+                        </HStack>
+                    </Box>
+                </Grid>
             </Box>
-        </Container>
+
+            <Divider borderColor={borderColor} />
+
+            {/* Duels List */}
+            <Box p={8}>
+                <VStack spacing={6} p={6} align="stretch">
+                    {filteredDuels?.map((duel) => (
+                        <DuelOverview key={duel.id} duel={duel} />
+                    ))}
+                </VStack>
+            </Box>
+        </PageContainer>
     );
 };
 
