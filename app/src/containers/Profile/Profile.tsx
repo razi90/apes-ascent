@@ -385,7 +385,7 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
 
     if (isProfileLoading) {
         return (
-            <PageContainer layoutMode={layoutMode}>
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
                 <Center h="100vh">
                     <Text>Loading profile...</Text>
                 </Center>
@@ -394,7 +394,7 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
     }
 
     return (
-        <PageContainer layoutMode={layoutMode}>
+        <PageContainer layoutMode={layoutMode} maxW="container.xl">
             <VStack spacing={8} align="stretch">
                 <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
                 <Box>

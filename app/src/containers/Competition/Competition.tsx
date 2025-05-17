@@ -139,7 +139,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
 
     if (isLoading || priceLoading) {
         return (
-            <PageContainer layoutMode={layoutMode}>
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
                 <Center h="100vh">
                     <Spinner size="xl" color={accentColor} />
                     <Text ml={4} fontSize="xl" color={textColor}>Loading competition data...</Text>
@@ -150,7 +150,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
 
     if (isError || priceError || !priceList) {
         return (
-            <PageContainer layoutMode={layoutMode}>
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
                 <Center h="100vh">
                     <Text fontSize="2xl" color="red.500">
                         Failed to load competition data. Please try again later.
@@ -201,7 +201,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     const progressPercentage = ((30 - daysRemaining) / 30) * 100;
 
     return (
-        <PageContainer layoutMode={layoutMode}>
+        <PageContainer layoutMode={layoutMode} maxW="container.xl">
             {/* Competition Header */}
             <Box
                 p={8}

@@ -84,7 +84,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
 
     if (isLoading) {
         return (
-            <PageContainer layoutMode={layoutMode}>
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
                 <Flex justify="center" align="center" h="100vh">
                     <Spinner size="xl" color={accentColor} />
                     <Text ml={4} fontSize="xl" color={textColor}>Loading active duels...</Text>
@@ -95,7 +95,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
 
     if (isError || !duels || duels.length === 0) {
         return (
-            <PageContainer layoutMode={layoutMode}>
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
                 <Flex justify="center" align="center" h="100vh">
                     <Text fontSize="2xl" color="red.500">
                         No active duels found. Please check back later.
@@ -106,7 +106,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     }
 
     return (
-        <PageContainer layoutMode={layoutMode}>
+        <PageContainer layoutMode={layoutMode} maxW="container.xl">
             {/* Header Section */}
             <Box
                 p={8}

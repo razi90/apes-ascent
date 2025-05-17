@@ -14,7 +14,7 @@ interface UnknownPageProps {
 
 const UnknownPage: React.FC<UnknownPageProps> = ({ layoutMode }) => {
     return (
-        <PageContainer layoutMode={layoutMode}>
+        <PageContainer layoutMode={layoutMode} maxW="container.xl">
             <Flex
                 w="100%"
                 h="80vh"
