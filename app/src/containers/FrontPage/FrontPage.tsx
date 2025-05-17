@@ -12,7 +12,9 @@ import {
     useColorModeValue,
     Button,
     HStack,
+    Link,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from 'react-router-dom';
 import { LayoutMode } from '../../types/layout';
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { FaTrophy, FaUsers, FaChartLine, FaRocket, FaShieldAlt, FaGamepad } from 'react-icons/fa';
@@ -104,6 +106,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                             borderColor={borderColor}
                             hoverColor={accentColor}
                             bgColor={cardBgColor}
+                            link="/free_for_all"
                         />
 
                         <GameModeCard
@@ -113,6 +116,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                             borderColor={borderColor}
                             hoverColor={accentColor}
                             bgColor={cardBgColor}
+                            link="/duels"
                         />
 
                         <GameModeCard
@@ -122,6 +126,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                             borderColor={borderColor}
                             hoverColor={accentColor}
                             bgColor={cardBgColor}
+                            isComingSoon={true}
                         />
                     </SimpleGrid>
                 </VStack>
@@ -182,34 +187,73 @@ interface GameModeCardProps {
     borderColor: string;
     hoverColor: string;
     bgColor: string;
+    isComingSoon?: boolean;
+    link?: string;
 }
 
-const GameModeCard: React.FC<GameModeCardProps> = ({ title, description, icon, borderColor, hoverColor, bgColor }) => {
-    return (
+const GameModeCard: React.FC<GameModeCardProps> = ({
+    title,
+    description,
+    icon,
+    borderColor,
+    hoverColor,
+    bgColor,
+    isComingSoon = false,
+    link = "#"
+}) => {
+    const CardContent = (
         <Box
             border="1px solid"
             borderColor={borderColor}
-            borderRadius="xl"
-            boxShadow="sm"
+            borderRadius="lg"
             bg={bgColor}
-            p={8}
+            p={6}
             transition="all 0.3s ease"
+            position="relative"
+            opacity={isComingSoon ? 0.7 : 1}
             _hover={{
-                transform: "translateY(-4px)",
-                borderColor: hoverColor,
-                boxShadow: "0 0 20px rgba(72, 187, 120, 0.2)",
+                transform: isComingSoon ? "none" : "translateY(-2px)",
+                borderColor: isComingSoon ? borderColor : hoverColor,
+                boxShadow: isComingSoon ? "none" : "0 0 15px rgba(72, 187, 120, 0.1)",
             }}
+            cursor={isComingSoon ? "not-allowed" : "pointer"}
         >
-            <VStack spacing={4} align="center">
-                <Icon as={icon} w={12} h={12} color="green.400" />
-                <Heading as="h3" size="lg" textAlign="center">
-                    {title}
-                </Heading>
-                <Text textAlign="center" color="gray.500">
-                    {description}
+            {isComingSoon && (
+                <Text
+                    position="absolute"
+                    top="-10px"
+                    left="50%"
+                    transform="translateX(-50%)"
+                    bg="red.400"
+                    color="white"
+                    px={3}
+                    py={1}
+                    borderRadius="full"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    whiteSpace="nowrap"
+                >
+                    Coming Soon
                 </Text>
+            )}
+            <VStack spacing={4} align="start">
+                <Icon as={icon} w={8} h={8} color={hoverColor} />
+                <VStack align="start" spacing={2}>
+                    <Heading as="h3" size="md">
+                        {title}
+                    </Heading>
+                    <Text color="gray.500" fontSize="sm">
+                        {description}
+                    </Text>
+                </VStack>
             </VStack>
         </Box>
+    );
+
+    return isComingSoon ? CardContent : (
+        <RouterLink to={link}>
+            {CardContent}
+        </RouterLink>
     );
 };
 
