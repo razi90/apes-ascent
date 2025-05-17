@@ -99,11 +99,11 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     }
 
     return (
-        <Container maxW="container.xl" py={8}>
+        <Container maxW="container.lg" py={8}>
             <Box
                 sx={routePageBoxStyle(layoutMode)}
                 bg={bgColor}
-                borderRadius="xl"
+                borderRadius="2xl"
                 boxShadow="lg"
                 border="1px solid"
                 borderColor={borderColor}
@@ -111,27 +111,43 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
             >
                 {/* Duels Header */}
                 <Box
-                    p={8}
+                    p={6}
                     bg="gray.800"
-                    borderBottom="1px solid"
-                    borderColor={borderColor}
                     position="relative"
-                    _after={{
+                    borderTopRadius="2xl"
+                    borderBottomRadius="2xl"
+                    _before={{
                         content: '""',
                         position: "absolute",
-                        bottom: 0,
+                        top: 0,
                         left: 0,
                         right: 0,
-                        height: "1px",
-                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
-                        opacity: 0.5,
+                        height: "100%",
+                        background: "linear-gradient(180deg, rgba(72, 187, 120, 0.1) 0%, rgba(45, 55, 72, 0) 100%)",
+                        pointerEvents: "none",
+                        borderRadius: "inherit",
                     }}
                 >
                     <Flex align="center" justify="space-between" mb={4}>
                         <Flex align="center">
-                            <Icon as={GiSwordman} w={8} h={8} color={accentColor} mr={4} />
+                            <Icon
+                                as={GiSwordman}
+                                w={8}
+                                h={8}
+                                color={accentColor}
+                                mr={4}
+                                filter="drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))"
+                            />
                             <Box>
-                                <Heading size="xl" mb={2} color={textColor}>Active Duels</Heading>
+                                <Heading
+                                    size="xl"
+                                    mb={2}
+                                    color={textColor}
+                                    bgGradient="linear(to-r, green.400, green.200)"
+                                    bgClip="text"
+                                >
+                                    Active Duels
+                                </Heading>
                                 <Text fontSize="lg" color={secondaryTextColor}>
                                     Challenge other traders in head-to-head competitions!
                                 </Text>
@@ -141,6 +157,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                             colorScheme="green"
                             size="lg"
                             leftIcon={<FaTrophy />}
+                            borderRadius="xl"
                             _hover={{
                                 transform: "translateY(-2px)",
                                 boxShadow: neonGlow,
@@ -160,6 +177,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 bg={cardBgColor}
                                 borderColor={borderColor}
+                                borderRadius="xl"
                                 _hover={{ borderColor: accentColor }}
                                 _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
                                 pl={10}
@@ -178,6 +196,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             bg={cardBgColor}
                             borderColor={borderColor}
+                            borderRadius="xl"
                             _hover={{ borderColor: accentColor }}
                             _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
                         >
@@ -193,9 +212,10 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                                 aria-label="Sort by"
                                 bg={cardBgColor}
                                 borderColor={borderColor}
+                                borderRadius="xl"
                                 _hover={{ borderColor: accentColor }}
                             />
-                            <MenuList bg={cardBgColor} borderColor={borderColor}>
+                            <MenuList bg={cardBgColor} borderColor={borderColor} borderRadius="xl">
                                 <MenuItem onClick={() => setSortBy('time')}>Time Remaining</MenuItem>
                                 <MenuItem onClick={() => setSortBy('prize')}>Prize Pool</MenuItem>
                             </MenuList>
@@ -203,7 +223,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                     </Flex>
                 </Box>
 
-                <VStack spacing={6} p={8} align="stretch">
+                <VStack spacing={6} p={6} align="stretch">
                     {filteredDuels?.map((duel) => (
                         <DuelOverview key={duel.id} duel={duel} />
                     ))}
