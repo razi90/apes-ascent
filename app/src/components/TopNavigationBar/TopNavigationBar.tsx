@@ -140,13 +140,17 @@ export default function TopNavigationBar() {
 
                         {!isMobile && (
                             <VStack spacing={2} flex="1" align="center">
-                                <HStack spacing={8} justify="center">
+                                <HStack spacing={8} justify="center" minW="400px">
                                     {wallet?.persona === undefined ? (
-                                        <CreateUserButton />
+                                        <Box minW="120px">
+                                            <CreateUserButton />
+                                        </Box>
                                     ) : (
                                         <>
                                             {user?.id === '' ? (
-                                                <CreateUserButton />
+                                                <Box minW="120px">
+                                                    <CreateUserButton />
+                                                </Box>
                                             ) : (
                                                 <LeftNavigationButton
                                                     link={`/profile/${filteredUserId}`}
