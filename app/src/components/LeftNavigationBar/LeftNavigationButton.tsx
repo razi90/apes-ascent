@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Text, Image } from '@chakra-ui/react';
+import { Button, Icon, Text, Image, VStack } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 import { Link } from 'react-router-dom';
 import { leftNavigationButtonStyle } from './Styled';
@@ -14,21 +14,27 @@ interface FeatureProps {
 
 export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon, isExternal = false, navIsMinimized }) => {
     return (
-        <Link to={link} target={isExternal ? "_blank" : undefined}>
-            <Button
-                sx={leftNavigationButtonStyle}
-                width="100%"
-                justifyContent="flex-start"
-                pl={4}
-            >
-                {typeof icon === 'string' ? (
-                    <Image src={icon} boxSize={5} mr={3} borderRadius="full" />
-                ) : (
-                    <Icon as={icon} boxSize={5} mr={3} />
-                )}
-                <Text>{navIsMinimized ? "" : title}</Text>
-            </Button>
-        </Link>
+        <VStack spacing={1}>
+            <Link to={link} target={isExternal ? "_blank" : undefined}>
+                <Button
+                    sx={leftNavigationButtonStyle}
+                    width="100%"
+                    justifyContent="center"
+                    p={2}
+                >
+                    {typeof icon === 'string' ? (
+                        <Image src={icon} boxSize={5} borderRadius="full" />
+                    ) : (
+                        <Icon as={icon} boxSize={5} />
+                    )}
+                </Button>
+            </Link>
+            {!navIsMinimized && (
+                <Text fontSize="sm" color="gray.500">
+                    {title}
+                </Text>
+            )}
+        </VStack>
     );
 };
 

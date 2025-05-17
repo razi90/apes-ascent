@@ -9,6 +9,7 @@ import {
     useBreakpointValue,
     HStack,
     Container,
+    VStack,
 } from "@chakra-ui/react";
 import { WalletButton } from '../Button/WalletButton/WalletButton';
 import { useColorModeValue } from "@chakra-ui/react";
@@ -78,7 +79,7 @@ export default function TopNavigationBar() {
         <>
             <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
                 <Container maxW="container.xl" px={4}>
-                    <Flex height="80px" align="center" justify="space-between">
+                    <Flex height="120px" align="center" justify="space-between">
                         <Flex align="center" gap={6}>
                             <Link href={"/"}>
                                 <Image
@@ -96,27 +97,29 @@ export default function TopNavigationBar() {
                         </Flex>
 
                         {!isMobile && (
-                            <HStack spacing={4} justify="center" flex="1">
-                                {wallet?.persona === undefined ? (
-                                    <CreateUserButton navIsMinimized={false} />
-                                ) : (
-                                    <>
-                                        {user?.id === '' ? (
-                                            <CreateUserButton navIsMinimized={false} />
-                                        ) : (
-                                            <LeftNavigationButton
-                                                link={`/profile/${filteredUserId}`}
-                                                title={user ? user.name : 'Profile'}
-                                                icon={user && user.avatar ? user.avatar : FaUserCircle}
-                                                navIsMinimized={false}
-                                            />
-                                        )}
-                                    </>
-                                )}
-                                <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={false} />
-                                <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={false} />
-                                <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={false} />
-                            </HStack>
+                            <VStack spacing={3} flex="1" align="center">
+                                <HStack spacing={4} justify="center">
+                                    {wallet?.persona === undefined ? (
+                                        <CreateUserButton navIsMinimized={false} />
+                                    ) : (
+                                        <>
+                                            {user?.id === '' ? (
+                                                <CreateUserButton navIsMinimized={false} />
+                                            ) : (
+                                                <LeftNavigationButton
+                                                    link={`/profile/${filteredUserId}`}
+                                                    title={user ? user.name : 'Profile'}
+                                                    icon={user && user.avatar ? user.avatar : FaUserCircle}
+                                                    navIsMinimized={false}
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                    <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={false} />
+                                    <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={false} />
+                                    <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={false} />
+                                </HStack>
+                            </VStack>
                         )}
 
                         <HStack spacing={2}>
@@ -142,7 +145,7 @@ export default function TopNavigationBar() {
                 </Container>
             </Box>
 
-            <Box height="80px" />
+            <Box height="120px" />
 
             <Joyride
                 steps={steps}
