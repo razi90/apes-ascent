@@ -211,61 +211,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                     </Grid>
                 </Box>
 
-                {/* Filters and Search */}
-                {/* <Box p={6}>
-                    <Flex gap={4}>
-                        <Flex position="relative" flex={1}>
-                            <Input
-                                placeholder="Search players..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                bg={cardBgColor}
-                                borderColor={borderColor}
-                                borderRadius="xl"
-                                _hover={{ borderColor: accentColor }}
-                                _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
-                                pl={10}
-                            />
-                            <Icon
-                                as={FaSearch}
-                                color={secondaryTextColor}
-                                position="absolute"
-                                left={3}
-                                top="50%"
-                                transform="translateY(-50%)"
-                            />
-                        </Flex>
-                        <Select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            bg={cardBgColor}
-                            borderColor={borderColor}
-                            borderRadius="xl"
-                            _hover={{ borderColor: accentColor }}
-                            _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
-                        >
-                            <option value="all">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="pending">Pending</option>
-                            <option value="completed">Completed</option>
-                        </Select>
-                        <Menu>
-                            <MenuButton
-                                as={IconButton}
-                                icon={<FaSort />}
-                                aria-label="Sort by"
-                                bg={cardBgColor}
-                                borderColor={borderColor}
-                                borderRadius="xl"
-                                _hover={{ borderColor: accentColor }}
-                            />
-                            <MenuList bg={cardBgColor} borderColor={borderColor} borderRadius="xl">
-                                <MenuItem onClick={() => setSortBy('time')}>Time Remaining</MenuItem>
-                                <MenuItem onClick={() => setSortBy('prize')}>Prize Pool</MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </Flex>
-                </Box> */}
+
 
                 <Divider borderColor={borderColor} />
 

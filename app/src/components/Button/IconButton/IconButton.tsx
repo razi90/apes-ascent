@@ -1,27 +1,24 @@
 import {
-    Button,
-    ButtonProps,
+    IconButton as ChakraIconButton,
+    IconButtonProps,
     Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
-import { outlineButtonStyle } from '../styles';
+import { iconButtonStyle } from '../styles';
 
-interface CustomButtonProps extends Omit<ButtonProps, 'sx'> {
+interface CustomIconButtonProps extends Omit<IconButtonProps, 'sx'> {
     tooltipLabel?: string;
 }
 
-export const OutlineButton: React.FC<CustomButtonProps> = ({
-    children,
+export const IconButton: React.FC<CustomIconButtonProps> = ({
     tooltipLabel,
     ...props
 }) => {
     const button = (
-        <Button
-            sx={outlineButtonStyle}
+        <ChakraIconButton
+            sx={iconButtonStyle}
             {...props}
-        >
-            {children}
-        </Button>
+        />
     );
 
     if (tooltipLabel) {
