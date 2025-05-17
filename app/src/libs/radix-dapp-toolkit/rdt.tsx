@@ -2,28 +2,47 @@ import { DataRequestBuilder, RadixDappToolkit, RadixNetwork, WalletDataState } f
 import { GatewayApiClient } from '@radixdlt/babylon-gateway-api-sdk'
 import { QueryClient } from '@tanstack/react-query';
 import { enqueueSnackbar } from 'notistack';
+import { Subscription } from 'rxjs';
 
 // Maximum number of retry attempts
 const MAX_RETRY_ATTEMPTS = 3;
 // Delay between retries in milliseconds
 const RETRY_DELAY = 2000;
 
-export const rdt = RadixDappToolkit({
-    dAppDefinitionAddress:
-        'account_tdx_2_12ygy30qjq3w3gsrmwvm7y4e9y46kn9vyphyd54rd9ljqe63v9k05qe',
-    networkId: RadixNetwork.Stokenet,
-    applicationName: "Ape's Ascent",
-    applicationVersion: '0.1.0',
-});
+// Type for the Radix Dapp Toolkit configuration
+interface RadixConfig {
+    dAppDefinitionAddress: string;
+    networkId: typeof RadixNetwork[keyof typeof RadixNetwork];
+    applicationName: string;
+    applicationVersion: string;
+}
 
-export const gatewayApi = GatewayApiClient.initialize(
-    rdt.gatewayApi.clientConfig,
-);
-
+// Type for initialization result
 interface InitResult {
     success: boolean;
     error?: string;
 }
+
+// Type for the global window object with our custom properties
+declare global {
+    interface Window {
+        __radixSubscription?: Subscription;
+    }
+}
+
+// Radix Dapp Toolkit configuration
+const radixConfig: RadixConfig = {
+    dAppDefinitionAddress: 'account_tdx_2_12ygy30qjq3w3gsrmwvm7y4e9y46kn9vyphyd54rd9ljqe63v9k05qe',
+    networkId: RadixNetwork.Stokenet,
+    applicationName: "Ape's Ascent",
+    applicationVersion: '0.1.0',
+};
+
+export const rdt = RadixDappToolkit(radixConfig);
+
+export const gatewayApi = GatewayApiClient.initialize(
+    rdt.gatewayApi.clientConfig,
+);
 
 export const initRadixDappToolkit = async (
     queryClient: QueryClient,
@@ -42,7 +61,7 @@ export const initRadixDappToolkit = async (
         });
 
         // Store the subscription for cleanup
-        (window as any).__radixSubscription = subscription;
+        window.__radixSubscription = subscription;
 
         return { success: true };
     } catch (error) {
@@ -61,11 +80,10 @@ export const initRadixDappToolkit = async (
     }
 };
 
-export const cleanupRadixDappToolkit = () => {
-    const subscription = (window as any).__radixSubscription;
-    if (subscription) {
-        subscription.unsubscribe();
-        (window as any).__radixSubscription = undefined;
+export const cleanupRadixDappToolkit = (): void => {
+    if (window.__radixSubscription) {
+        window.__radixSubscription.unsubscribe();
+        window.__radixSubscription = undefined;
     }
 };
 
