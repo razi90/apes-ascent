@@ -9,6 +9,11 @@ import {
     Divider,
     Badge,
     Button,
+    Container,
+    Heading,
+    useColorModeValue,
+    Icon,
+    HStack,
 } from "@chakra-ui/react";
 import { useQuery } from '@tanstack/react-query';
 import { Duel as DuelEntity } from '../../libs/entities/Duel';
@@ -16,12 +21,23 @@ import { fetchUserInfoById } from '../../libs/data_services/UserDataService';
 import { fetchDuelsData } from '../../libs/data_services/DuelDataService';
 import { LayoutMode } from '../../types/layout';
 import { User } from '../../libs/entities/User';
+import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
+import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
+import { FaClock, FaTrophy } from 'react-icons/fa';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
 }
 
 const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
+    const bgColor = useColorModeValue("gray.900", "gray.900");
+    const cardBgColor = useColorModeValue("gray.800", "gray.800");
+    const borderColor = useColorModeValue("gray.700", "gray.700");
+    const textColor = useColorModeValue("white", "white");
+    const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
+    const accentColor = "green.400";
+    const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
+
     // Fetch active duels
     const { data: duels, isLoading, isError } = useQuery<DuelEntity[]>({
         queryKey: ['active_duels'],
@@ -31,8 +47,8 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     if (isLoading) {
         return (
             <Flex justify="center" align="center" h="100vh">
-                <Spinner size="xl" />
-                <Text ml={4} fontSize="xl">Loading active duels...</Text>
+                <Spinner size="xl" color={accentColor} />
+                <Text ml={4} fontSize="xl" color={textColor}>Loading active duels...</Text>
             </Flex>
         );
     }
@@ -48,27 +64,68 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     }
 
     return (
-        <Flex
-            direction="column"
-            align="center"
-            justify="center"
-            h="100vh"
-            w="100%"
-            bg="gray.50" // Optional: Add background for better visual clarity
-            p={6}
-        >
-            <Text fontSize="3xl" fontWeight="bold" mb={8} textAlign="center">
-                Active Duels
-            </Text>
-            <VStack spacing={6} align="stretch" w="100%" maxW="800px">
-                {duels.map((duel) => (
-                    <DuelOverview key={duel.id} duel={duel} />
-                ))}
-            </VStack>
-        </Flex>
+        <Container maxW="container.xl" py={8}>
+            <Box
+                sx={routePageBoxStyle(layoutMode)}
+                bg={bgColor}
+                borderRadius="xl"
+                boxShadow="lg"
+                border="1px solid"
+                borderColor={borderColor}
+                overflow="hidden"
+            >
+                {/* Duels Header */}
+                <Box
+                    p={8}
+                    bg="gray.800"
+                    borderBottom="1px solid"
+                    borderColor={borderColor}
+                    position="relative"
+                    _after={{
+                        content: '""',
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "1px",
+                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                        opacity: 0.5,
+                    }}
+                >
+                    <Flex align="center" justify="space-between" mb={4}>
+                        <Flex align="center">
+                            <Icon as={GiSwordman} w={8} h={8} color={accentColor} mr={4} />
+                            <Box>
+                                <Heading size="xl" mb={2} color={textColor}>Active Duels</Heading>
+                                <Text fontSize="lg" color={secondaryTextColor}>
+                                    Challenge other traders in head-to-head competitions!
+                                </Text>
+                            </Box>
+                        </Flex>
+                        <Button
+                            colorScheme="green"
+                            size="lg"
+                            leftIcon={<FaTrophy />}
+                            _hover={{
+                                transform: "translateY(-2px)",
+                                boxShadow: neonGlow,
+                            }}
+                            transition="all 0.2s"
+                        >
+                            Create Duel
+                        </Button>
+                    </Flex>
+                </Box>
+
+                <VStack spacing={6} p={8} align="stretch">
+                    {duels.map((duel) => (
+                        <DuelOverview key={duel.id} duel={duel} />
+                    ))}
+                </VStack>
+            </Box>
+        </Container>
     );
 };
-
 
 interface DuelOverviewProps {
     duel: DuelEntity;
@@ -85,21 +142,34 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
         queryFn: () => fetchUserInfoById(duel.player2Id),
     });
 
+    const cardBgColor = useColorModeValue("gray.800", "gray.800");
+    const borderColor = useColorModeValue("gray.700", "gray.700");
+    const textColor = useColorModeValue("white", "white");
+    const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
+    const accentColor = "green.400";
+    const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
+
     return (
         <Box
-            p={6}
+            p={4}
+            bg={cardBgColor}
             border="1px solid"
-            borderColor="gray.300"
+            borderColor={borderColor}
             borderRadius="lg"
             boxShadow="md"
-            _hover={{ boxShadow: "lg", bg: "gray.50" }}
+            _hover={{
+                transform: "translateY(-2px)",
+                boxShadow: neonGlow,
+                borderColor: accentColor,
+            }}
+            transition="all 0.2s"
         >
             <Flex
                 alignItems="center"
                 justifyContent="space-between"
                 textAlign="center"
                 direction="row"
-                gap={6}
+                gap={4}
             >
                 {/* Player 1 */}
                 <PlayerOverview
@@ -110,9 +180,48 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                 />
 
                 {/* VS Separator */}
-                <Text fontSize="2xl" fontWeight="bold" color="gray.600">
-                    VS
-                </Text>
+                <Box
+                    position="relative"
+                    px={6}
+                    py={3}
+                    _before={{
+                        content: '""',
+                        position: "absolute",
+                        top: "50%",
+                        left: 0,
+                        right: 0,
+                        height: "1px",
+                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                        transform: "translateY(-50%)",
+                    }}
+                >
+                    <Icon
+                        as={GiCrossedSwords}
+                        w={12}
+                        h={12}
+                        color={accentColor}
+                        bg={cardBgColor}
+                        position="relative"
+                        px={2}
+                        zIndex={1}
+                        _hover={{
+                            transform: "scale(1.1)",
+                            filter: "drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))",
+                        }}
+                        transition="all 0.2s"
+                    />
+                    <HStack
+                        color={secondaryTextColor}
+                        fontSize="xs"
+                        mt={2}
+                        justify="center"
+                    >
+                        <Icon as={FaClock} />
+                        <Text>
+                            {new Date(duel.startDate).toLocaleDateString()} - {new Date(duel.endDate).toLocaleDateString()}
+                        </Text>
+                    </HStack>
+                </Box>
 
                 {/* Player 2 */}
                 <PlayerOverview
@@ -123,14 +232,30 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                 />
             </Flex>
 
-            <Divider my={4} />
+            <Divider my={3} borderColor={borderColor} />
 
             {/* Duel Actions */}
-            <Flex justifyContent="center">
-                <Button colorScheme="blue" size="sm" mr={4}>
+            <Flex justifyContent="center" gap={3}>
+                <Button
+                    colorScheme="blue"
+                    size="sm"
+                    _hover={{
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 0 10px rgba(66, 153, 225, 0.5)",
+                    }}
+                    transition="all 0.2s"
+                >
                     View Details
                 </Button>
-                <Button colorScheme="green" size="sm">
+                <Button
+                    colorScheme="green"
+                    size="sm"
+                    _hover={{
+                        transform: "translateY(-2px)",
+                        boxShadow: neonGlow,
+                    }}
+                    transition="all 0.2s"
+                >
                     Join
                 </Button>
             </Flex>
@@ -146,32 +271,56 @@ interface PlayerOverviewProps {
 }
 
 const PlayerOverview: React.FC<PlayerOverviewProps> = ({ user, isLoading, isError, side }) => {
+    const textColor = useColorModeValue("white", "white");
+    const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
+    const accentColor = "green.400";
+
     return (
         <Flex
             direction="column"
             alignItems="center"
             justifyContent="center"
-            w="150px"
+            w="120px"
             textAlign="center"
-            h="100%" // Ensures it takes up the full height of its parent
+            h="100%"
         >
-            <Badge colorScheme="blue" mb={2}>{side}</Badge>
+            <Badge
+                colorScheme="green"
+                mb={1}
+                px={2}
+                py={0.5}
+                borderRadius="full"
+                bg={accentColor}
+                color="white"
+                fontSize="xs"
+            >
+                {side}
+            </Badge>
             {isLoading ? (
-                <Spinner size="lg" />
+                <Spinner size="md" color={accentColor} />
             ) : isError ? (
-                <Text fontSize="sm" color="red.500">
+                <Text fontSize="xs" color="red.500">
                     Failed to load user info
                 </Text>
             ) : (
                 <>
                     <Image
-                        boxSize="80px"
+                        boxSize="60px"
                         borderRadius="full"
                         src={user?.avatar || "/images/ape-logo.webp"}
                         alt={`${user?.name}'s Avatar`}
-                        mb={2}
+                        mb={1}
+                        border="2px solid"
+                        borderColor={accentColor}
+                        _hover={{
+                            transform: "scale(1.05)",
+                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
+                        }}
+                        transition="all 0.2s"
                     />
-                    <Text fontWeight="bold">{user?.name || 'Unknown User'}</Text>
+                    <Text fontWeight="bold" color={textColor} fontSize="sm" noOfLines={1}>
+                        {user?.name || 'Unknown User'}
+                    </Text>
                 </>
             )}
         </Flex>
