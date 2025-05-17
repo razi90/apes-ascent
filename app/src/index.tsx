@@ -13,6 +13,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 
 // local
 import Layout from './Layout';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 // libs
 import theme from './libs/themes/BaseTheme';
@@ -42,14 +43,16 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <ChakraProvider theme={theme}>
-    <QueryClientProvider client={queryClient}>
-      <SnackbarProvider maxSnack={5} anchorOrigin={{
-        vertical: "bottom", horizontal: "right"
-      }}>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <Layout />
-      </SnackbarProvider>
-    </QueryClientProvider>
-  </ChakraProvider>
+  <ErrorBoundary>
+    <ChakraProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <SnackbarProvider maxSnack={5} anchorOrigin={{
+          vertical: "bottom", horizontal: "right"
+        }}>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <Layout />
+        </SnackbarProvider>
+      </QueryClientProvider>
+    </ChakraProvider>
+  </ErrorBoundary>
 );
