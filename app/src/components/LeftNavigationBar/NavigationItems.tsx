@@ -1,7 +1,7 @@
 import React from 'react';
 import { VStack, Box, Button, Icon } from '@chakra-ui/react';
-import { FaMedal, FaUserCircle, FaFistRaised } from "react-icons/fa";
-import { GiMonkey, GiBorderedShield } from "react-icons/gi";
+import { FaMedal, FaUserCircle } from "react-icons/fa";
+import { GiMonkey, GiBorderedShield, GiSwordman } from "react-icons/gi";
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
 
@@ -58,7 +58,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({ isMinimized = 
                 <Box sx={leftNavigationDividerBoxStyle(isMinimized)} />
 
                 <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} />
-                <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} />
+                <LeftNavigationButton link="/duels" title="Duels" icon={GiSwordman} />
                 <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} />
 
                 {/* <Box sx={leftNavigationDividerBoxStyle(isMinimized)} /> */}

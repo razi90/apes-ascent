@@ -22,8 +22,8 @@ import { fetchUserInfo } from '../../libs/data_services/UserDataService';
 import { WalletDataState } from '@radixdlt/radix-dapp-toolkit';
 import { fetchConnectedWallet } from '../../libs/data_services/WalletDataService';
 import { LeftNavigationButton } from '../LeftNavigationBar/LeftNavigationButton';
-import { GiMonkey, GiBorderedShield } from "react-icons/gi";
-import { FaFistRaised, FaUserCircle } from "react-icons/fa";
+import { GiMonkey, GiBorderedShield, GiSwordman } from "react-icons/gi";
+import { FaUserCircle } from "react-icons/fa";
 import CreateUserButton from '../Button/CreateUser/CreateUserButton';
 import { SocialButton } from "../Button/SocialButton/SocialButton";
 
@@ -155,7 +155,7 @@ export default function TopNavigationBar() {
                                     <LeftNavigationButton
                                         link="/duels"
                                         title="Duels"
-                                        icon={FaFistRaised}
+                                        icon={GiSwordman}
                                     />
                                     <LeftNavigationButton
                                         link="/clan_wars"
