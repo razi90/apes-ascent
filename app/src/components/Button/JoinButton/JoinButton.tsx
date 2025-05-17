@@ -22,7 +22,6 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
 
     const { data: user, isError: isUserFetchError } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
 
-
     // Function to handle button clicks
     const handleClick = async () => {
         setIsOpen(true);
@@ -80,25 +79,51 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
     return (
         <>
             {isConnected ? (
-                <Tooltip label='Trade on this Vault'>
+                <Tooltip label='Join the competition'>
                     <Button
-                        onClick={handleClick} // Use the click handler here
-                        sx={commonButtonStyle}
-                        title="Trade on this Vault"
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
+                        onClick={handleClick}
+                        bg="transparent"
+                        color="white"
+                        border="1px solid"
+                        borderColor="green.400"
+                        borderRadius="full"
+                        px={6}
+                        py={2}
+                        fontSize="md"
+                        fontWeight="medium"
+                        transition="all 0.2s ease-in-out"
+                        _hover={{
+                            bg: "transparent",
+                            color: "green.400",
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
+                        }}
                     >
-                        Join now!
+                        Join Now
                     </Button>
                 </Tooltip>
             ) : (
-                <Tooltip label='Trade on this Vault'>
+                <Tooltip label='Connect your wallet to join'>
                     <Button
-                        onClick={handleClick} // Use the click handler here
-                        sx={commonButtonStyle}
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                        title="Trade on this Vault"
+                        onClick={handleClick}
+                        bg="transparent"
+                        color="white"
+                        border="1px solid"
+                        borderColor="green.400"
+                        borderRadius="full"
+                        px={6}
+                        py={2}
+                        fontSize="md"
+                        fontWeight="medium"
+                        transition="all 0.2s ease-in-out"
+                        _hover={{
+                            bg: "transparent",
+                            color: "green.400",
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
+                        }}
                     >
-                        Join now!
+                        Join Now
                     </Button>
                 </Tooltip>
             )}

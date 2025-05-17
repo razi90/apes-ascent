@@ -223,14 +223,17 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                         opacity: 0.5,
                     }}
                 >
-                    <Flex align="center" mb={4}>
-                        <Icon as={FaTrophy} w={8} h={8} color={accentColor} mr={4} />
-                        <Box>
-                            <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
-                            <Text fontSize="lg" color={secondaryTextColor}>
-                                Trade your way to the top of the leaderboard!
-                            </Text>
-                        </Box>
+                    <Flex align="center" justify="space-between" mb={4}>
+                        <Flex align="center">
+                            <Icon as={FaTrophy} w={8} h={8} color={accentColor} mr={4} />
+                            <Box>
+                                <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
+                                <Text fontSize="lg" color={secondaryTextColor}>
+                                    Trade your way to the top of the leaderboard!
+                                </Text>
+                            </Box>
+                        </Flex>
+                        <JoinButton isConnected={false} />
                     </Flex>
                     <Box mt={4}>
                         <Text color={secondaryTextColor} mb={2}>Competition Progress</Text>
@@ -297,11 +300,6 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                 </Grid>
 
                 <Divider borderColor={borderColor} />
-
-                {/* Join Button */}
-                <Box p={8} textAlign="center" bg={cardBgColor}>
-                    <JoinButton isConnected={false} />
-                </Box>
 
                 {/* Leaderboard */}
                 <Box p={8} bg={cardBgColor}>
