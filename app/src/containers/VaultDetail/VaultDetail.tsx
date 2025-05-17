@@ -116,6 +116,7 @@ const VaultDetail: React.FC<VaultDetailProps> = ({ layoutMode, vault }) => {
             case 'BTC': return 'orange.400';
             case 'ETH': return 'blue.400';
             case 'XRD': return 'green.400';
+            case 'USD': return 'green.500';
             default: return 'red.400';
         }
     };

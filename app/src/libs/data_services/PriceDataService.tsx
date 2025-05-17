@@ -12,7 +12,7 @@ export const fetchPriceListMap = async (): Promise<Record<string, number>> => {
             // Skip assets without valid tickers
             if (!asset.ticker) continue;
 
-            if (asset.ticker === "FUSD") {
+            if (asset.ticker === "USD") {
                 priceListMap[asset.address] = 1;
                 continue;
             }
