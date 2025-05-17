@@ -12,9 +12,11 @@ import { fetchUserInfoById } from "../../libs/data_services/UserDataService";
 import { User } from "../../libs/entities/User";
 import { UserAssetVault } from "../../libs/entities/UserAssetVault";
 import { useQuery } from "@tanstack/react-query";
-import { TradeButton } from "../Button/TradeButton/TradeButton";
+import TradeButton from "../Button/TradeButton/TradeButton";
 import { FaMedal, FaChartLine, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { Icon } from '@chakra-ui/react';
+import { WalletDataState } from '@radixdlt/radix-dapp-toolkit';
+import { fetchConnectedWallet } from '../../libs/data_services/WalletDataService';
 
 interface VaultWithUserInfoProps {
     vault: UserAssetVault;
@@ -30,6 +32,12 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList,
         staleTime: 30000,
         gcTime: 300000,
         retry: 2,
+    });
+
+    // Fetch wallet connection state
+    const { data: wallet } = useQuery<WalletDataState>({
+        queryKey: ['wallet_data'],
+        queryFn: fetchConnectedWallet,
     });
 
     // Calculate the total asset value
@@ -135,7 +143,7 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList,
 
             {/* Trade Button */}
             <Box w="80px" flexShrink={0}>
-                <TradeButton vault={vault} isConnected={false} />
+                <TradeButton vault={vault} isConnected={!!wallet?.persona} />
             </Box>
         </Flex>
     );

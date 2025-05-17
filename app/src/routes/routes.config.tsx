@@ -7,6 +7,7 @@ const Competition = lazy(() => import('../containers/Competition/Competition'));
 const Duels = lazy(() => import('../containers/Duels/Duels'));
 const Profile = lazy(() => import('../containers/Profile/Profile'));
 const UnknownPage = lazy(() => import('../containers/UnknownPage/UnknownPage'));
+const TradingPage = lazy(() => import('../pages/trading'));
 
 export interface RouteConfig {
     path: string;
@@ -34,6 +35,11 @@ export const routes: RouteConfig[] = [
     {
         path: '/profile/:id',
         element: <Profile layoutMode={LayoutMode.DesktopExpanded} />,
+        isProtected: true,
+    },
+    {
+        path: '/trading',
+        element: <TradingPage />,
         isProtected: true,
     },
     {
