@@ -58,6 +58,106 @@ const createDefaultUser = (): User => ({
     assets: new Map<string, number>(),
 });
 
+// Mock user data for testing
+const mockUsers: Record<string, User> = {
+    "#user1#": {
+        account: "account_1",
+        persona: "CryptoKing",
+        id: "#user1#",
+        name: "CryptoKing",
+        bio: "Crypto enthusiast and trader",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=CryptoKing",
+        twitter: "@cryptoking",
+        telegram: "cryptoking",
+        discord: "cryptoking#1234",
+        assets: new Map(),
+    },
+    "#user2#": {
+        account: "account_2",
+        persona: "DiamondHands",
+        id: "#user2#",
+        name: "DiamondHands",
+        bio: "HODL to the moon!",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=DiamondHands",
+        twitter: "@diamondhands",
+        telegram: "diamondhands",
+        discord: "diamondhands#1234",
+        assets: new Map(),
+    },
+    "#user3#": {
+        account: "account_3",
+        persona: "MoonShot",
+        id: "#user3#",
+        name: "MoonShot",
+        bio: "Always aiming for the stars",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=MoonShot",
+        twitter: "@moonshot",
+        telegram: "moonshot",
+        discord: "moonshot#1234",
+        assets: new Map(),
+    },
+    "#user4#": {
+        account: "account_4",
+        persona: "HODLer",
+        id: "#user4#",
+        name: "HODLer",
+        bio: "Diamond hands, diamond mind",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=HODLer",
+        twitter: "@hodler",
+        telegram: "hodler",
+        discord: "hodler#1234",
+        assets: new Map(),
+    },
+    "#user5#": {
+        account: "account_5",
+        persona: "TraderPro",
+        id: "#user5#",
+        name: "TraderPro",
+        bio: "Professional crypto trader",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=TraderPro",
+        twitter: "@traderpro",
+        telegram: "traderpro",
+        discord: "traderpro#1234",
+        assets: new Map(),
+    },
+    "#user6#": {
+        account: "account_6",
+        persona: "CryptoNinja",
+        id: "#user6#",
+        name: "CryptoNinja",
+        bio: "Stealthy crypto operations",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=CryptoNinja",
+        twitter: "@cryptoninja",
+        telegram: "cryptoninja",
+        discord: "cryptoninja#1234",
+        assets: new Map(),
+    },
+    "#user7#": {
+        account: "account_7",
+        persona: "BlockchainWizard",
+        id: "#user7#",
+        name: "BlockchainWizard",
+        bio: "Master of the blockchain",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=BlockchainWizard",
+        twitter: "@blockchainwiz",
+        telegram: "blockchainwiz",
+        discord: "blockchainwiz#1234",
+        assets: new Map(),
+    },
+    "#user8#": {
+        account: "account_8",
+        persona: "DeFiMaster",
+        id: "#user8#",
+        name: "DeFiMaster",
+        bio: "DeFi expert and yield farmer",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=DeFiMaster",
+        twitter: "@defimaster",
+        telegram: "defimaster",
+        discord: "defimaster#1234",
+        assets: new Map(),
+    },
+};
+
 export const fetchUserInfo = async (): Promise<User> => {
     try {
         const walletData: WalletDataState = await fetchConnectedWallet();
@@ -101,6 +201,12 @@ export const fetchUserInfoByAccount = async (account: string): Promise<User> => 
 
 export const fetchUserInfoById = async (userId: string): Promise<User> => {
     try {
+        // Check if we have mock data for this user
+        if (mockUsers[userId]) {
+            return mockUsers[userId];
+        }
+
+        // If no mock data, proceed with real data fetching
         let user = createDefaultUser();
         user.id = userId;
         user = await getUserDataFromNft(user);

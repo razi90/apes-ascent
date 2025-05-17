@@ -19,36 +19,6 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
     return (
         <Container maxW="container.xl" px={4}>
             <Box sx={routePageBoxStyle(layoutMode)} bg="back.800" color="font.300">
-                {/* Notification Banner */}
-                {/* <Box
-                    bg="orange.400"
-                    color="black"
-                    textAlign="center"
-                    p={4}
-                    borderRadius="md"
-                    mb={4}
-                    boxShadow="md"
-                >
-                    <Text fontSize="lg" fontWeight="bold">
-                        This application is currently under development and nothing really works.
-                    </Text>
-                </Box> */}
-
-                {/* Top Banner */}
-                <Box textAlign="center">
-                    <Image
-                        src="/images/banner.webp"
-                        alt="Ape's Ascent Banner"
-                        width="100%"
-                        maxWidth="900px"
-                        height="auto"
-                        objectFit="cover"
-                        mx="auto"
-                        borderRadius="lg"
-                        boxShadow="shadow.primary.500"
-                    />
-                </Box>
-
                 {/* Game Modes Section */}
                 <Box py={12}>
                     <Heading

@@ -10,9 +10,9 @@ import {
     HStack,
     Container,
     VStack,
+    useColorModeValue,
 } from "@chakra-ui/react";
 import { WalletButton } from '../Button/WalletButton/WalletButton';
-import { useColorModeValue } from "@chakra-ui/react";
 import { BsTwitterX } from "react-icons/bs"
 import { FaTelegramPlane } from "react-icons/fa";
 import { useQuery } from '@tanstack/react-query';
@@ -39,7 +39,8 @@ import { SocialButton } from "../Button/SocialButton/SocialButton";
 
 export default function TopNavigationBar() {
     const bgColor = useColorModeValue("white", "#161616");
-    const boxShadow = useColorModeValue("0 0 10px 0px #ccc", "0 0 10px 0px #211F34");
+    const boxShadow = useColorModeValue("0 0 20px rgba(0, 0, 0, 0.05)", "0 0 20px rgba(0, 0, 0, 0.2)");
+    const borderColor = useColorModeValue("gray.100", "gray.700");
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
@@ -77,20 +78,36 @@ export default function TopNavigationBar() {
 
     return (
         <>
-            <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
+            <Box
+                sx={topNavigationBoxStyle(bgColor, boxShadow)}
+                borderBottom="1px solid"
+                borderColor={borderColor}
+                position="fixed"
+                width="100%"
+                zIndex="1000"
+                backdropFilter="blur(10px)"
+                bg={useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(22, 22, 22, 0.9)")}
+            >
                 <Container maxW="container.xl" px={4}>
                     <Flex height="80px" align="center" justify="space-between">
                         <Flex align="center" gap={6}>
-                            <Link href={"/"}>
+                            <Link href={"/"} _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}>
                                 <Image
                                     height="50px"
                                     width="auto"
                                     src="/images/Logo.webp"
                                     alt="Logo"
+                                    transition="all 0.2s"
                                 />
                             </Link>
                             {!isMobile && (
-                                <Text fontSize="2xl" fontWeight="bold" color={"primary.300"}>
+                                <Text
+                                    fontSize="2xl"
+                                    fontWeight="bold"
+                                    bgGradient="linear(to-r, primary.300, primary.500)"
+                                    bgClip="text"
+                                    letterSpacing="tight"
+                                >
                                     Ape's Ascent
                                 </Text>
                             )}
@@ -98,7 +115,7 @@ export default function TopNavigationBar() {
 
                         {!isMobile && (
                             <VStack spacing={2} flex="1" align="center">
-                                <HStack spacing={6} justify="center">
+                                <HStack spacing={8} justify="center">
                                     {wallet?.persona === undefined ? (
                                         <CreateUserButton />
                                     ) : (
@@ -114,14 +131,26 @@ export default function TopNavigationBar() {
                                             )}
                                         </>
                                     )}
-                                    <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} />
-                                    <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} />
-                                    <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} />
+                                    <LeftNavigationButton
+                                        link="/free_for_all"
+                                        title="Free For All"
+                                        icon={GiMonkey}
+                                    />
+                                    <LeftNavigationButton
+                                        link="/duels"
+                                        title="Duels"
+                                        icon={FaFistRaised}
+                                    />
+                                    <LeftNavigationButton
+                                        link="/clan_wars"
+                                        title="Clan Wars"
+                                        icon={GiBorderedShield}
+                                    />
                                 </HStack>
                             </VStack>
                         )}
 
-                        <HStack spacing={4}>
+                        <HStack spacing={6}>
                             <SocialButton
                                 label={'Twitter'}
                                 href={`https://www.twitter.com/apes_ascent`}
@@ -157,6 +186,7 @@ export default function TopNavigationBar() {
                         backgroundColor: "white",
                         primaryColor: "#6B5EFF",
                         textColor: '#000',
+                        overlayColor: "rgba(0, 0, 0, 0.5)",
                     },
                 }}
             />

@@ -22,6 +22,9 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
     const { data: user, isLoading, isError } = useQuery<User>({
         queryKey: ['user_info', vault.userId],
         queryFn: () => fetchUserInfoById(vault.userId),
+        staleTime: 30000, // Consider data fresh for 30 seconds
+        gcTime: 300000, // Keep data in cache for 5 minutes
+        retry: 2, // Retry failed requests twice
     });
 
     // Calculate the total asset value
@@ -35,19 +38,17 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
             p={6}
             bg="back.600"
             borderRadius="lg"
-            border="1px solid" // Ensure a visible border is applied
-            borderColor="back.500" // Default border color set to gray
-            boxShadow="none" // No shadow by default
+            border="1px solid"
+            borderColor="back.500"
+            boxShadow="none"
             _hover={{
                 transform: "scale(1.05)",
                 transition: "all 0.3s",
-                boxShadow: "shadow.primary.500", // Add shadow on hover
-                borderColor: "primary.300", // Change border color to green on hover
+                boxShadow: "shadow.primary.500",
+                borderColor: "primary.300",
             }}
             color="font.300"
         >
-
-
             <Flex direction="row" alignItems="center" justifyContent="space-between" gap={6}>
                 {/* User Data Section */}
                 <VStack align="center" flex="1" spacing={3}>
@@ -57,20 +58,25 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                         <Text fontSize="sm" color="red.500">
                             Failed to load user info
                         </Text>
-                    ) : (
+                    ) : user ? (
                         <>
                             <Image
                                 boxSize="80px"
                                 borderRadius="full"
                                 border="2px solid"
                                 borderColor="primary.300"
-                                src={user?.avatar || "/images/ape-logo.webp"}
-                                alt={`${user?.name}'s Avatar`}
+                                src={user.avatar || "/images/ape-logo.webp"}
+                                alt={`${user.name}'s Avatar`}
+                                fallbackSrc="/images/ape-logo.webp"
                             />
                             <Text fontWeight="bold" fontSize="lg" color="font.900">
-                                {user?.name || 'Unknown User'}
+                                {user.name || 'Unknown User'}
                             </Text>
                         </>
+                    ) : (
+                        <Text fontSize="sm" color="red.500">
+                            User not found
+                        </Text>
                     )}
                 </VStack>
 

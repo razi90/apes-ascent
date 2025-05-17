@@ -65,23 +65,73 @@ export const fetchUserAssetVaults = async (): Promise<UserAssetVault[]> => {
 };
 
 export const fetchMockUserAssetVaults = async (): Promise<UserAssetVault[]> => {
-    // Mock a single vault
-    const mockVault: UserAssetVault = {
-        userId: "#0#",
-        assets: new Map<string, number>([
-            ["resource_address_1", 100],
-            ["resource_address_2", 50],
-        ]),
-    };
-
-    // Create 10 vaults by modifying the mockVault
-    const vaults: UserAssetVault[] = Array.from({ length: 10 }, (_, index) => ({
-        userId: `#${index}#`,
-        assets: new Map<string, number>([
-            [`resource_address_1`, 100 + index * 10],
-            [`resource_address_2`, 50 + index * 5],
-        ]),
-    }));
+    // Mock vaults with realistic data
+    const vaults: UserAssetVault[] = [
+        {
+            userId: "#user1#",
+            assets: new Map([
+                ["xrd", 150000],
+                ["btc", 2.5],
+                ["eth", 15],
+            ]),
+        },
+        {
+            userId: "#user2#",
+            assets: new Map([
+                ["xrd", 120000],
+                ["btc", 1.8],
+                ["eth", 12],
+            ]),
+        },
+        {
+            userId: "#user3#",
+            assets: new Map([
+                ["xrd", 100000],
+                ["btc", 1.5],
+                ["eth", 10],
+            ]),
+        },
+        {
+            userId: "#user4#",
+            assets: new Map([
+                ["xrd", 80000],
+                ["btc", 1.2],
+                ["eth", 8],
+            ]),
+        },
+        {
+            userId: "#user5#",
+            assets: new Map([
+                ["xrd", 60000],
+                ["btc", 1.0],
+                ["eth", 6],
+            ]),
+        },
+        {
+            userId: "#user6#",
+            assets: new Map([
+                ["xrd", 40000],
+                ["btc", 0.8],
+                ["eth", 4],
+            ]),
+        },
+        {
+            userId: "#user7#",
+            assets: new Map([
+                ["xrd", 30000],
+                ["btc", 0.6],
+                ["eth", 3],
+            ]),
+        },
+        {
+            userId: "#user8#",
+            assets: new Map([
+                ["xrd", 20000],
+                ["btc", 0.4],
+                ["eth", 2],
+            ]),
+        },
+    ];
 
     return new Promise((resolve) => setTimeout(() => resolve(vaults), 1000)); // Simulate async fetch
 };
