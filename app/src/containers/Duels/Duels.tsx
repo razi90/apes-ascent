@@ -14,6 +14,12 @@ import {
     useColorModeValue,
     Icon,
     HStack,
+    Stat,
+    StatLabel,
+    StatNumber,
+    StatHelpText,
+    StatArrow,
+    Tooltip,
 } from "@chakra-ui/react";
 import { useQuery } from '@tanstack/react-query';
 import { Duel as DuelEntity } from '../../libs/entities/Duel';
@@ -23,7 +29,7 @@ import { LayoutMode } from '../../types/layout';
 import { User } from '../../libs/entities/User';
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
-import { FaClock, FaTrophy } from 'react-icons/fa';
+import { FaClock, FaTrophy, FaCoins, FaChartLine } from 'react-icons/fa';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
@@ -149,6 +155,15 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
     const accentColor = "green.400";
     const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
 
+    // Calculate time remaining
+    const endDate = new Date(duel.endDate);
+    const now = new Date();
+    const timeRemaining = endDate.getTime() - now.getTime();
+    const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
+
+    // Mock prize pool (replace with actual data)
+    const prizePool = "1,000 XRD";
+
     return (
         <Box
             p={4}
@@ -164,6 +179,21 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
             }}
             transition="all 0.2s"
         >
+            {/* Status Badge */}
+            <Flex justify="flex-end" mb={2}>
+                <Badge
+                    colorScheme="green"
+                    px={2}
+                    py={1}
+                    borderRadius="full"
+                    fontSize="xs"
+                    bg={accentColor}
+                    color="white"
+                >
+                    Active
+                </Badge>
+            </Flex>
+
             <Flex
                 alignItems="center"
                 justifyContent="space-between"
@@ -210,17 +240,21 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                         }}
                         transition="all 0.2s"
                     />
-                    <HStack
-                        color={secondaryTextColor}
-                        fontSize="xs"
-                        mt={2}
-                        justify="center"
-                    >
-                        <Icon as={FaClock} />
-                        <Text>
-                            {new Date(duel.startDate).toLocaleDateString()} - {new Date(duel.endDate).toLocaleDateString()}
+                    <VStack spacing={1} mt={2}>
+                        <HStack color={secondaryTextColor} fontSize="xs" justify="center">
+                            <Icon as={FaClock} />
+                            <Text>
+                                {new Date(duel.startDate).toLocaleDateString()} - {new Date(duel.endDate).toLocaleDateString()}
+                            </Text>
+                        </HStack>
+                        <HStack color={accentColor} fontSize="xs" justify="center">
+                            <Icon as={FaCoins} />
+                            <Text fontWeight="bold">{prizePool}</Text>
+                        </HStack>
+                        <Text fontSize="xs" color={daysRemaining <= 3 ? "red.400" : "green.400"}>
+                            {daysRemaining} days remaining
                         </Text>
-                    </HStack>
+                    </VStack>
                 </Box>
 
                 {/* Player 2 */}
@@ -239,6 +273,7 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                 <Button
                     colorScheme="blue"
                     size="sm"
+                    leftIcon={<FaChartLine />}
                     _hover={{
                         transform: "translateY(-2px)",
                         boxShadow: "0 0 10px rgba(66, 153, 225, 0.5)",
@@ -250,6 +285,7 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                 <Button
                     colorScheme="green"
                     size="sm"
+                    leftIcon={<FaTrophy />}
                     _hover={{
                         transform: "translateY(-2px)",
                         boxShadow: neonGlow,
@@ -280,22 +316,10 @@ const PlayerOverview: React.FC<PlayerOverviewProps> = ({ user, isLoading, isErro
             direction="column"
             alignItems="center"
             justifyContent="center"
-            w="120px"
+            w="150px"
             textAlign="center"
             h="100%"
         >
-            <Badge
-                colorScheme="green"
-                mb={1}
-                px={2}
-                py={0.5}
-                borderRadius="full"
-                bg={accentColor}
-                color="white"
-                fontSize="xs"
-            >
-                {side}
-            </Badge>
             {isLoading ? (
                 <Spinner size="md" color={accentColor} />
             ) : isError ? (
@@ -321,6 +345,22 @@ const PlayerOverview: React.FC<PlayerOverviewProps> = ({ user, isLoading, isErro
                     <Text fontWeight="bold" color={textColor} fontSize="sm" noOfLines={1}>
                         {user?.name || 'Unknown User'}
                     </Text>
+
+                    {/* Player Stats */}
+                    <VStack spacing={1} mt={2} w="full">
+                        <HStack justify="space-between" w="full" fontSize="xs">
+                            <Text color={secondaryTextColor}>Trades:</Text>
+                            <Text color={textColor}>24</Text>
+                        </HStack>
+                        <HStack justify="space-between" w="full" fontSize="xs">
+                            <Text color={secondaryTextColor}>Win Rate:</Text>
+                            <Text color={accentColor}>68%</Text>
+                        </HStack>
+                        <HStack justify="space-between" w="full" fontSize="xs">
+                            <Text color={secondaryTextColor}>Return:</Text>
+                            <Text color="green.400">+15%</Text>
+                        </HStack>
+                    </VStack>
                 </>
             )}
         </Flex>
