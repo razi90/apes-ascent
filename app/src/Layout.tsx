@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import TopNavigationBar from './components/TopNavigationBar/TopNavigationBar';
-import { Box, useBreakpointValue } from "@chakra-ui/react";
-import { initRadixDappToolkit } from './libs/radix-dapp-toolkit/rdt';
+import { Box, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { initRadixDappToolkit, cleanupRadixDappToolkit } from './libs/radix-dapp-toolkit/rdt';
 import { useQueryClient } from '@tanstack/react-query';
 import AppRoutes from './routes/AppRoutes';
 import { LayoutMode } from './types/layout';
@@ -22,10 +22,34 @@ const useLayoutMode = () => {
 const Layout: React.FC = () => {
     const queryClient = useQueryClient();
     const layoutMode = useLayoutMode();
+    const [isInitializing, setIsInitializing] = useState(true);
+    const toast = useToast();
 
     useEffect(() => {
-        initRadixDappToolkit(queryClient);
-    }, [queryClient]);
+        const initializeRadix = async () => {
+            setIsInitializing(true);
+            const result = await initRadixDappToolkit(queryClient);
+
+            if (!result.success) {
+                toast({
+                    title: "Wallet Connection Error",
+                    description: result.error || "Failed to initialize wallet connection. Please refresh the page.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+
+            setIsInitializing(false);
+        };
+
+        initializeRadix();
+
+        // Cleanup function
+        return () => {
+            cleanupRadixDappToolkit();
+        };
+    }, [queryClient, toast]);
 
     return (
         <BrowserRouter>
@@ -38,7 +62,7 @@ const Layout: React.FC = () => {
                     transition="all 0.3s ease"
                     ml={layoutMode === LayoutMode.DesktopMinimized ? "60px" : "0"}
                 >
-                    <AppRoutes />
+                    {!isInitializing && <AppRoutes />}
                 </Box>
             </Box>
         </BrowserRouter>
