@@ -25,7 +25,10 @@ import {
     Tab,
     TabPanel,
     Progress,
+    Center,
+    Spinner,
 } from "@chakra-ui/react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip } from 'recharts';
 import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 import { LayoutMode } from '../../types/layout';
 import PageContainer from '../../components/Container/PageContainer/PageContainer';
@@ -86,7 +89,7 @@ const VaultDetail: React.FC<VaultDetailProps> = ({ layoutMode, vault }) => {
     const accentColor = "green.400";
 
     // Get price list
-    const { data: priceList } = useQuery<Record<string, number>>({
+    const { data: priceList, isLoading: priceLoading, isError: priceError } = useQuery<Record<string, number>>({
         queryKey: ['priceList'],
         queryFn: fetchPriceListMap
     });
@@ -99,6 +102,7 @@ const VaultDetail: React.FC<VaultDetailProps> = ({ layoutMode, vault }) => {
             const amount = vault.assets.get(address) || 0;
             const price = priceList?.[address] || 0;
             const value = amount * price;
+            console.log(`Asset ${asset.ticker}: amount=${amount}, price=${price}, value=${value}`);
             return {
                 ...asset,
                 amount,
@@ -109,15 +113,41 @@ const VaultDetail: React.FC<VaultDetailProps> = ({ layoutMode, vault }) => {
 
     // Calculate total value for percentages
     const totalValue = availableAssets.reduce((sum, asset) => sum + asset.value, 0);
+    console.log('Total value:', totalValue);
+
+    // Show loading state if prices are being fetched
+    if (priceLoading) {
+        return (
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
+                <Center h="100vh">
+                    <Spinner size="xl" color={accentColor} />
+                    <Text ml={4} fontSize="xl" color={textColor}>Loading price data...</Text>
+                </Center>
+            </PageContainer>
+        );
+    }
+
+    // Show error state if price fetch failed
+    if (priceError || !priceList) {
+        return (
+            <PageContainer layoutMode={layoutMode} maxW="container.xl">
+                <Center h="100vh">
+                    <Text fontSize="2xl" color="red.500">
+                        Failed to load price data. Please try again later.
+                    </Text>
+                </Center>
+            </PageContainer>
+        );
+    }
 
     // Get color for asset
     const getAssetColor = (ticker: string) => {
         switch (ticker) {
-            case 'BTC': return 'orange.400';
-            case 'ETH': return 'blue.400';
-            case 'XRD': return 'green.400';
-            case 'USD': return 'green.500';
-            default: return 'red.400';
+            case 'BTC': return '#F7931A'; // Bitcoin orange
+            case 'ETH': return '#627EEA'; // Ethereum blue
+            case 'XRD': return '#00D1FF'; // Radix blue
+            case 'USD': return '#4CAF50'; // Green for USD
+            default: return '#FF6B6B'; // Coral red for others
         }
     };
 
@@ -207,51 +237,68 @@ const VaultDetail: React.FC<VaultDetailProps> = ({ layoutMode, vault }) => {
                                                     <Text color={secondaryTextColor}>${asset.value.toFixed(2)}</Text>
                                                 </VStack>
                                             </Flex>
-                                            <Progress
-                                                value={parseFloat(percentage)}
-                                                colorScheme={getAssetColor(asset.ticker).split('.')[0]}
-                                                bg="gray.600"
-                                                borderRadius="full"
-                                                size="sm"
-                                            />
                                         </VStack>
                                     </Box>
                                 );
                             })}
                         </VStack>
 
-                        {/* Allocation Summary */}
+                        {/* Pie Chart */}
                         <Box
                             p={4}
                             bg="gray.700"
                             borderRadius="lg"
                             border="1px solid"
                             borderColor={borderColor}
+                            height="300px"
                         >
                             <Heading size="sm" mb={4} color={textColor}>Portfolio Allocation</Heading>
-                            <VStack spacing={4} align="stretch">
-                                {availableAssets.map(asset => {
-                                    const percentage = ((asset.value / totalValue) * 100).toFixed(2);
-                                    return (
-                                        <Box key={asset.address}>
-                                            <Flex justify="space-between" mb={1}>
-                                                <HStack spacing={2}>
-                                                    <Box w={3} h={3} borderRadius="full" bg={getAssetColor(asset.ticker)} />
-                                                    <Text color={textColor}>{asset.ticker}</Text>
-                                                </HStack>
-                                                <Text color={secondaryTextColor}>{percentage}%</Text>
-                                            </Flex>
-                                            <Progress
-                                                value={parseFloat(percentage)}
-                                                colorScheme={getAssetColor(asset.ticker).split('.')[0]}
-                                                bg="gray.600"
-                                                borderRadius="full"
-                                                size="sm"
-                                            />
-                                        </Box>
-                                    );
-                                })}
-                            </VStack>
+                            <Box height="250px">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={availableAssets.map(asset => ({
+                                                name: asset.ticker,
+                                                value: asset.value,
+                                                color: getAssetColor(asset.ticker)
+                                            }))}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={80}
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                        >
+                                            {availableAssets.map((asset, index) => (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={getAssetColor(asset.ticker)}
+                                                    stroke={cardBgColor}
+                                                    strokeWidth={2}
+                                                />
+                                            ))}
+                                        </Pie>
+                                        <RechartsTooltip
+                                            formatter={(value: number) => [`$${value.toFixed(2)}`, 'Value']}
+                                            contentStyle={{
+                                                backgroundColor: cardBgColor,
+                                                border: `1px solid ${borderColor}`,
+                                                borderRadius: '8px',
+                                                color: textColor
+                                            }}
+                                        />
+                                        <Legend
+                                            formatter={(value: string) => (
+                                                <Text color={textColor} fontSize="sm">
+                                                    {value}
+                                                </Text>
+                                            )}
+                                            verticalAlign="bottom"
+                                            height={36}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </Box>
                         </Box>
                     </Grid>
                 </Box>
