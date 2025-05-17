@@ -157,11 +157,11 @@ export default function TopNavigationBar() {
                                         title="Duels"
                                         icon={GiSwordman}
                                     />
-                                    <LeftNavigationButton
+                                    {/* <LeftNavigationButton
                                         link="/clan_wars"
                                         title="Clan Wars"
                                         icon={GiBorderedShield}
-                                    />
+                                    /> */}
                                 </HStack>
                             </VStack>
                         )}
