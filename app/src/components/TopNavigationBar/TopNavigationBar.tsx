@@ -78,12 +78,12 @@ export default function TopNavigationBar() {
         <>
             <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
                 <Container maxW="container.xl" px={4}>
-                    <Flex sx={topNavigationMainFlexStyle} alignItems="center">
-                        <Flex alignItems="center" gap={6}>
+                    <Flex height="80px" align="center" justify="space-between">
+                        <Flex align="center" gap={6}>
                             <Link href={"/"}>
                                 <Image
-                                    align={"center"}
-                                    sx={topNavigationLogoStyle}
+                                    height="40px"
+                                    width="auto"
                                     src="/images/Logo.webp"
                                     alt="Logo"
                                 />
@@ -96,7 +96,7 @@ export default function TopNavigationBar() {
                         </Flex>
 
                         {!isMobile && (
-                            <HStack spacing={4} ml={8} flex="1" justify="center">
+                            <HStack spacing={4} justify="center" flex="1">
                                 {wallet?.persona === undefined ? (
                                     <CreateUserButton navIsMinimized={false} />
                                 ) : (
@@ -119,28 +119,30 @@ export default function TopNavigationBar() {
                             </HStack>
                         )}
 
-                        <Spacer />
-
                         <HStack spacing={2}>
-                            <Box>
-                                <SocialButton label={'Twitter'} href={`https://www.twitter.com/apes_ascent`}>
-                                    <BsTwitterX />
-                                </SocialButton>
-                            </Box>
-
-                            <Box>
-                                <SocialButton label={'Telegram'} href={`https://t.me/apes_ascent`}>
-                                    <FaTelegramPlane />
-                                </SocialButton>
-                            </Box>
-
+                            <SocialButton
+                                label={'Twitter'}
+                                href={`https://www.twitter.com/apes_ascent`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <BsTwitterX />
+                            </SocialButton>
+                            <SocialButton
+                                label={'Telegram'}
+                                href={`https://t.me/apes_ascent`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <FaTelegramPlane />
+                            </SocialButton>
                             <WalletButton />
                         </HStack>
                     </Flex>
                 </Container>
             </Box>
 
-            <Box sx={topNavigationHiddenBoxStyle} />
+            <Box height="80px" />
 
             <Joyride
                 steps={steps}

@@ -8,7 +8,6 @@ export const topNavigationBoxStyle = (bgColor: string, boxShadow: string): Syste
     zIndex: 1000,
     bg: bgColor,
     boxShadow: boxShadow,
-    width: "100%",
 });
 
 export const topNavigationHiddenBoxStyle: SystemStyleObject = {
@@ -20,6 +19,7 @@ export const topNavigationMainFlexStyle: SystemStyleObject = {
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 4,
 };
 
 export const topNavigationLogoStyle: SystemStyleObject = {
