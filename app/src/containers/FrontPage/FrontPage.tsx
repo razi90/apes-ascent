@@ -20,7 +20,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
         <Container maxW="container.xl" px={4}>
             <Box sx={routePageBoxStyle(layoutMode)} bg="back.800" color="font.300">
                 {/* Notification Banner */}
-                <Box
+                {/* <Box
                     bg="orange.400"
                     color="black"
                     textAlign="center"
@@ -32,7 +32,7 @@ const FrontPage: React.FC<FrontPageProps> = ({ layoutMode }) => {
                     <Text fontSize="lg" fontWeight="bold">
                         This application is currently under development and nothing really works.
                     </Text>
-                </Box>
+                </Box> */}
 
                 {/* Top Banner */}
                 <Box textAlign="center">
