@@ -100,24 +100,23 @@ export default function TopNavigationBar() {
                             <VStack spacing={3} flex="1" align="center">
                                 <HStack spacing={4} justify="center">
                                     {wallet?.persona === undefined ? (
-                                        <CreateUserButton navIsMinimized={false} />
+                                        <CreateUserButton />
                                     ) : (
                                         <>
                                             {user?.id === '' ? (
-                                                <CreateUserButton navIsMinimized={false} />
+                                                <CreateUserButton />
                                             ) : (
                                                 <LeftNavigationButton
                                                     link={`/profile/${filteredUserId}`}
                                                     title={user ? user.name : 'Profile'}
                                                     icon={user && user.avatar ? user.avatar : FaUserCircle}
-                                                    navIsMinimized={false}
                                                 />
                                             )}
                                         </>
                                     )}
-                                    <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={false} />
-                                    <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={false} />
-                                    <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={false} />
+                                    <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} />
+                                    <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} />
+                                    <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} />
                                 </HStack>
                             </VStack>
                         )}

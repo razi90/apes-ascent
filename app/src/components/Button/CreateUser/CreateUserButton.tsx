@@ -4,11 +4,7 @@ import { FaUserPlus } from 'react-icons/fa';
 import { leftNavigationButtonStyle } from '../../LeftNavigationBar/Styled';
 import CreateUserDialog from '../../Dialog/CreateUserDialog/CreateUserDialog';
 
-interface CreateUserButtonProps {
-    navIsMinimized: boolean;
-}
-
-const CreateUserButton: React.FC<CreateUserButtonProps> = ({ navIsMinimized }) => {
+const CreateUserButton: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -18,11 +14,10 @@ const CreateUserButton: React.FC<CreateUserButtonProps> = ({ navIsMinimized }) =
                 onClick={() => setIsOpen(true)}
                 sx={leftNavigationButtonStyle}
                 width="100%"
-                justifyContent="flex-start"
-                pl={4}
+                justifyContent="center"
+                p={2}
             >
-                <Icon as={FaUserPlus} boxSize={5} mr={3} />
-                <Text>{navIsMinimized ? "" : "Create Profile"}</Text>
+                <Icon as={FaUserPlus} boxSize={5} />
             </Button>
             <CreateUserDialog isOpen={isOpen} setIsOpen={setIsOpen} />
         </>

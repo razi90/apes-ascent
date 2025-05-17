@@ -9,10 +9,9 @@ interface FeatureProps {
     title: string;
     icon: IconType | string;
     isExternal?: boolean;
-    navIsMinimized: boolean;
 }
 
-export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon, isExternal = false, navIsMinimized }) => {
+export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon, isExternal = false }) => {
     return (
         <VStack spacing={1}>
             <Link to={link} target={isExternal ? "_blank" : undefined}>
@@ -29,11 +28,9 @@ export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon
                     )}
                 </Button>
             </Link>
-            {!navIsMinimized && (
-                <Text fontSize="sm" color="gray.500">
-                    {title}
-                </Text>
-            )}
+            <Text fontSize="sm" color="gray.500">
+                {title}
+            </Text>
         </VStack>
     );
 };
