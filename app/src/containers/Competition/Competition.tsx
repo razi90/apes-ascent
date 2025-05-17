@@ -19,6 +19,9 @@ import {
     StatArrow,
     Divider,
     Container,
+    Progress,
+    Tooltip,
+    Icon,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../types/layout';
@@ -28,7 +31,7 @@ import { Competition as CompetitionEntity } from '../../libs/entities/Competitio
 import { fetchPriceListMap } from '../../libs/data_services/PriceDataService';
 import VaultWithUserInfo from '../../components/UserAssetVault/VaultWithUserInfo';
 import { JoinButton } from '../../components/Button/JoinButton/JoinButton';
-import { FaTrophy, FaUsers, FaClock } from 'react-icons/fa';
+import { FaTrophy, FaUsers, FaClock, FaChartLine, FaMedal } from 'react-icons/fa';
 import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 
 // Dummy data for demonstration
@@ -183,6 +186,14 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     const dailyChange = 23.36;
     const newParticipants = 5;
 
+    // Calculate time remaining
+    const endDate = new Date(competitionData?.end_date || "2024-04-30");
+    const now = new Date();
+    const timeRemaining = endDate.getTime() - now.getTime();
+    const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const progressPercentage = ((30 - daysRemaining) / 30) * 100;
+
     return (
         <Container maxW="container.xl" py={8}>
             <Box
@@ -212,17 +223,41 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                         opacity: 0.5,
                     }}
                 >
-                    <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
-                    <Text fontSize="lg" color={secondaryTextColor}>
-                        Trade your way to the top of the leaderboard!
-                    </Text>
+                    <Flex align="center" mb={4}>
+                        <Icon as={FaTrophy} w={8} h={8} color={accentColor} mr={4} />
+                        <Box>
+                            <Heading size="xl" mb={2} color={textColor}>Free For All Competition</Heading>
+                            <Text fontSize="lg" color={secondaryTextColor}>
+                                Trade your way to the top of the leaderboard!
+                            </Text>
+                        </Box>
+                    </Flex>
+                    <Box mt={4}>
+                        <Text color={secondaryTextColor} mb={2}>Competition Progress</Text>
+                        <Tooltip label={`${daysRemaining}d ${hoursRemaining}h remaining`}>
+                            <Progress
+                                value={progressPercentage}
+                                size="sm"
+                                colorScheme="green"
+                                bg="gray.700"
+                                borderRadius="full"
+                                hasStripe
+                                isAnimated
+                            />
+                        </Tooltip>
+                    </Box>
                 </Box>
 
                 {/* Competition Stats */}
                 <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6} p={8} bg={cardBgColor}>
                     <GridItem>
                         <Stat>
-                            <StatLabel color={secondaryTextColor}>Total Value</StatLabel>
+                            <StatLabel color={secondaryTextColor}>
+                                <Flex align="center">
+                                    <Icon as={FaChartLine} mr={2} />
+                                    Total Value
+                                </Flex>
+                            </StatLabel>
                             <StatNumber color={accentColor} textShadow={neonGlow}>${totalValue.toLocaleString()}</StatNumber>
                             <StatHelpText color={accentColor}>
                                 <StatArrow type="increase" />
@@ -232,7 +267,12 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     </GridItem>
                     <GridItem>
                         <Stat>
-                            <StatLabel color={secondaryTextColor}>Participants</StatLabel>
+                            <StatLabel color={secondaryTextColor}>
+                                <Flex align="center">
+                                    <Icon as={FaUsers} mr={2} />
+                                    Participants
+                                </Flex>
+                            </StatLabel>
                             <StatNumber color={accentColor} textShadow={neonGlow}>{totalParticipants}</StatNumber>
                             <StatHelpText color={accentColor}>
                                 <StatArrow type="increase" />
@@ -242,8 +282,13 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     </GridItem>
                     <GridItem>
                         <Stat>
-                            <StatLabel color={secondaryTextColor}>Time Remaining</StatLabel>
-                            <StatNumber color={accentColor} textShadow={neonGlow}>7d 12h</StatNumber>
+                            <StatLabel color={secondaryTextColor}>
+                                <Flex align="center">
+                                    <Icon as={FaClock} mr={2} />
+                                    Time Remaining
+                                </Flex>
+                            </StatLabel>
+                            <StatNumber color={accentColor} textShadow={neonGlow}>{daysRemaining}d {hoursRemaining}h</StatNumber>
                             <StatHelpText color={secondaryTextColor}>
                                 Ends {competitionData?.end_date || "2024-04-30"}
                             </StatHelpText>
@@ -260,7 +305,10 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
 
                 {/* Leaderboard */}
                 <Box p={8} bg={cardBgColor}>
-                    <Heading size="lg" mb={6} color={textColor}>Leaderboard</Heading>
+                    <Flex align="center" mb={6}>
+                        <Icon as={FaMedal} w={6} h={6} color={accentColor} mr={3} />
+                        <Heading size="lg" color={textColor}>Leaderboard</Heading>
+                    </Flex>
                     <VStack spacing={4} align="stretch">
                         {rankedVaults.map((vault, index) => (
                             <Box
