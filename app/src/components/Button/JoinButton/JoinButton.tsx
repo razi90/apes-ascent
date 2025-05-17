@@ -1,17 +1,12 @@
-import {
-    Button,
-    Tooltip,
-} from '@chakra-ui/react';
 import React, { useState } from 'react';
-
-import { commonButtonStyle } from '../Styled';
+import { useQuery } from '@tanstack/react-query';
 import { address, array, ManifestBuilder, NetworkId, nonFungibleLocalId, proof, RadixEngineToolkit, ValueKind } from '@radixdlt/radix-engine-toolkit';
 import { COMPETITION_ADDRESS, USER_NFT_RESOURCE_ADDRESS } from '../../../Config';
-import { useQuery } from '@tanstack/react-query';
 import { User } from '../../../libs/entities/User';
 import { fetchUserInfo } from '../../../libs/data_services/UserDataService';
 import { rdt } from '../../../libs/radix-dapp-toolkit/rdt';
 import { enqueueSnackbar } from 'notistack';
+import { OutlineButton } from '../OutlineButton/OutlineButton';
 
 interface JoinButtonProps {
     isConnected: boolean;
@@ -77,56 +72,11 @@ export const JoinButton: React.FC<JoinButtonProps> = ({ isConnected }) => {
     };
 
     return (
-        <>
-            {isConnected ? (
-                <Tooltip label='Join the competition'>
-                    <Button
-                        onClick={handleClick}
-                        bg="transparent"
-                        color="white"
-                        border="1px solid"
-                        borderColor="green.400"
-                        borderRadius="full"
-                        px={6}
-                        py={2}
-                        fontSize="md"
-                        fontWeight="medium"
-                        transition="all 0.2s ease-in-out"
-                        _hover={{
-                            bg: "transparent",
-                            color: "green.400",
-                            transform: "translateY(-2px)",
-                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
-                        }}
-                    >
-                        Join Now
-                    </Button>
-                </Tooltip>
-            ) : (
-                <Tooltip label='Connect your wallet to join'>
-                    <Button
-                        onClick={handleClick}
-                        bg="transparent"
-                        color="white"
-                        border="1px solid"
-                        borderColor="green.400"
-                        borderRadius="full"
-                        px={6}
-                        py={2}
-                        fontSize="md"
-                        fontWeight="medium"
-                        transition="all 0.2s ease-in-out"
-                        _hover={{
-                            bg: "transparent",
-                            color: "green.400",
-                            transform: "translateY(-2px)",
-                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
-                        }}
-                    >
-                        Join Now
-                    </Button>
-                </Tooltip>
-            )}
-        </>
+        <OutlineButton
+            onClick={handleClick}
+            tooltipLabel={isConnected ? 'Join the competition' : 'Connect your wallet to join'}
+        >
+            Join Now
+        </OutlineButton>
     );
 };

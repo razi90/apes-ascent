@@ -34,6 +34,7 @@ import { User } from '../../libs/entities/User';
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
 import { FaClock, FaTrophy, FaCoins, FaChartLine, FaSearch, FaFilter, FaEye, FaSort } from 'react-icons/fa';
+import { OutlineButton } from '../../components/Button/OutlineButton/OutlineButton';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
@@ -113,18 +114,19 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                 {/* Header Section */}
                 <Box
                     p={8}
+                    bg="gray.800"
+                    borderBottom="1px solid"
+                    borderColor={borderColor}
                     position="relative"
-                    borderTopRadius="2xl"
-                    _before={{
+                    _after={{
                         content: '""',
                         position: "absolute",
-                        top: 0,
+                        bottom: 0,
                         left: 0,
                         right: 0,
-                        height: "100%",
-                        background: "linear-gradient(180deg, rgba(72, 187, 120, 0.1) 0%, rgba(45, 55, 72, 0) 100%)",
-                        pointerEvents: "none",
-                        borderRadius: "inherit",
+                        height: "1px",
+                        background: "linear-gradient(90deg, transparent, green.400, transparent)",
+                        opacity: 0.5,
                     }}
                 >
                     <Flex align="center" justify="space-between" mb={6}>
@@ -135,36 +137,17 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                                 h={10}
                                 color={accentColor}
                                 mr={4}
-                                filter="drop-shadow(0 0 8px rgba(72, 187, 120, 0.5))"
                             />
                             <Box>
-                                <Heading
-                                    size="xl"
-                                    mb={2}
-                                    color={textColor}
-                                    bgGradient="linear(to-r, green.400, green.200)"
-                                    bgClip="text"
-                                >
-                                    Active Duels
-                                </Heading>
+                                <Heading size="xl" mb={2} color={textColor}>Duels</Heading>
                                 <Text fontSize="lg" color={secondaryTextColor}>
                                     Challenge other traders in head-to-head competitions!
                                 </Text>
                             </Box>
                         </Flex>
-                        <Button
-                            colorScheme="green"
-                            size="lg"
-                            leftIcon={<FaTrophy />}
-                            borderRadius="xl"
-                            _hover={{
-                                transform: "translateY(-2px)",
-                                boxShadow: neonGlow,
-                            }}
-                            transition="all 0.2s"
-                        >
+                        <OutlineButton tooltipLabel="Create a new duel">
                             Create Duel
-                        </Button>
+                        </OutlineButton>
                     </Flex>
 
                     {/* Stats Section */}
@@ -229,7 +212,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                 </Box>
 
                 {/* Filters and Search */}
-                <Box p={6}>
+                {/* <Box p={6}>
                     <Flex gap={4}>
                         <Flex position="relative" flex={1}>
                             <Input
@@ -282,14 +265,20 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                             </MenuList>
                         </Menu>
                     </Flex>
-                </Box>
+                </Box> */}
+
+                <Divider borderColor={borderColor} />
+
 
                 {/* Duels List */}
-                <VStack spacing={6} p={6} align="stretch">
-                    {filteredDuels?.map((duel) => (
-                        <DuelOverview key={duel.id} duel={duel} />
-                    ))}
-                </VStack>
+                <Box p={8} bg={cardBgColor}>
+
+                    <VStack spacing={6} p={6} align="stretch">
+                        {filteredDuels?.map((duel) => (
+                            <DuelOverview key={duel.id} duel={duel} />
+                        ))}
+                    </VStack>
+                </Box>
             </Box>
         </Container>
     );
