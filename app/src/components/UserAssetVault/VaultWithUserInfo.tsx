@@ -22,9 +22,9 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
     const { data: user, isLoading, isError } = useQuery<User>({
         queryKey: ['user_info', vault.userId],
         queryFn: () => fetchUserInfoById(vault.userId),
-        staleTime: 30000, // Consider data fresh for 30 seconds
-        gcTime: 300000, // Keep data in cache for 5 minutes
-        retry: 2, // Retry failed requests twice
+        staleTime: 30000,
+        gcTime: 300000,
+        retry: 2,
     });
 
     // Calculate the total asset value
@@ -35,72 +35,79 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
 
     return (
         <Box
-            p={6}
-            bg="back.600"
+            p={4}
+            bg="gray.800"
             borderRadius="lg"
             border="1px solid"
-            borderColor="back.500"
-            boxShadow="none"
+            borderColor="gray.700"
+            transition="all 0.2s ease-in-out"
             _hover={{
-                transform: "scale(1.05)",
-                transition: "all 0.3s",
-                boxShadow: "shadow.primary.500",
-                borderColor: "primary.300",
+                transform: "translateY(-2px)",
+                borderColor: "green.400",
+                boxShadow: "0 0 10px rgba(72, 187, 120, 0.2)",
             }}
-            color="font.300"
         >
-            <Flex direction="row" alignItems="center" justifyContent="space-between" gap={6}>
+            <Flex direction="row" alignItems="center" justifyContent="space-between" gap={4}>
                 {/* User Data Section */}
-                <VStack align="center" flex="1" spacing={3}>
-                    {isLoading ? (
-                        <Spinner size="lg" />
-                    ) : isError ? (
-                        <Text fontSize="sm" color="red.500">
-                            Failed to load user info
-                        </Text>
-                    ) : user ? (
-                        <>
-                            <Image
-                                boxSize="80px"
-                                borderRadius="full"
-                                border="2px solid"
-                                borderColor="primary.300"
-                                src={user.avatar || "/images/ape-logo.webp"}
-                                alt={`${user.name}'s Avatar`}
-                                fallbackSrc="/images/ape-logo.webp"
-                            />
-                            <Text fontWeight="bold" fontSize="lg" color="font.900">
-                                {user.name || 'Unknown User'}
+                <Box w="120px" flexShrink={0}>
+                    <VStack align="center" spacing={2}>
+                        {isLoading ? (
+                            <Spinner size="sm" />
+                        ) : isError ? (
+                            <Text fontSize="xs" color="red.500">
+                                Failed to load user info
                             </Text>
-                        </>
-                    ) : (
-                        <Text fontSize="sm" color="red.500">
-                            User not found
-                        </Text>
-                    )}
-                </VStack>
+                        ) : user ? (
+                            <>
+                                <Image
+                                    boxSize="40px"
+                                    borderRadius="full"
+                                    border="2px solid"
+                                    borderColor="green.400"
+                                    src={user.avatar || "/images/ape-logo.webp"}
+                                    alt={`${user.name}'s Avatar`}
+                                    fallbackSrc="/images/ape-logo.webp"
+                                />
+                                <Text
+                                    fontWeight="medium"
+                                    fontSize="sm"
+                                    color="white"
+                                    textAlign="center"
+                                    noOfLines={1}
+                                    w="full"
+                                >
+                                    {user.name || 'Unknown User'}
+                                </Text>
+                            </>
+                        ) : (
+                            <Text fontSize="xs" color="red.500">
+                                User not found
+                            </Text>
+                        )}
+                    </VStack>
+                </Box>
 
                 {/* TVL and PNL Section */}
                 <Box
                     flex="1"
-                    p={4}
+                    p={2}
                     borderRadius="md"
                     textAlign="center"
-                    boxShadow="sm"
-                    borderColor="back.500"
                     bg="transparent"
                 >
                     <Text
-                        fontSize="lg"
-                        fontWeight="bold"
-                        color={totalAssetValue > 10000 ? 'primary.300' : 'red.500'}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color={totalAssetValue > 10000 ? 'green.400' : 'red.400'}
+                        textShadow={totalAssetValue > 10000 ? "0 0 10px rgba(72, 187, 120, 0.3)" : "none"}
                     >
                         TVL: ${totalAssetValue.toFixed(2)}
                     </Text>
                     <Text
-                        fontSize="lg"
-                        fontWeight="bold"
-                        color={totalAssetValue > 10000 ? 'primary.300' : 'red.500'}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color={totalAssetValue > 10000 ? 'green.400' : 'red.400'}
+                        textShadow={totalAssetValue > 10000 ? "0 0 10px rgba(72, 187, 120, 0.3)" : "none"}
                     >
                         PNL: ${Math.abs(totalAssetValue - 10000).toFixed(2)} (
                         {((Math.abs(totalAssetValue - 10000) / 10000) * 100).toFixed(2)}%)
@@ -108,7 +115,9 @@ const VaultWithUserInfo: React.FC<VaultWithUserInfoProps> = ({ vault, priceList 
                 </Box>
 
                 {/* Trade Button */}
-                <TradeButton vault={vault} isConnected={false} />
+                <Box w="80px" flexShrink={0}>
+                    <TradeButton vault={vault} isConnected={false} />
+                </Box>
             </Flex>
         </Box>
     );

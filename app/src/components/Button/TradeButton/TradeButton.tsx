@@ -5,10 +5,8 @@ import {
 import React from 'react';
 import { useState } from 'react';
 
-import { commonButtonStyle } from '../Styled';
 import TradeDialog from '../Dialog/TradeDialog/TradeDialog';
 import { UserAssetVault } from '../../../libs/entities/UserAssetVault';
-
 
 interface TradeButtonProps {
     vault: UserAssetVault | undefined;
@@ -17,7 +15,6 @@ interface TradeButtonProps {
 }
 
 export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, onComplete }) => {
-
     const [isOpen, setIsOpen] = useState(false);
 
     const handleComplete = () => {
@@ -33,9 +30,22 @@ export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, on
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={() => setIsOpen(true)}
-                        sx={commonButtonStyle}
-                        title="Trade on this Vault"
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
+                        bg="transparent"
+                        color="white"
+                        border="1px solid"
+                        borderColor="green.400"
+                        borderRadius="full"
+                        px={4}
+                        py={1}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        transition="all 0.2s ease-in-out"
+                        _hover={{
+                            bg: "transparent",
+                            color: "green.400",
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
+                        }}
                     >
                         Trade
                     </Button>
@@ -44,10 +54,22 @@ export const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, on
                 <Tooltip label='Trade on this Vault'>
                     <Button
                         onClick={() => setIsOpen(true)}
-                        sx={commonButtonStyle}
-                        size={{ base: 'sm', sm: 'sm', lsm: 'md', md: 'md' }}
-                        title="Trade on this Vault"
-                    // isDisabled={true}
+                        bg="transparent"
+                        color="white"
+                        border="1px solid"
+                        borderColor="green.400"
+                        borderRadius="full"
+                        px={4}
+                        py={1}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        transition="all 0.2s ease-in-out"
+                        _hover={{
+                            bg: "transparent",
+                            color: "green.400",
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 0 10px rgba(72, 187, 120, 0.5)",
+                        }}
                     >
                         Trade
                     </Button>
