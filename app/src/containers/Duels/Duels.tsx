@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Flex,
@@ -14,12 +14,15 @@ import {
     useColorModeValue,
     Icon,
     HStack,
-    Stat,
-    StatLabel,
-    StatNumber,
-    StatHelpText,
-    StatArrow,
+    Input,
+    Select,
+    Progress,
     Tooltip,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    IconButton,
 } from "@chakra-ui/react";
 import { useQuery } from '@tanstack/react-query';
 import { Duel as DuelEntity } from '../../libs/entities/Duel';
@@ -29,13 +32,22 @@ import { LayoutMode } from '../../types/layout';
 import { User } from '../../libs/entities/User';
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
-import { FaClock, FaTrophy, FaCoins, FaChartLine } from 'react-icons/fa';
+import { FaClock, FaTrophy, FaCoins, FaChartLine, FaSearch, FaFilter, FaEye, FaSort } from 'react-icons/fa';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
 }
 
+interface DuelWithStatus extends DuelEntity {
+    status: 'active' | 'pending' | 'completed';
+    prizePool: string;
+}
+
 const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [sortBy, setSortBy] = useState('time');
+
     const bgColor = useColorModeValue("gray.900", "gray.900");
     const cardBgColor = useColorModeValue("gray.800", "gray.800");
     const borderColor = useColorModeValue("gray.700", "gray.700");
@@ -48,6 +60,23 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     const { data: duels, isLoading, isError } = useQuery<DuelEntity[]>({
         queryKey: ['active_duels'],
         queryFn: fetchDuelsData,
+    });
+
+    // Filter and sort duels
+    const filteredDuels = duels?.filter(duel => {
+        const matchesSearch = duel.player1Id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            duel.player2Id.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === 'all' || statusFilter === 'active';
+        return matchesSearch && matchesStatus;
+    }).sort((a, b) => {
+        switch (sortBy) {
+            case 'time':
+                return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+            case 'prize':
+                return 0;
+            default:
+                return 0;
+        }
     });
 
     if (isLoading) {
@@ -121,10 +150,61 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                             Create Duel
                         </Button>
                     </Flex>
+
+                    {/* Filters and Search */}
+                    <Flex gap={4} mt={4}>
+                        <Flex position="relative" flex={1}>
+                            <Input
+                                placeholder="Search players..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                bg={cardBgColor}
+                                borderColor={borderColor}
+                                _hover={{ borderColor: accentColor }}
+                                _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                                pl={10}
+                            />
+                            <Icon
+                                as={FaSearch}
+                                color={secondaryTextColor}
+                                position="absolute"
+                                left={3}
+                                top="50%"
+                                transform="translateY(-50%)"
+                            />
+                        </Flex>
+                        <Select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            bg={cardBgColor}
+                            borderColor={borderColor}
+                            _hover={{ borderColor: accentColor }}
+                            _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                        >
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                        </Select>
+                        <Menu>
+                            <MenuButton
+                                as={IconButton}
+                                icon={<FaSort />}
+                                aria-label="Sort by"
+                                bg={cardBgColor}
+                                borderColor={borderColor}
+                                _hover={{ borderColor: accentColor }}
+                            />
+                            <MenuList bg={cardBgColor} borderColor={borderColor}>
+                                <MenuItem onClick={() => setSortBy('time')}>Time Remaining</MenuItem>
+                                <MenuItem onClick={() => setSortBy('prize')}>Prize Pool</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </Flex>
                 </Box>
 
                 <VStack spacing={6} p={8} align="stretch">
-                    {duels.map((duel) => (
+                    {filteredDuels?.map((duel) => (
                         <DuelOverview key={duel.id} duel={duel} />
                     ))}
                 </VStack>
@@ -155,11 +235,18 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
     const accentColor = "green.400";
     const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
 
-    // Calculate time remaining
+    // Calculate time remaining with hours and minutes
     const endDate = new Date(duel.endDate);
     const now = new Date();
     const timeRemaining = endDate.getTime() - now.getTime();
-    const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
+    const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+
+    // Calculate progress
+    const startDate = new Date(duel.startDate);
+    const totalDuration = endDate.getTime() - startDate.getTime();
+    const progress = ((now.getTime() - startDate.getTime()) / totalDuration) * 100;
 
     // Mock prize pool (replace with actual data)
     const prizePool = "1,000 XRD";
@@ -240,7 +327,7 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                         }}
                         transition="all 0.2s"
                     />
-                    <VStack spacing={1} mt={2}>
+                    <VStack spacing={2} mt={2}>
                         <HStack color={secondaryTextColor} fontSize="xs" justify="center">
                             <Icon as={FaClock} />
                             <Text>
@@ -251,9 +338,19 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                             <Icon as={FaCoins} />
                             <Text fontWeight="bold">{prizePool}</Text>
                         </HStack>
-                        <Text fontSize="xs" color={daysRemaining <= 3 ? "red.400" : "green.400"}>
-                            {daysRemaining} days remaining
-                        </Text>
+                        <Progress
+                            value={progress}
+                            size="sm"
+                            w="200px"
+                            colorScheme="green"
+                            bg="gray.700"
+                            borderRadius="full"
+                        />
+                        <Tooltip label={`${hoursRemaining}h ${minutesRemaining}m remaining`}>
+                            <Text fontSize="xs" color={daysRemaining <= 3 ? "red.400" : "green.400"}>
+                                {daysRemaining} days remaining
+                            </Text>
+                        </Tooltip>
                     </VStack>
                 </Box>
 
@@ -293,6 +390,18 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                     transition="all 0.2s"
                 >
                     Join
+                </Button>
+                <Button
+                    colorScheme="purple"
+                    size="sm"
+                    leftIcon={<FaEye />}
+                    _hover={{
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 0 10px rgba(159, 122, 234, 0.5)",
+                    }}
+                    transition="all 0.2s"
+                >
+                    Watch
                 </Button>
             </Flex>
         </Box>
@@ -346,20 +455,26 @@ const PlayerOverview: React.FC<PlayerOverviewProps> = ({ user, isLoading, isErro
                         {user?.name || 'Unknown User'}
                     </Text>
 
-                    {/* Player Stats */}
+                    {/* Player Stats with Tooltips */}
                     <VStack spacing={1} mt={2} w="full">
-                        <HStack justify="space-between" w="full" fontSize="xs">
-                            <Text color={secondaryTextColor}>Trades:</Text>
-                            <Text color={textColor}>24</Text>
-                        </HStack>
-                        <HStack justify="space-between" w="full" fontSize="xs">
-                            <Text color={secondaryTextColor}>Win Rate:</Text>
-                            <Text color={accentColor}>68%</Text>
-                        </HStack>
-                        <HStack justify="space-between" w="full" fontSize="xs">
-                            <Text color={secondaryTextColor}>Return:</Text>
-                            <Text color="green.400">+15%</Text>
-                        </HStack>
+                        <Tooltip label="Total number of trades in this duel">
+                            <HStack justify="space-between" w="full" fontSize="xs">
+                                <Text color={secondaryTextColor}>Trades:</Text>
+                                <Text color={textColor}>24</Text>
+                            </HStack>
+                        </Tooltip>
+                        <Tooltip label="Win rate in this duel">
+                            <HStack justify="space-between" w="full" fontSize="xs">
+                                <Text color={secondaryTextColor}>Win Rate:</Text>
+                                <Text color={accentColor}>68%</Text>
+                            </HStack>
+                        </Tooltip>
+                        <Tooltip label="Current return in this duel">
+                            <HStack justify="space-between" w="full" fontSize="xs">
+                                <Text color={secondaryTextColor}>Return:</Text>
+                                <Text color="green.400">+15%</Text>
+                            </HStack>
+                        </Tooltip>
                     </VStack>
                 </>
             )}
