@@ -16,7 +16,7 @@ import {
 import { WalletButton } from '../Button/WalletButton/WalletButton';
 import { BsTwitterX } from "react-icons/bs"
 import { FaTelegramPlane } from "react-icons/fa";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { User } from '../../libs/entities/User';
 import { fetchUserInfo } from '../../libs/data_services/UserDataService';
 import { WalletDataState } from '@radixdlt/radix-dapp-toolkit';
@@ -45,9 +45,28 @@ export default function TopNavigationBar() {
     const accentColor = "green.400";
     const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
     const isMobile = useBreakpointValue({ base: true, md: false });
+    const queryClient = useQueryClient();
 
-    const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
-    const { data: wallet } = useQuery<WalletDataState>({ queryKey: ['wallet_data'], queryFn: fetchConnectedWallet });
+    const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({
+        queryKey: ['user_info'],
+        queryFn: fetchUserInfo,
+        refetchInterval: 5000, // Refetch every 5 seconds
+        enabled: true // Always enabled to keep user data fresh
+    });
+
+    const { data: wallet } = useQuery<WalletDataState>({
+        queryKey: ['wallet_data'],
+        queryFn: fetchConnectedWallet,
+        refetchInterval: 5000, // Refetch every 5 seconds
+        enabled: true // Always enabled to keep wallet data fresh
+    });
+
+    // Effect to refetch user data when wallet changes
+    useEffect(() => {
+        if (wallet?.persona) {
+            queryClient.invalidateQueries({ queryKey: ['user_info'] });
+        }
+    }, [wallet?.persona, queryClient]);
 
     const filteredUserId = user?.id.replace(/#/g, "");
 
@@ -169,6 +188,12 @@ export default function TopNavigationBar() {
                                         link="/duels"
                                         title="Duels"
                                         icon={GiSwordman}
+                                    />
+                                    <LeftNavigationButton
+                                        link="#"
+                                        title="Clan Wars"
+                                        icon={GiBorderedShield}
+                                        isComingSoon={true}
                                     />
                                 </HStack>
                             </VStack>
