@@ -41,6 +41,7 @@ import { SocialButton } from '../../components/Button/SocialButton/SocialButton'
 import { useParams } from 'react-router-dom';
 import { LayoutMode } from '../../types/layout';
 import PageContainer from '../../components/Container/PageContainer/PageContainer';
+import ActiveParticipations from '../../components/ActiveParticipations/ActiveParticipations';
 
 interface ProfileProps {
     layoutMode: LayoutMode;
@@ -398,15 +399,19 @@ const Profile: React.FC<ProfileProps> = ({ layoutMode }) => {
             <VStack spacing={8} align="stretch">
                 <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
                 <Box>
-                    <Tabs variant="soft-rounded" colorScheme="green" align="center" size={isMobile ? "sm" : "md"}>
+                    <Tabs variant="soft-rounded" colorScheme="green" align="center" size="lg">
                         <TabList>
                             <Tab>Overview</Tab>
                             <Tab>Achievements</Tab>
                             <Tab>Activity</Tab>
                         </TabList>
+
                         <TabPanels>
                             <TabPanel>
-                                <ProfileStats />
+                                <VStack spacing={6} align="stretch">
+                                    <ProfileStats />
+                                    {profile && <ActiveParticipations userId={profile.id} />}
+                                </VStack>
                             </TabPanel>
                             <TabPanel>
                                 <Achievements />
