@@ -22,6 +22,7 @@ import {
     Progress,
     Tooltip,
     Icon,
+    HStack,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../types/layout';
@@ -235,6 +236,67 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                         </Flex>
                         <JoinButton isConnected={false} />
                     </Flex>
+
+                    {/* Stats Section */}
+                    <Grid templateColumns="repeat(4, 1fr)" gap={6} mt={8}>
+                        <Box
+                            p={4}
+                            bg={cardBgColor}
+                            borderRadius="xl"
+                            border="1px solid"
+                            borderColor={borderColor}
+                        >
+                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Participants</Text>
+                            <Text color={textColor} fontSize="2xl" fontWeight="bold">{totalParticipants}</Text>
+                            <HStack mt={2}>
+                                <Icon as={FaUsers} color="green.400" />
+                                <Text color="green.400" fontSize="sm">+{newParticipants} new today</Text>
+                            </HStack>
+                        </Box>
+                        <Box
+                            p={4}
+                            bg={cardBgColor}
+                            borderRadius="xl"
+                            border="1px solid"
+                            borderColor={borderColor}
+                        >
+                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Total Value</Text>
+                            <Text color={textColor} fontSize="2xl" fontWeight="bold">${totalValue.toLocaleString()}</Text>
+                            <HStack mt={2}>
+                                <Icon as={FaChartLine} color="green.400" />
+                                <Text color="green.400" fontSize="sm">+{dailyChange}% today</Text>
+                            </HStack>
+                        </Box>
+                        <Box
+                            p={4}
+                            bg={cardBgColor}
+                            borderRadius="xl"
+                            border="1px solid"
+                            borderColor={borderColor}
+                        >
+                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Time Remaining</Text>
+                            <Text color={textColor} fontSize="2xl" fontWeight="bold">{daysRemaining}d</Text>
+                            <HStack mt={2}>
+                                <Icon as={FaClock} color={secondaryTextColor} />
+                                <Text color={secondaryTextColor} fontSize="sm">{hoursRemaining}h remaining</Text>
+                            </HStack>
+                        </Box>
+                        <Box
+                            p={4}
+                            bg={cardBgColor}
+                            borderRadius="xl"
+                            border="1px solid"
+                            borderColor={borderColor}
+                        >
+                            <Text color={secondaryTextColor} fontSize="sm" mb={1}>Top Prize</Text>
+                            <Text color={textColor} fontSize="2xl" fontWeight="bold">$10,000</Text>
+                            <HStack mt={2}>
+                                <Icon as={FaMedal} color="yellow.400" />
+                                <Text color="yellow.400" fontSize="sm">1st Place Reward</Text>
+                            </HStack>
+                        </Box>
+                    </Grid>
+
                     <Box mt={4}>
                         <Text color={secondaryTextColor} mb={2}>Competition Progress</Text>
                         <Tooltip label={`${daysRemaining}d ${hoursRemaining}h remaining`}>
@@ -250,54 +312,6 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                         </Tooltip>
                     </Box>
                 </Box>
-
-                {/* Competition Stats */}
-                <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6} p={8} bg={cardBgColor}>
-                    <GridItem>
-                        <Stat>
-                            <StatLabel color={secondaryTextColor}>
-                                <Flex align="center">
-                                    <Icon as={FaChartLine} mr={2} />
-                                    Total Value
-                                </Flex>
-                            </StatLabel>
-                            <StatNumber color={accentColor} textShadow={neonGlow}>${totalValue.toLocaleString()}</StatNumber>
-                            <StatHelpText color={accentColor}>
-                                <StatArrow type="increase" />
-                                {dailyChange}%
-                            </StatHelpText>
-                        </Stat>
-                    </GridItem>
-                    <GridItem>
-                        <Stat>
-                            <StatLabel color={secondaryTextColor}>
-                                <Flex align="center">
-                                    <Icon as={FaUsers} mr={2} />
-                                    Participants
-                                </Flex>
-                            </StatLabel>
-                            <StatNumber color={accentColor} textShadow={neonGlow}>{totalParticipants}</StatNumber>
-                            <StatHelpText color={accentColor}>
-                                <StatArrow type="increase" />
-                                {newParticipants} new today
-                            </StatHelpText>
-                        </Stat>
-                    </GridItem>
-                    <GridItem>
-                        <Stat>
-                            <StatLabel color={secondaryTextColor}>
-                                <Flex align="center">
-                                    <Icon as={FaClock} mr={2} />
-                                    Time Remaining
-                                </Flex>
-                            </StatLabel>
-                            <StatNumber color={accentColor} textShadow={neonGlow}>{daysRemaining}d {hoursRemaining}h</StatNumber>
-                            <StatHelpText color={secondaryTextColor}>
-                                Ends {competitionData?.end_date || "2024-04-30"}
-                            </StatHelpText>
-                        </Stat>
-                    </GridItem>
-                </Grid>
 
                 <Divider borderColor={borderColor} />
 
