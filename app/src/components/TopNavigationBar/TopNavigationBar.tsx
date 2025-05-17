@@ -140,15 +140,15 @@ export default function TopNavigationBar() {
 
                         {!isMobile && (
                             <VStack spacing={2} flex="1" align="center">
-                                <HStack spacing={8} justify="center" minW="400px">
+                                <HStack spacing={8} justify="center" minW="400px" align="center">
                                     {wallet?.persona === undefined ? (
-                                        <Box minW="120px">
+                                        <Box minW="50px" display="flex" justifyContent="center">
                                             <CreateUserButton />
                                         </Box>
                                     ) : (
                                         <>
                                             {user?.id === '' ? (
-                                                <Box minW="120px">
+                                                <Box minW="50px" display="flex" justifyContent="center">
                                                     <CreateUserButton />
                                                 </Box>
                                             ) : (
@@ -170,11 +170,6 @@ export default function TopNavigationBar() {
                                         title="Duels"
                                         icon={GiSwordman}
                                     />
-                                    {/* <LeftNavigationButton
-                                        link="/clan_wars"
-                                        title="Clan Wars"
-                                        icon={GiBorderedShield}
-                                    /> */}
                                 </HStack>
                             </VStack>
                         )}
