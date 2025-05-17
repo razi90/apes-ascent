@@ -1,45 +1,34 @@
-import {
-    Link,
-    Button,
-    Box,
-    Text,
-} from "@chakra-ui/react";
-import { LeftNavigationButtonIcon } from "./LeftNavigationButtonIcon";
-import {
-    leftNavigationButtonStyle,
-} from "./Styled";
+import React from 'react';
+import { Button, Icon, Text, Image } from '@chakra-ui/react';
+import { IconType } from 'react-icons';
+import { Link } from 'react-router-dom';
+import { leftNavigationButtonStyle } from './Styled';
 
 interface FeatureProps {
     link: string;
     title: string;
-    icon: any;
+    icon: IconType | string;
+    isExternal?: boolean;
     navIsMinimized: boolean;
-    isExternal?: boolean; // Optional prop to indicate external link
 }
 
-export const LeftNavigationButton: React.FC<FeatureProps> = ({
-    link,
-    title,
-    icon,
-    navIsMinimized,
-    isExternal = false,
-}) => {
+export const LeftNavigationButton: React.FC<FeatureProps> = ({ link, title, icon, isExternal = false, navIsMinimized }) => {
     return (
-        <Button
-            as={Link}
-            href={link}
-            target={isExternal ? "_blank" : undefined} // Opens in new tab if isExternal is true
-            rel={isExternal ? "noopener noreferrer" : undefined} // Enhances security
-            sx={leftNavigationButtonStyle}
-            title={title}
-            _hover={{ textDecoration: "none" }}
-        >
-            <LeftNavigationButtonIcon icon={icon} />
-
-            <Box w="100%">
-                {!navIsMinimized && <Text pl={3}>{title}</Text>}
-            </Box>
-        </Button>
+        <Link to={link} target={isExternal ? "_blank" : undefined}>
+            <Button
+                sx={leftNavigationButtonStyle}
+                width="100%"
+                justifyContent="flex-start"
+                pl={4}
+            >
+                {typeof icon === 'string' ? (
+                    <Image src={icon} boxSize={5} mr={3} borderRadius="full" />
+                ) : (
+                    <Icon as={icon} boxSize={5} mr={3} />
+                )}
+                <Text>{navIsMinimized ? "" : title}</Text>
+            </Button>
+        </Link>
     );
 };
 

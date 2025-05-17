@@ -14,8 +14,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Duel as DuelEntity } from '../../libs/entities/Duel';
 import { fetchUserInfoById } from '../../libs/data_services/UserDataService';
 import { fetchDuelsData } from '../../libs/data_services/DuelDataService';
+import { LayoutMode } from '../../Layout';
+import { User } from '../../libs/entities/User';
 
-const DuelsPage: React.FC = () => {
+interface DuelsPageProps {
+    layoutMode: LayoutMode;
+}
+
+const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     // Fetch active duels
     const { data: duels, isLoading, isError } = useQuery<DuelEntity[]>({
         queryKey: ['active_duels'],
@@ -133,7 +139,7 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
 };
 
 interface PlayerOverviewProps {
-    user: any;
+    user: User | undefined;
     isLoading: boolean;
     isError: boolean;
     side: string;

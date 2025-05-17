@@ -7,18 +7,22 @@ import {
     Center,
     Spacer,
     useBreakpointValue,
-    IconButton,
-    Drawer,
-    DrawerBody,
-    DrawerOverlay,
-    DrawerContent,
-    useDisclosure,
+    HStack,
+    Container,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { WalletButton } from '../Button/WalletButton/WalletButton';
 import { useColorModeValue } from "@chakra-ui/react";
 import { BsTwitterX } from "react-icons/bs"
-
+import { FaTelegramPlane } from "react-icons/fa";
+import { useQuery } from '@tanstack/react-query';
+import { User } from '../../libs/entities/User';
+import { fetchUserInfo } from '../../libs/data_services/UserDataService';
+import { WalletDataState } from '@radixdlt/radix-dapp-toolkit';
+import { fetchConnectedWallet } from '../../libs/data_services/WalletDataService';
+import { LeftNavigationButton } from '../LeftNavigationBar/LeftNavigationButton';
+import { GiMonkey, GiBorderedShield } from "react-icons/gi";
+import { FaFistRaised, FaUserCircle } from "react-icons/fa";
+import CreateUserButton from '../Button/CreateUser/CreateUserButton';
 
 import {
     topNavigationBoxStyle,
@@ -29,17 +33,18 @@ import {
 
 import { useState, useEffect } from 'react';
 import Joyride, { Step } from 'react-joyride';
-
-import { NavigationItems } from "../LeftNavigationBar/NavigationItems";
 import { ColorModeToggle } from "../Button/ColorModeButton/ColorModeButton";
 import { SocialButton } from "../Button/SocialButton/SocialButton";
-import { FaTelegram, FaTelegramPlane, FaTwitter } from "react-icons/fa";
 
 export default function TopNavigationBar() {
     const bgColor = useColorModeValue("white", "#161616");
     const boxShadow = useColorModeValue("0 0 10px 0px #ccc", "0 0 10px 0px #211F34");
     const isMobile = useBreakpointValue({ base: true, md: false });
-    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const { data: user, isLoading: isUserFetchLoading } = useQuery<User>({ queryKey: ['user_info'], queryFn: fetchUserInfo });
+    const { data: wallet } = useQuery<WalletDataState>({ queryKey: ['wallet_data'], queryFn: fetchConnectedWallet });
+
+    const filteredUserId = user?.id.replace(/#/g, "");
 
     const [steps, setSteps] = useState<Step[]>([
         {
@@ -72,17 +77,8 @@ export default function TopNavigationBar() {
     return (
         <>
             <Box sx={topNavigationBoxStyle(bgColor, boxShadow)}>
-                <Center>
+                <Container maxW="container.xl" px={4}>
                     <Flex sx={topNavigationMainFlexStyle} alignItems="center">
-                        {isMobile && (
-                            <IconButton
-                                aria-label="Toggle Menu"
-                                icon={<HamburgerIcon />}
-                                onClick={onOpen}
-                                variant="outline"
-                                mr={2}
-                            />
-                        )}
                         <Flex alignItems="center" gap={6}>
                             <Link href={"/"}>
                                 <Image
@@ -99,35 +95,52 @@ export default function TopNavigationBar() {
                             )}
                         </Flex>
 
+                        {!isMobile && (
+                            <HStack spacing={4} ml={8} flex="1" justify="center">
+                                {wallet?.persona === undefined ? (
+                                    <CreateUserButton navIsMinimized={false} />
+                                ) : (
+                                    <>
+                                        {user?.id === '' ? (
+                                            <CreateUserButton navIsMinimized={false} />
+                                        ) : (
+                                            <LeftNavigationButton
+                                                link={`/profile/${filteredUserId}`}
+                                                title={user ? user.name : 'Profile'}
+                                                icon={user && user.avatar ? user.avatar : FaUserCircle}
+                                                navIsMinimized={false}
+                                            />
+                                        )}
+                                    </>
+                                )}
+                                <LeftNavigationButton link="/free_for_all" title="Free For All" icon={GiMonkey} navIsMinimized={false} />
+                                <LeftNavigationButton link="/duels" title="Duels" icon={FaFistRaised} navIsMinimized={false} />
+                                <LeftNavigationButton link="/clan_wars" title="Clan Wars" icon={GiBorderedShield} navIsMinimized={false} />
+                            </HStack>
+                        )}
+
                         <Spacer />
 
-                        <Box mx={2}>
-                            <SocialButton label={'Twitter'} href={`https://www.twitter.com/apes_ascent`}>
-                                <BsTwitterX />
-                            </SocialButton>
-                        </Box>
+                        <HStack spacing={2}>
+                            <Box>
+                                <SocialButton label={'Twitter'} href={`https://www.twitter.com/apes_ascent`}>
+                                    <BsTwitterX />
+                                </SocialButton>
+                            </Box>
 
-                        <Box mx={2}>
-                            <SocialButton label={'Telegram'} href={`https://t.me/apes_ascent`}>
-                                <FaTelegramPlane />
-                            </SocialButton>
-                        </Box>
+                            <Box>
+                                <SocialButton label={'Telegram'} href={`https://t.me/apes_ascent`}>
+                                    <FaTelegramPlane />
+                                </SocialButton>
+                            </Box>
 
-                        <WalletButton />
+                            <WalletButton />
+                        </HStack>
                     </Flex>
-                </Center>
+                </Container>
             </Box>
 
             <Box sx={topNavigationHiddenBoxStyle} />
-
-            <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
-                <DrawerOverlay />
-                <DrawerContent>
-                    <DrawerBody bg={bgColor}>
-                        <NavigationItems />
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
 
             <Joyride
                 steps={steps}
