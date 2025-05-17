@@ -25,6 +25,7 @@ import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 import { LayoutMode } from '../../types/layout';
 import PageContainer from '../../components/Container/PageContainer/PageContainer';
 import { FaExchangeAlt, FaChartLine, FaInfoCircle } from 'react-icons/fa';
+import { addressToAsset, Asset } from '../../libs/entities/Asset';
 
 // Lazy load TradingView widget
 const TradingViewWidget = lazy(() => import('../../components/TradingView/TradingViewWidget'));
@@ -48,33 +49,33 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
         queryFn: fetchPriceListMap,
     });
 
+    // Get available assets with their tickers
+    const availableAssets = Array.from(vault.assets.entries())
+        .filter(([_, amount]) => amount > 0)
+        .map(([address]) => addressToAsset(address));
+
     // State for trading
-    const [fromToken, setFromToken] = useState<string>(Array.from(vault.assets.keys())[0]);
-    const [toToken, setToToken] = useState<string>(Array.from(vault.assets.keys())[1]);
+    const [fromAsset, setFromAsset] = useState<Asset>(availableAssets[0]);
+    const [toAsset, setToAsset] = useState<Asset>(availableAssets[1]);
     const [amount, setAmount] = useState<string>('');
     const [estimatedAmount, setEstimatedAmount] = useState<string>('');
 
-    // Calculate available tokens
-    const availableTokens = Array.from(vault.assets.keys()).filter(token =>
-        vault.assets.get(token) && vault.assets.get(token)! > 0
-    );
-
     // Calculate estimated amount when amount or tokens change
     React.useEffect(() => {
-        if (amount && priceList && fromToken && toToken) {
-            const fromPrice = priceList[fromToken] || 0;
-            const toPrice = priceList[toToken] || 0;
+        if (amount && priceList && fromAsset && toAsset) {
+            const fromPrice = priceList[fromAsset.address] || 0;
+            const toPrice = priceList[toAsset.address] || 0;
             const estimated = (parseFloat(amount) * fromPrice) / toPrice;
             setEstimatedAmount(estimated.toFixed(6));
         } else {
             setEstimatedAmount('');
         }
-    }, [amount, fromToken, toToken, priceList]);
+    }, [amount, fromAsset, toAsset, priceList]);
 
     // Handle swap
     const handleSwap = () => {
         // TODO: Implement actual swap logic
-        console.log('Swapping', amount, fromToken, 'to', estimatedAmount, toToken);
+        console.log('Swapping', amount, fromAsset.ticker, 'to', estimatedAmount, toAsset.ticker);
     };
 
     return (
@@ -99,7 +100,7 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
                                 <Spinner size="xl" color={accentColor} />
                             </Center>
                         }>
-                            <TradingViewWidget symbol={`${fromToken}USD`} />
+                            <TradingViewWidget symbol={`${fromAsset.ticker}USD`} />
                         </Suspense>
                     </Box>
                 </GridItem>
@@ -117,22 +118,25 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
                         >
                             <Heading size="md" mb={4} color={textColor}>Current Positions</Heading>
                             <VStack spacing={3} align="stretch">
-                                {availableTokens.map(token => (
+                                {availableAssets.map(asset => (
                                     <Flex
-                                        key={token}
+                                        key={asset.address}
                                         justify="space-between"
                                         align="center"
                                         p={2}
                                         bg="gray.700"
                                         borderRadius="md"
                                     >
-                                        <Text color={textColor}>{token.toUpperCase()}</Text>
+                                        <HStack>
+                                            {asset.symbol}
+                                            <Text color={textColor}>{asset.ticker}</Text>
+                                        </HStack>
                                         <HStack>
                                             <Text color={textColor}>
-                                                {vault.assets.get(token)?.toFixed(6)}
+                                                {vault.assets.get(asset.address)?.toFixed(6)}
                                             </Text>
                                             <Text color={secondaryTextColor}>
-                                                (${((vault.assets.get(token) || 0) * (priceList?.[token] || 0)).toFixed(2)})
+                                                (${((vault.assets.get(asset.address) || 0) * (priceList?.[asset.address] || 0)).toFixed(2)})
                                             </Text>
                                         </HStack>
                                     </Flex>
@@ -155,15 +159,15 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
                                     <Text color={secondaryTextColor} mb={2}>From</Text>
                                     <HStack>
                                         <Select
-                                            value={fromToken}
-                                            onChange={(e) => setFromToken(e.target.value)}
+                                            value={fromAsset.address}
+                                            onChange={(e) => setFromAsset(addressToAsset(e.target.value))}
                                             bg="gray.700"
                                             color={textColor}
                                             borderColor={borderColor}
                                         >
-                                            {availableTokens.map(token => (
-                                                <option key={token} value={token}>
-                                                    {token.toUpperCase()}
+                                            {availableAssets.map(asset => (
+                                                <option key={asset.address} value={asset.address}>
+                                                    {asset.ticker}
                                                 </option>
                                             ))}
                                         </Select>
@@ -189,15 +193,15 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
                                     <Text color={secondaryTextColor} mb={2}>To</Text>
                                     <HStack>
                                         <Select
-                                            value={toToken}
-                                            onChange={(e) => setToToken(e.target.value)}
+                                            value={toAsset.address}
+                                            onChange={(e) => setToAsset(addressToAsset(e.target.value))}
                                             bg="gray.700"
                                             color={textColor}
                                             borderColor={borderColor}
                                         >
-                                            {availableTokens.map(token => (
-                                                <option key={token} value={token}>
-                                                    {token.toUpperCase()}
+                                            {availableAssets.map(asset => (
+                                                <option key={asset.address} value={asset.address}>
+                                                    {asset.ticker}
                                                 </option>
                                             ))}
                                         </Select>
@@ -233,7 +237,7 @@ const Trading: React.FC<TradingProps> = ({ layoutMode, vault }) => {
                                         <HStack justify="space-between">
                                             <Text color={secondaryTextColor}>Price</Text>
                                             <Text color={textColor}>
-                                                1 {fromToken.toUpperCase()} = {(parseFloat(estimatedAmount) / parseFloat(amount)).toFixed(6)} {toToken.toUpperCase()}
+                                                1 {fromAsset.ticker} = {(parseFloat(estimatedAmount) / parseFloat(amount)).toFixed(6)} {toAsset.ticker}
                                             </Text>
                                         </HStack>
                                     </Box>

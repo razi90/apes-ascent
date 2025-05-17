@@ -16,9 +16,7 @@ const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, onComplet
     const navigate = useNavigate();
 
     const handleTrade = () => {
-        if (vault) {
-            navigate(`/trading?vaultId=${vault.userId}`);
-        }
+        navigate('/trading');
     };
 
     return (
@@ -27,7 +25,7 @@ const TradeButton: React.FC<TradeButtonProps> = ({ vault, isConnected, onComplet
                 colorScheme="green"
                 size="sm"
                 onClick={handleTrade}
-                isDisabled={!isConnected || !vault}
+                isDisabled={!isConnected}
             >
                 Trade
             </Button>

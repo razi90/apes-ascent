@@ -4,10 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUserAssetVaults } from '../libs/data_services/VaultDataService';
 import Trading from '../containers/Trading/Trading';
 import { LayoutMode } from '../types/layout';
-import { Center, Spinner, Text } from '@chakra-ui/react';
+import { Center, Spinner, Text, VStack, Button } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const TradingPage: React.FC = () => {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const vaultId = searchParams.get('vaultId');
 
     // Fetch vaults
@@ -35,20 +37,47 @@ const TradingPage: React.FC = () => {
         );
     }
 
-    // Find the vault with the matching ID
-    const vault = vaults.find(v => v.userId === vaultId);
-
-    if (!vault) {
+    // If no vaults exist, show a message
+    if (vaults.length === 0) {
         return (
             <Center h="100vh">
-                <Text fontSize="2xl" color="red.500">
-                    Vault not found. Please try again.
-                </Text>
+                <VStack spacing={4}>
+                    <Text fontSize="2xl" color="white">
+                        You don't have any vaults yet.
+                    </Text>
+                    <Button
+                        colorScheme="green"
+                        onClick={() => navigate('/free_for_all')}
+                    >
+                        Create a Vault
+                    </Button>
+                </VStack>
             </Center>
         );
     }
 
-    return <Trading layoutMode={LayoutMode.DesktopExpanded} vault={vault} />;
+    // If no vaultId is provided, use the first vault
+    const selectedVault = vaultId ? vaults.find(v => v.userId === vaultId) : vaults[0];
+
+    if (!selectedVault) {
+        return (
+            <Center h="100vh">
+                <VStack spacing={4}>
+                    <Text fontSize="2xl" color="white">
+                        Selected vault not found.
+                    </Text>
+                    <Button
+                        colorScheme="green"
+                        onClick={() => navigate('/free_for_all')}
+                    >
+                        Go to Vaults
+                    </Button>
+                </VStack>
+            </Center>
+        );
+    }
+
+    return <Trading layoutMode={LayoutMode.DesktopExpanded} vault={selectedVault} />;
 };
 
 export default TradingPage;
