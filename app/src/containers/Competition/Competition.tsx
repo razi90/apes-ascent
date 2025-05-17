@@ -23,6 +23,13 @@ import {
     Tooltip,
     Icon,
     HStack,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    Button,
 } from "@chakra-ui/react";
 import { routePageBoxStyle } from '../../libs/styles/RoutePageBox';
 import { LayoutMode } from '../../types/layout';
@@ -32,7 +39,7 @@ import { Competition as CompetitionEntity } from '../../libs/entities/Competitio
 import { fetchPriceListMap } from '../../libs/data_services/PriceDataService';
 import VaultWithUserInfo from '../../components/UserAssetVault/VaultWithUserInfo';
 import { JoinButton } from '../../components/Button/JoinButton/JoinButton';
-import { FaTrophy, FaUsers, FaClock, FaChartLine, FaMedal } from 'react-icons/fa';
+import { FaTrophy, FaUsers, FaClock, FaChartLine, FaMedal, FaCrown, FaHistory } from 'react-icons/fa';
 import { UserAssetVault } from '../../libs/entities/UserAssetVault';
 import PageContainer from '../../components/Container/PageContainer/PageContainer';
 
@@ -114,6 +121,132 @@ const dummyPriceList = {
 interface CompetitionProps {
     layoutMode: LayoutMode;
 }
+
+// Add PastCompetitions component
+const PastCompetitions: React.FC = () => {
+    const cardBgColor = useColorModeValue("gray.800", "gray.800");
+    const borderColor = useColorModeValue("gray.700", "gray.700");
+    const textColor = useColorModeValue("white", "white");
+    const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
+    const accentColor = "green.400";
+
+    const pastCompetitions = [
+        {
+            id: 1,
+            name: "Summer Trading Championship 2024",
+            startDate: "2024-02-01",
+            endDate: "2024-02-28",
+            participants: 256,
+            totalPrize: "$50,000",
+            winner: "TraderPro",
+            winnerPrize: "$15,000",
+            topPerformers: [
+                { rank: 1, name: "TraderPro", prize: "$15,000" },
+                { rank: 2, name: "CryptoKing", prize: "$10,000" },
+                { rank: 3, name: "BlockchainQueen", prize: "$7,500" }
+            ]
+        },
+        {
+            id: 2,
+            name: "Winter Duel Masters 2023",
+            startDate: "2023-12-01",
+            endDate: "2023-12-31",
+            participants: 128,
+            totalPrize: "$30,000",
+            winner: "CryptoKing",
+            winnerPrize: "$10,000",
+            topPerformers: [
+                { rank: 1, name: "CryptoKing", prize: "$10,000" },
+                { rank: 2, name: "TraderPro", prize: "$7,000" },
+                { rank: 3, name: "BlockchainQueen", prize: "$5,000" }
+            ]
+        }
+    ];
+
+    return (
+        <Box p={8} bg={cardBgColor}>
+            <Flex align="center" mb={6}>
+                <Icon as={FaHistory} w={6} h={6} color={accentColor} mr={3} />
+                <Heading size="lg" color={textColor}>Past Competitions</Heading>
+            </Flex>
+            <VStack spacing={6} align="stretch">
+                {pastCompetitions.map((competition) => (
+                    <Box
+                        key={competition.id}
+                        p={6}
+                        bg="gray.800"
+                        borderRadius="xl"
+                        border="1px solid"
+                        borderColor={borderColor}
+                        _hover={{
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                            borderColor: accentColor,
+                        }}
+                        transition="all 0.2s"
+                    >
+                        <Grid templateColumns="2fr 1fr" gap={6}>
+                            <Box>
+                                <Flex align="center" gap={3} mb={4}>
+                                    <Icon as={FaTrophy} boxSize={6} color="yellow.400" />
+                                    <Heading size="md" color={textColor}>{competition.name}</Heading>
+                                </Flex>
+                                <Text color={secondaryTextColor} mb={4}>
+                                    {new Date(competition.startDate).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })} - {new Date(competition.endDate).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </Text>
+                                <HStack spacing={4} mb={4}>
+                                    <Badge colorScheme="green" px={3} py={1} borderRadius="full">
+                                        {competition.participants} Participants
+                                    </Badge>
+                                    <Badge colorScheme="purple" px={3} py={1} borderRadius="full">
+                                        Total Prize: {competition.totalPrize}
+                                    </Badge>
+                                </HStack>
+                            </Box>
+                            <Box>
+                                <Table variant="unstyled" size="sm">
+                                    <Thead>
+                                        <Tr>
+                                            <Th color={secondaryTextColor}>Rank</Th>
+                                            <Th color={secondaryTextColor}>Trader</Th>
+                                            <Th color={secondaryTextColor} isNumeric>Prize</Th>
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {competition.topPerformers.map((performer) => (
+                                            <Tr key={performer.rank}>
+                                                <Td color={textColor}>
+                                                    <Flex align="center" gap={2}>
+                                                        {performer.rank === 1 ? (
+                                                            <Icon as={FaCrown} color="yellow.400" />
+                                                        ) : (
+                                                            <Icon as={FaMedal} color={performer.rank === 2 ? "gray.400" : "orange.400"} />
+                                                        )}
+                                                        #{performer.rank}
+                                                    </Flex>
+                                                </Td>
+                                                <Td color={textColor}>{performer.name}</Td>
+                                                <Td color={textColor} isNumeric>{performer.prize}</Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            </Box>
+                        </Grid>
+                    </Box>
+                ))}
+            </VStack>
+        </Box>
+    );
+};
 
 const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
     // Updated color scheme
@@ -345,7 +478,7 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                                     borderRadius="full"
                                     boxShadow={neonGlow}
                                 >
-                                    {index === 0 ? "��" : index === 1 ? "🥈" : "🥉"}
+                                    {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
                                 </Badge>
                             )}
                             <VaultWithUserInfo
@@ -356,6 +489,11 @@ const Competition: React.FC<CompetitionProps> = ({ layoutMode }) => {
                     ))}
                 </VStack>
             </Box>
+
+            <Divider borderColor={borderColor} />
+
+            {/* Past Competitions */}
+            <PastCompetitions />
         </PageContainer>
     );
 };
