@@ -59,7 +59,7 @@ impl UnitTestEnvironment {
             )
             .unwrap();
 
-        let user_token_proof = user_token.create_proof_of_all(&mut env).unwrap();
+        let user_token_proof = user_token.create_proof_of_all(&mut env).unwrap().into();
 
         // Create resources
         let resource_addresses = ResourceAddresses {
