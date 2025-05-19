@@ -36,13 +36,15 @@ import { GiSwordman, GiCrossedSwords } from 'react-icons/gi';
 import { FaClock, FaTrophy, FaCoins, FaChartLine, FaSearch, FaFilter, FaEye, FaSort } from 'react-icons/fa';
 import { OutlineButton } from '../../components/Button/OutlineButton/OutlineButton';
 import PageContainer from '../../components/Container/PageContainer/PageContainer';
+import CreateDuelDialog from '../../components/Dialog/CreateDuelDialog/CreateDuelDialog';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DuelsPageProps {
     layoutMode: LayoutMode;
 }
 
 interface DuelWithStatus extends DuelEntity {
-    status: 'active' | 'pending' | 'completed';
+    status: 'open' | 'active' | 'completed' | 'cancelled';
     prizePool: string;
 }
 
@@ -50,6 +52,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [sortBy, setSortBy] = useState('time');
+    const [isCreateDuelOpen, setIsCreateDuelOpen] = useState(false);
 
     const bgColor = useColorModeValue("gray.900", "gray.900");
     const cardBgColor = useColorModeValue("gray.800", "gray.800");
@@ -58,6 +61,8 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     const secondaryTextColor = useColorModeValue("gray.400", "gray.400");
     const accentColor = "green.400";
     const neonGlow = "0 0 10px rgba(72, 187, 120, 0.5)";
+
+    const queryClient = useQueryClient();
 
     // Fetch active duels
     const { data: duels, isLoading, isError } = useQuery<DuelEntity[]>({
@@ -68,7 +73,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
     // Filter and sort duels
     const filteredDuels = duels?.filter(duel => {
         const matchesSearch = duel.player1Id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            duel.player2Id.toLowerCase().includes(searchQuery.toLowerCase());
+            (duel.player2Id?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
         const matchesStatus = statusFilter === 'all' || statusFilter === 'active';
         return matchesSearch && matchesStatus;
     }).sort((a, b) => {
@@ -141,7 +146,7 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                             </Text>
                         </Box>
                     </Flex>
-                    <OutlineButton tooltipLabel="Create a new duel">
+                    <OutlineButton tooltipLabel="Create a new duel" onClick={() => setIsCreateDuelOpen(true)}>
                         Create Duel
                     </OutlineButton>
                 </Flex>
@@ -217,6 +222,16 @@ const DuelsPage: React.FC<DuelsPageProps> = ({ layoutMode }) => {
                     ))}
                 </VStack>
             </Box>
+
+            {/* Add CreateDuelDialog */}
+            <CreateDuelDialog
+                isOpen={isCreateDuelOpen}
+                setIsOpen={setIsCreateDuelOpen}
+                onDuelCreated={() => {
+                    // Refresh the duels list after creating a new duel
+                    queryClient.invalidateQueries({ queryKey: ['active_duels'] });
+                }}
+            />
         </PageContainer>
     );
 };
@@ -231,9 +246,10 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
         queryFn: () => fetchUserInfoById(duel.player1Id),
     });
 
-    const { data: user2, isLoading: user2Loading, isError: user2Error } = useQuery({
+    const { data: user2, isLoading: user2Loading, isError: user2Error } = useQuery<User | null>({
         queryKey: ['user_info', duel.player2Id],
-        queryFn: () => fetchUserInfoById(duel.player2Id),
+        queryFn: () => duel.player2Id ? fetchUserInfoById(duel.player2Id) : Promise.resolve(null),
+        enabled: !!duel.player2Id,
     });
 
     const cardBgColor = useColorModeValue("gray.800", "gray.800");
@@ -363,12 +379,27 @@ const DuelOverview: React.FC<DuelOverviewProps> = ({ duel }) => {
                 </Box>
 
                 {/* Player 2 */}
-                <PlayerOverview
-                    user={user2}
-                    isLoading={user2Loading}
-                    isError={user2Error}
-                    side="Player 2"
-                />
+                {duel.player2Id ? (
+                    <PlayerOverview
+                        user={user2 || undefined}
+                        isLoading={user2Loading}
+                        isError={user2Error}
+                        side="Player 2"
+                    />
+                ) : (
+                    <Flex
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        w="150px"
+                        textAlign="center"
+                        h="100%"
+                    >
+                        <Text color={secondaryTextColor} fontSize="sm">
+                            Waiting for opponent...
+                        </Text>
+                    </Flex>
+                )}
             </Flex>
 
             <Divider my={3} borderColor={borderColor} />
