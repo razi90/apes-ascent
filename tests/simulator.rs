@@ -1,6 +1,8 @@
 use scrypto_test::prelude::*;
 
-use crate::simulator_test_environment::SimulatorTestEnvironment;
+#[path = "./simulator_test_environment.rs"]
+mod simulator_test_environment;
+use simulator_test_environment::SimulatorTestEnvironment;
 
 #[test]
 fn test_env_setup() {
